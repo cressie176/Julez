@@ -2,11 +2,6 @@ Julez is an extremely lightweight framework for running performance tests via ju
 You write a "Scenario" using your test tool of choice (junit, htmlunit, jbeheave etc), 
 then use Julez to run the scenario repeatedly from multiple threads at a fixed rate. e.g.
 
-public class SimplePerformanceTest {
-
-    private static final int MAX_THROUGHPUT = 100; // scenarios per second
-    private static final int DURATION = 15; // seconds
-
     @Test
     public void testTheSystemSupportsAtLeast80HelloWorldScenariosPerSecond() {
 
@@ -22,14 +17,8 @@ public class SimplePerformanceTest {
             System.out.println("Hello World");
         }
     }
-}
 
 Want to write your scenarios using JBehave instead? No problem...
-
-public class JBehavePerformanceTest {
-
-    private static final int MAX_THROUGHPUT = 100; // scenarios per second
-    private static final int DURATION = 15; // seconds
 
     @Test
     public void testTheSystemSupportsAtLeast2JBehaveScenariosPerSecond() {
@@ -41,6 +30,24 @@ public class JBehavePerformanceTest {
         
         assertTrue(String.format("Actual throughput: %d scenarios per second", throughput), throughput >= 2);
     }
-}
 
-You can also run different scenarios in parallel if you require. See the unit tests for more examples.
+You can also run different scenarios in parallel using the MultiConcurrentTestRunner... 
+
+	@Test
+	public void testTheSystemSupportsRunningDifferentScenariosInParallel() {
+
+	    ConcurrentTestRunner runner1 = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
+	    ConcurrentTestRunner runner2 = new ConcurrentTestRunner(new GoodbyeWorldScenario(), MAX_THROUGHPUT, DURATION);
+	
+	    MultiConcurrentTestRunner multiTestRunner = new MultiConcurrentTestRunner(runner1, runner2);
+	    multiTestRunner.run();
+	
+	    int throughput1 = runner1.actualThroughput();
+	    assertTrue(String.format("Actual throughput: %d scenarios per second", throughput1), throughput1 >= 20);
+	    
+	    int throughput2 = runner2.actualThroughput();
+	    assertTrue(String.format("Actual throughput: %d scenarios per second", throughput2), throughput2 >= 20);
+	}
+
+
+See the unit tests for more examples.
