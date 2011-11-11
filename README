@@ -37,7 +37,7 @@ public class JBehavePerformanceTest {
     @Test
     public void testTheSystemSupportsAtLeast2JBehaveScenariosPerSecond() {
 
-        ConcurrentTestRunner runner = new ConcurrentTestRunner(new JBehaveScenario("scenario1.txt"), MAX_THROUGHPUT, DURATION);
+        ConcurrentTestRunner runner = new ConcurrentTestRunner(new JBehaveScenario("foo.txt"), MAX_THROUGHPUT, DURATION);
         concurrentTestRunner.run();
         int throughput = concurrentTestRunner.actualThroughput();
         
