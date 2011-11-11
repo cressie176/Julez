@@ -1,0 +1,5 @@
+Scenario: Search for jbehave
+
+When I open BBC news
+And search for jbehave
+Then record success
