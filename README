@@ -11,13 +11,11 @@ public class SimplePerformanceTest {
     @Test
     public void testTheSystemSupportsAtLeast80HelloWorldScenariosPerSecond() {
 
-        ConcurrentTestRunner concurrentTestRunner = 
-        	new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
+        ConcurrentTestRunner runner = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.run();
-        int actualThroughput = concurrentTestRunner.actualThroughput();
+        int throughput = concurrentTestRunner.actualThroughput();
         
-        assertTrue(String.format("Actual throughput: %d scenarios per second", actualThroughput), 
-        	actualThroughput >= 20);
+        assertTrue(String.format("Actual throughput: %d scenarios per second", throughput), throughput >= 20);
     }
 
     class HelloWorldScenario implements Scenario {
@@ -39,13 +37,11 @@ public class JBehavePerformanceTest {
     @Test
     public void testTheSystemSupportsAtLeast2JBehaveScenariosPerSecond() {
 
-        ConcurrentTestRunner concurrentTestRunner = 
-        	new ConcurrentTestRunner(new JBehaveScenario("scenario1.txt"), MAX_THROUGHPUT, TEST_DURATION);
+        ConcurrentTestRunner runner = new ConcurrentTestRunner(new JBehaveScenario("scenario1.txt"), MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.run();
-        int actualThroughput = concurrentTestRunner.actualThroughput();
+        int throughput = concurrentTestRunner.actualThroughput();
         
-        assertTrue(String.format("Actual throughput: %d scenarios per second", actualThroughput), 
-        	actualThroughput >= 2);
+        assertTrue(String.format("Actual throughput: %d scenarios per second", throughput), throughput >= 2);
     }
 }
 </code>
