@@ -5,13 +5,13 @@ then use Julez to run the scenario repeatedly from multiple threads at a fixed r
 <code>
 public class SimplePerformanceTest {
 
-    private static final int MAX_THROUGHPUT = 100;
-    private static final int TEST_DURATION = 15;
+    private static final int MAX_THROUGHPUT = 100; // scenarios per second
+    private static final int DURATION = 15; // seconds
 
     @Test
     public void testTheSystemSupportsAtLeast80HelloWorldScenariosPerSecond() {
 
-        ConcurrentTestRunner runner = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
+        ConcurrentTestRunner runner = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
         concurrentTestRunner.run();
         int throughput = concurrentTestRunner.actualThroughput();
         
@@ -31,13 +31,13 @@ Want to write your scenarios using JBehave instead? No problem...
 <code>
 public class JBehavePerformanceTest {
 
-    private static final int MAX_THROUGHPUT = 10;
-    private static final int TEST_DURATION = 15;
+    private static final int MAX_THROUGHPUT = 100; // scenarios per second
+    private static final int DURATION = 15; // seconds
 
     @Test
     public void testTheSystemSupportsAtLeast2JBehaveScenariosPerSecond() {
 
-        ConcurrentTestRunner runner = new ConcurrentTestRunner(new JBehaveScenario("scenario1.txt"), MAX_THROUGHPUT, TEST_DURATION);
+        ConcurrentTestRunner runner = new ConcurrentTestRunner(new JBehaveScenario("scenario1.txt"), MAX_THROUGHPUT, DURATION);
         concurrentTestRunner.run();
         int throughput = concurrentTestRunner.actualThroughput();
         
