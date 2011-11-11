@@ -31,6 +31,25 @@ Want to write your scenarios using JBehave instead? No problem...
 	    
 	    assertTrue(String.format("Actual throughput: %d scenarios per second", throughput), throughput >= 2);
 	}
+	
+    class JBehaveScenario implements Scenario {
+
+        private final String scenario;
+
+        public JBehaveScenario(String scenario) {
+            this.scenario = scenario;
+        }
+
+        public void execute() {
+			Embedder embedder = new Embedder();
+            embedder.useEmbedderMonitor(new SilentEmbedderMonitor(null));
+            embedder.useConfiguration(new MostUsefulConfiguration().usePendingStepStrategy(new FailingUponPendingStep()));
+            embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), new JBehaveSteps()).createCandidateSteps());
+
+            List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(JBehavePerformanceTest.class), scenario, "");
+            embedder.runStoriesAsPaths(storyPaths);           
+        }
+    }	
 
 You can also run different scenarios in parallel using the MultiConcurrentTestRunner... 
 
