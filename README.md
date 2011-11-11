@@ -5,7 +5,7 @@ You write a "Scenario" using your test tool of choice (junit, htmlunit, jbehave 
 then use Julez to run the scenario repeatedly from multiple threads at a capped rate. e.g.
 
 	@Test
-	public void testTheSystemCanSupportTheRequiredNumberOfHelloWorldScenariosPerSecond() {
+	public void testSimpleScenario() {
 	
 	    ConcurrentTestRunner runner = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
 	    runner.run();
@@ -23,7 +23,7 @@ then use Julez to run the scenario repeatedly from multiple threads at a capped 
 Want to write your scenarios using JBehave instead? No problem...
 
 	@Test
-	public void testTheSystemSupportsTheRequiredNumberOfJBehaveScenariosPerSecond() {
+	public void testJBehaveScenario() {
 	
 	    ConcurrentTestRunner runner = new ConcurrentTestRunner(new JBehaveScenario("foo.txt"), MAX_THROUGHPUT, DURATION);
 	    runner.run();
@@ -54,7 +54,7 @@ Want to write your scenarios using JBehave instead? No problem...
 You can also run different scenarios in parallel using the MultiConcurrentTestRunner... 
 
 	@Test
-	public void testTheSystemSupportsRunningDifferentScenariosInParallel() {
+	public void testParallelScenarios() {
 	
 	    ConcurrentTestRunner runner1 = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
 	    ConcurrentTestRunner runner2 = new ConcurrentTestRunner(new GoodbyeWorldScenario(), MAX_THROUGHPUT, DURATION);
