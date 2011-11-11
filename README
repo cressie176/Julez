@@ -12,7 +12,7 @@ public class SimplePerformanceTest {
 
         ConcurrentTestRunner runner = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
         runner.run();
-        int throughput = concurrentTestRunner.actualThroughput();
+        int throughput = runner.actualThroughput();
         
         assertTrue(String.format("Actual throughput: %d scenarios per second", throughput), throughput >= 20);
     }
@@ -37,7 +37,7 @@ public class JBehavePerformanceTest {
         ConcurrentTestRunner runner = new ConcurrentTestRunner(new JBehaveScenario("foo.txt"), MAX_THROUGHPUT, 
         	DURATION);
         runner.run();
-        int throughput = concurrentTestRunner.actualThroughput();
+        int throughput = runner.actualThroughput();
         
         assertTrue(String.format("Actual throughput: %d scenarios per second", throughput), throughput >= 2);
     }
