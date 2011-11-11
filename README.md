@@ -20,7 +20,7 @@ then use Julez to run the scenario repeatedly from multiple threads at a capped 
 	    }
 	}
 
-Want to write your scenarios using JBehave instead? No problem...
+Want to write your scenarios using JBehave instead? Here's how...
 
 	@Test
 	public void testJBehaveScenario() {
