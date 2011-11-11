@@ -1,5 +1,49 @@
 Julez is an extremely lightweight framework for running performance tests via junit.
 You write a "Scenario" using your test tool of choice (junit, htmlunit, jbeheave etc), 
-then use Julez to run the scenario repeatedly from multiple threads at a fixed rate.
+then use Julez to run the scenario repeatedly from multiple threads at a fixed rate. e.g.
 
-You can also run different scenarios in parallel if you require. See the unit tests for examples.
+<code>
+public class SimplePerformanceTest {
+
+    private static final int MAX_THROUGHPUT = 100;
+    private static final int TEST_DURATION = 15;
+
+    @Test
+    public void testTheSystemSupportsAtLeast80HelloWorldScenariosPerSecond() {
+
+        ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
+        concurrentTestRunner.run();
+        int actualThroughput = concurrentTestRunner.actualThroughput();
+        
+        assertTrue(String.format("Actual throughput: %d scenarios per second", actualThroughput), actualThroughput >= 20);
+    }
+
+    class HelloWorldScenario implements Scenario {
+        public void execute() {
+            System.out.println("Hello World");
+        }
+    }
+}
+</code>
+
+Want to write your scenarios using JBehave instead? No problem...
+
+<code>
+public class JBehavePerformanceTest {
+
+    private static final int MAX_THROUGHPUT = 10;
+    private static final int TEST_DURATION = 15;
+
+    @Test
+    public void testTheSystemSupportsAtLeast2JBehaveScenariosPerSecond() {
+
+        ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(new JBehaveScenario("scenario1.txt"), MAX_THROUGHPUT, TEST_DURATION);
+        concurrentTestRunner.run();
+        int actualThroughput = concurrentTestRunner.actualThroughput();
+        
+        assertTrue(String.format("Actual throughput: %d scenarios per second", actualThroughput), actualThroughput >= 2);
+    }
+}
+</code>
+
+You can also run different scenarios in parallel if you require. See the unit tests for more examples.

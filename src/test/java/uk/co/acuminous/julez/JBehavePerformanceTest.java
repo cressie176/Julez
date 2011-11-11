@@ -19,7 +19,7 @@ public class JBehavePerformanceTest {
     private static final int TEST_DURATION = 15;
 
     @Test
-    public void testTheSystemSupportsAtLeast2JBehaveScenariosPerSecond() throws Throwable {
+    public void testTheSystemSupportsAtLeast2JBehaveScenariosPerSecond() {
 
         ResultRecorder recorder = new ResultRecorder();
         ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(new JBehaveScenario("scenario1.txt", recorder), MAX_THROUGHPUT, TEST_DURATION);

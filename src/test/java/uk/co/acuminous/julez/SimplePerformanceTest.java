@@ -10,12 +10,13 @@ public class SimplePerformanceTest {
     private static final int TEST_DURATION = 15;
 
     @Test
-    public void testTheSystemSupportsAtLeast80HelloWorldScenariosPerSecond() throws Throwable {
+    public void testTheSystemSupportsAtLeast80HelloWorldScenariosPerSecond() {
 
         ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.run();
-
-        assertTrue(String.format("Actual throughput: %d scenarios per second", concurrentTestRunner.actualThroughput()), concurrentTestRunner.actualThroughput() >= 20);
+        int actualThroughput = concurrentTestRunner.actualThroughput();
+        
+        assertTrue(String.format("Actual throughput: %d scenarios per second", actualThroughput), actualThroughput >= 20);
     }
 
     class HelloWorldScenario implements Scenario {
