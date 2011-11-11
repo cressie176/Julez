@@ -1,0 +1,5 @@
+Julez is an extremely lightweight framework for running performance tests via junit.
+You write a "Scenario" using your test tool of choice (junit, htmlunit, jbeheave etc), 
+then use Julez to run the scenario repeatedly from multiple threads at a fixed rate.
+
+You can also run different scenarios in parallel if you require. See the unit tests for examples.
