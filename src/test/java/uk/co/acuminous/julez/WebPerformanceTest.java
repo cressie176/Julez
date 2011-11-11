@@ -13,7 +13,7 @@ public class WebPerformanceTest {
     private static final int TEST_DURATION = 15;
 
     @Test
-    public void testTheSystemSupportsAtLeast5SimpleWebScenariosPerSecond() {
+    public void testTheSystemCanSupportTheRequiredNumberOfSimpleWebScenariosPerSecond() {
 
         ResultRecorder recorder = new ResultRecorder();
         ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(new SimpleWebScenario(recorder), MAX_THROUGHPUT, TEST_DURATION);
