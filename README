@@ -2,7 +2,7 @@ Julez is an extremely lightweight framework for running simple performance tests
 You write a "Scenario" using your test tool of choice (junit, htmlunit, jbehave etc), 
 then use Julez to run the scenario repeatedly from multiple threads at a capped rate. e.g.
 
-<pre>@Test
+@Test
 public void testTheSystemSupportsAtLeast80HelloWorldScenariosPerSecond() {
 
     ConcurrentTestRunner runner = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
@@ -17,11 +17,10 @@ class HelloWorldScenario implements Scenario {
         System.out.println("Hello World");
     }
 }
-</pre>
 
 Want to write your scenarios using JBehave instead? No problem...
 
-<pre>@Test
+@Test
 public void testTheSystemSupportsAtLeast2JBehaveScenariosPerSecond() {
 
     ConcurrentTestRunner runner = new ConcurrentTestRunner(new JBehaveScenario("foo.txt"), MAX_THROUGHPUT, DURATION);
@@ -30,11 +29,10 @@ public void testTheSystemSupportsAtLeast2JBehaveScenariosPerSecond() {
     
     assertTrue(String.format("Actual throughput: %d scenarios per second", throughput), throughput >= 2);
 }
-</pre>
 
 You can also run different scenarios in parallel using the MultiConcurrentTestRunner... 
 
-<pre>@Test
+@Test
 public void testTheSystemSupportsRunningDifferentScenariosInParallel() {
 
     ConcurrentTestRunner runner1 = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
@@ -49,6 +47,5 @@ public void testTheSystemSupportsRunningDifferentScenariosInParallel() {
     int throughput2 = runner2.actualThroughput();
     assertTrue(String.format("Actual throughput: %d scenarios per second", throughput2), throughput2 >= 20);
 }
-</pre>
 
 See the unit tests for more examples.
