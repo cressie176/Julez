@@ -1,8 +1,12 @@
-package uk.co.acuminous.julez;
+package examples;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import uk.co.acuminous.julez.ConcurrentTestRunner;
+import uk.co.acuminous.julez.MultiConcurrentTestRunner;
+import uk.co.acuminous.julez.Scenario;
 
 public class MultiScenarioPerformanceTest {
 

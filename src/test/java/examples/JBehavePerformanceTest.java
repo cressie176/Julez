@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez;
+package examples;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.junit.Assert.assertTrue;
@@ -12,6 +12,11 @@ import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.Test;
+
+import uk.co.acuminous.julez.ConcurrentTestRunner;
+import uk.co.acuminous.julez.InMemoryResultRecorder;
+import uk.co.acuminous.julez.ResultRecorder;
+import uk.co.acuminous.julez.Scenario;
 
 public class JBehavePerformanceTest {
 

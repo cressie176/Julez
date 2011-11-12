@@ -1,8 +1,13 @@
-package uk.co.acuminous.julez;
+package examples;
 
 import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
+
+import uk.co.acuminous.julez.ConcurrentTestRunner;
+import uk.co.acuminous.julez.InMemoryResultRecorder;
+import uk.co.acuminous.julez.ResultRecorder;
+import uk.co.acuminous.julez.Scenario;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;

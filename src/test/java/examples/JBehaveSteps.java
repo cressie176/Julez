@@ -1,7 +1,9 @@
-package uk.co.acuminous.julez;
+package examples;
 
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
+
+import uk.co.acuminous.julez.ResultRecorder;
 
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
