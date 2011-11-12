@@ -7,7 +7,7 @@ then use Julez to run the scenario repeatedly from multiple threads at a capped 
 	@Test
 	public void testSimpleScenario() {
 	
-	    ConcurrentTestRunner runner = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
+	    ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
 	    runner.run();
 	    int throughput = runner.actualThroughput();
 	    
@@ -25,7 +25,7 @@ Want to write your scenarios using JBehave instead? Here's how...
 	@Test
 	public void testJBehaveScenario() {
 	
-	    ConcurrentTestRunner runner = new ConcurrentTestRunner(new JBehaveScenario("foo.txt"), MAX_THROUGHPUT, DURATION);
+	    ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(new JBehaveScenario("foo.txt"), MAX_THROUGHPUT, DURATION);
 	    runner.run();
 	    int throughput = runner.actualThroughput();
 	    
@@ -51,15 +51,15 @@ Want to write your scenarios using JBehave instead? Here's how...
         }
     }	
 
-You can also run different scenarios in parallel using the MultiConcurrentTestRunner... 
+You can also run different scenarios in parallel using the MultiConcurrentScenarioRunner... 
 
 	@Test
 	public void testParallelScenarios() {
 	
-	    ConcurrentTestRunner runner1 = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
-	    ConcurrentTestRunner runner2 = new ConcurrentTestRunner(new GoodbyeWorldScenario(), MAX_THROUGHPUT, DURATION);
+	    ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
+	    ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner(new GoodbyeWorldScenario(), MAX_THROUGHPUT, DURATION);
 	
-	    MultiConcurrentTestRunner multiTestRunner = new MultiConcurrentTestRunner(runner1, runner2);
+	    MultiConcurrentScenarioRunner multiTestRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
 	    multiTestRunner.run();
 	
 	    int throughput1 = runner1.actualThroughput();

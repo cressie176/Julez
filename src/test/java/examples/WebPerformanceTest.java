@@ -6,7 +6,7 @@ import static uk.co.acuminous.julez.PerformanceAssert.assertThroughput;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.ConcurrentTestRunner;
+import uk.co.acuminous.julez.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.InMemoryResultRecorder;
 import uk.co.acuminous.julez.ResultRecorder;
 import uk.co.acuminous.julez.Scenario;
@@ -24,7 +24,7 @@ public class WebPerformanceTest extends WebTestCase {
 
         ResultRecorder recorder = new InMemoryResultRecorder();
         SimpleWebScenario scenario = new SimpleWebScenario(recorder);
-        ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);
+        ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.run();
 
         assertMinPasses(1, recorder.successCount());

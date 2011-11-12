@@ -15,7 +15,7 @@ import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.ConcurrentTestRunner;
+import uk.co.acuminous.julez.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.InMemoryResultRecorder;
 import uk.co.acuminous.julez.ResultRecorder;
 import uk.co.acuminous.julez.Scenario;
@@ -30,7 +30,7 @@ public class JBehavePerformanceTest extends WebTestCase {
 
         ResultRecorder recorder = new InMemoryResultRecorder();
         JBehaveScenario scenario = new JBehaveScenario("scenario1.txt", recorder);
-        ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);
+        ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.useNumberOfWorkers(15);
         concurrentTestRunner.run();
 

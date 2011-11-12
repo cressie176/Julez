@@ -4,7 +4,7 @@ import static uk.co.acuminous.julez.PerformanceAssert.assertThroughput;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.ConcurrentTestRunner;
+import uk.co.acuminous.julez.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.Scenario;
 
 public class SimplePerformanceTest {
@@ -15,7 +15,7 @@ public class SimplePerformanceTest {
     @Test
     public void testTheSystemCanSupportTheRequiredNumberOfHelloWorldScenariosPerSecond() {
 
-        ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
+        ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.run();
         
         assertThroughput(20, concurrentTestRunner.actualThroughput());

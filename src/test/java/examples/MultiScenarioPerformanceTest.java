@@ -4,8 +4,8 @@ import static uk.co.acuminous.julez.PerformanceAssert.assertThroughput;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.ConcurrentTestRunner;
-import uk.co.acuminous.julez.MultiConcurrentTestRunner;
+import uk.co.acuminous.julez.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.MultiConcurrentScenarioRunner;
 import uk.co.acuminous.julez.Scenario;
 
 public class MultiScenarioPerformanceTest {
@@ -16,10 +16,10 @@ public class MultiScenarioPerformanceTest {
     @Test
     public void testTheSystemSupportsRunningDifferentScenariosInParallel() throws Throwable {
 
-        ConcurrentTestRunner runner1 = new ConcurrentTestRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
-        ConcurrentTestRunner runner2 = new ConcurrentTestRunner(new GoodbyeWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
+        ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
+        ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner(new GoodbyeWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
 
-        MultiConcurrentTestRunner multiTestRunner = new MultiConcurrentTestRunner(runner1, runner2);
+        MultiConcurrentScenarioRunner multiTestRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
         multiTestRunner.run();
 
         assertThroughput(20, runner1.actualThroughput());
