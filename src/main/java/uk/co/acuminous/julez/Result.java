@@ -2,9 +2,7 @@ package uk.co.acuminous.julez;
 
 public class Result {
 
-    enum ResultStatus {
-        PASS, FAIL
-    }
+    enum ResultStatus { PASS, FAIL }
 
     long timestamp;
     ResultStatus status;
@@ -15,21 +13,12 @@ public class Result {
         this.status = status;
         this.description = description;
     }
-
-    public static Result fail() {
-        return fail(null);
+    
+    public Result(ResultStatus status, String description) {
+        this(System.currentTimeMillis(), status, description);
     }
-
-    public static Result fail(String description) {
-        return new Result(System.currentTimeMillis(), ResultStatus.FAIL, description);
+    
+    public Result(ResultStatus status) {
+        this(System.currentTimeMillis(), status, null);
     }
-
-    public static Result pass() {
-        return pass(null);
-    }
-
-    public static Result pass(String description) {
-        return new Result(System.currentTimeMillis(), ResultStatus.PASS, description);
-    }
-
 }

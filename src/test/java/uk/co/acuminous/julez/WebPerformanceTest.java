@@ -15,7 +15,7 @@ public class WebPerformanceTest {
     @Test
     public void testTheSystemCanSupportTheRequiredNumberOfSimpleWebScenariosPerSecond() {
 
-        ResultRecorder recorder = new ResultRecorder();
+        ResultRecorder recorder = new InMemoryResultRecorder();
         ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(new SimpleWebScenario(recorder), MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.run();
 
