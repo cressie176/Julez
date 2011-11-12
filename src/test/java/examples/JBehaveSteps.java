@@ -22,27 +22,26 @@ public class JBehaveSteps {
         webClient.setJavaScriptEnabled(false);
     }
 
-    @When("I open BBC news")
-    public void openBBCNews() {
-        page = get("http://www.bbc.co.uk/news");
+    @When("I open the demo page")
+    public void openDemoPage() {
+        page = get("http://localhost:8080/");
     }
 
     @When("search for $query")
     public void searchFor(String query) {
         try {
-            page.getElementById("blq-search").setAttribute("value", query);
-            page.getElementById("blq-search-btn").click();
+            page.getElementById("query").setAttribute("value", query);
+            page.getElementById("search").click();
         } catch (Exception e) {
             recorder.fail(e.getMessage());
             throw new RuntimeException(e);
-        } finally {
-            webClient.closeAllWindows();
         }
     }
 
     @Then("record success")
     public void recordSuccess() {
         recorder.pass();
+        webClient.closeAllWindows();
     }
 
     private HtmlPage get(String url) {
@@ -55,8 +54,6 @@ public class JBehaveSteps {
         } catch (Exception e) {
             recorder.fail(e.getMessage());
             throw new RuntimeException(e);
-        } finally {
-            webClient.closeAllWindows();
         }
     }
 }

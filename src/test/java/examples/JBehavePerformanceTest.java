@@ -1,7 +1,9 @@
 package examples;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static org.junit.Assert.assertTrue;
+import static uk.co.acuminous.julez.PerformanceAssert.assertMaxFailures;
+import static uk.co.acuminous.julez.PerformanceAssert.assertMinPasses;
+import static uk.co.acuminous.julez.PerformanceAssert.assertThroughput;
 
 import java.util.List;
 
@@ -18,21 +20,23 @@ import uk.co.acuminous.julez.InMemoryResultRecorder;
 import uk.co.acuminous.julez.ResultRecorder;
 import uk.co.acuminous.julez.Scenario;
 
-public class JBehavePerformanceTest {
+public class JBehavePerformanceTest extends WebTestCase {
 
-    private static final int MAX_THROUGHPUT = 10;
+    private static final int MAX_THROUGHPUT = 50;
     private static final int TEST_DURATION = 15;
 
     @Test
     public void testTheSystemSupportsTheRequiredNumberOfJBehaveScenariosPerSecond() {
 
         ResultRecorder recorder = new InMemoryResultRecorder();
-        ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(new JBehaveScenario("scenario1.txt", recorder), MAX_THROUGHPUT, TEST_DURATION);
+        JBehaveScenario scenario = new JBehaveScenario("scenario1.txt", recorder);
+        ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);
+        concurrentTestRunner.useNumberOfWorkers(15);
         concurrentTestRunner.run();
 
-        assertTrue(String.format("Recorded %d successes", recorder.successCount()), recorder.successCount() >= 1);
-        assertTrue(String.format("Recorded %d failures", recorder.failureCount()), recorder.failureCount() <= 5);
-        assertTrue(String.format("Actual throughput: %d scenarios per second", concurrentTestRunner.actualThroughput()), concurrentTestRunner.actualThroughput() >= 2);
+        assertMinPasses(1, recorder.successCount());
+        assertMaxFailures(5, recorder.failureCount());
+        assertThroughput(20, concurrentTestRunner.actualThroughput());
     }
 
     class JBehaveScenario implements Scenario {

@@ -1,6 +1,8 @@
 package examples;
 
-import static org.junit.Assert.assertTrue;
+import static uk.co.acuminous.julez.PerformanceAssert.assertMaxFailures;
+import static uk.co.acuminous.julez.PerformanceAssert.assertMinPasses;
+import static uk.co.acuminous.julez.PerformanceAssert.assertThroughput;
 
 import org.junit.Test;
 
@@ -12,21 +14,22 @@ import uk.co.acuminous.julez.Scenario;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-public class WebPerformanceTest {
+public class WebPerformanceTest extends WebTestCase {
 
-    private static final int MAX_THROUGHPUT = 10;
+    private static final int MAX_THROUGHPUT = 100;
     private static final int TEST_DURATION = 15;
-
+    
     @Test
     public void testTheSystemCanSupportTheRequiredNumberOfSimpleWebScenariosPerSecond() {
 
         ResultRecorder recorder = new InMemoryResultRecorder();
-        ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(new SimpleWebScenario(recorder), MAX_THROUGHPUT, TEST_DURATION);
+        SimpleWebScenario scenario = new SimpleWebScenario(recorder);
+        ConcurrentTestRunner concurrentTestRunner = new ConcurrentTestRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.run();
 
-        assertTrue(String.format("Recorded %d successes", recorder.successCount()), recorder.successCount() >= 1);
-        assertTrue(String.format("Recorded %d failures", recorder.failureCount()), recorder.failureCount() <= 5);
-        assertTrue(String.format("Actual throughput: %d scenarios per second", concurrentTestRunner.actualThroughput()), concurrentTestRunner.actualThroughput() >= 5);
+        assertMinPasses(1, recorder.successCount());
+        assertMaxFailures(5, recorder.failureCount());
+        assertThroughput(50, concurrentTestRunner.actualThroughput());
     }
 
     class SimpleWebScenario implements Scenario {
@@ -44,7 +47,7 @@ public class WebPerformanceTest {
             webClient.setJavaScriptEnabled(false);
 
             try {
-                HtmlPage page = webClient.getPage("http://www.bbc.co.uk/news");
+                HtmlPage page = webClient.getPage("http://localhost:8080");
                 if (page.getWebResponse().getStatusCode() != 200) {
                     recorder.fail(String.valueOf(page.getWebResponse().getStatusCode()));
                 } else {

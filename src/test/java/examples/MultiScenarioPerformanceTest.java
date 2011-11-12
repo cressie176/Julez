@@ -1,6 +1,6 @@
 package examples;
 
-import static org.junit.Assert.assertTrue;
+import static uk.co.acuminous.julez.PerformanceAssert.assertThroughput;
 
 import org.junit.Test;
 
@@ -22,11 +22,8 @@ public class MultiScenarioPerformanceTest {
         MultiConcurrentTestRunner multiTestRunner = new MultiConcurrentTestRunner(runner1, runner2);
         multiTestRunner.run();
 
-        int throughput1 = runner1.actualThroughput();
-        assertTrue(String.format("Actual throughput: %d scenarios per second", throughput1), throughput1 >= 20);
-        
-        int throughput2 = runner2.actualThroughput();
-        assertTrue(String.format("Actual throughput: %d scenarios per second", throughput2), throughput2 >= 20);
+        assertThroughput(20, runner1.actualThroughput());
+        assertThroughput(20, runner2.actualThroughput());
     }
 
     class HelloWorldScenario implements Scenario {
