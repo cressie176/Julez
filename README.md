@@ -5,7 +5,7 @@ You write a "Scenario" using your test tool of choice (junit, htmlunit, jbehave,
 then use Julez to run the scenario repeatedly from multiple threads at a capped rate. e.g.
 
     @Test(timeout=TEST_DURATION * 2000)
-	public void testSimpleScenario() {
+	public void demonstrateASimplePerformanceTest() {
 	
 		Scenario scenario = new HelloWorldScenario();
 	    ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, DURATION);
@@ -60,8 +60,8 @@ Want to write your scenarios using JBehave instead? Here's how...
 
 You can also run different scenarios in parallel using the MultiConcurrentScenarioRunner... 
 
-    @Test(timeout=TEST_DURATION * 2000)
-	public void testParallelScenarios() {
+    @Test(timeout=TEST_TIMEOUT)
+    public void demonstrateMultipleScenariosInParellel() throws Throwable {
 	
 	    ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
 	    ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner(new GoodbyeWorldScenario(), MAX_THROUGHPUT, DURATION);
@@ -75,8 +75,8 @@ You can also run different scenarios in parallel using the MultiConcurrentScenar
 	
 You can record results asynchronously to a database for trending / reports	
 
-    @Test(timeout=TEST_DURATION * 5000)
-    public void demonstrateARealisticPerformanceTest() {
+    @Test(timeout=TEST_TIMEOUT)    
+    public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {
 
         JmsResultListener resultListener = new JmsResultListener(connectionFactory, resultRepository).listen();                
         

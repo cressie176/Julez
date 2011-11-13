@@ -24,7 +24,8 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
 
     private static final int MAX_THROUGHPUT = 50;
     private static final int TEST_DURATION = 15;
-    
+    private static final int TEST_TIMEOUT = TEST_DURATION * 5000;
+
     private ActiveMQConnectionFactory connectionFactory;
     private DataSource dataSource;
     private JdbcResultRepository resultRepository;
@@ -49,8 +50,8 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
         TestUtils.nukeBroker();
     }
     
-    @Test(timeout=TEST_DURATION * 5000)
-    public void demonstrateHowToRecordScenarioResultsAsynchronouslyToADatabase() {
+    @Test(timeout=TEST_TIMEOUT)    
+    public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {
         
         JmsResultRecorder recorder = new JmsResultRecorder(connectionFactory, new DefaultResultFactory("Scenario 2"));
         JBehaveScenario scenario = new JBehaveScenario("scenario2.txt", new Scenario2Steps(recorder));

@@ -14,8 +14,9 @@ public class WebPerformanceTest extends WebTestCase {
 
     private static final int MAX_THROUGHPUT = 100;
     private static final int TEST_DURATION = 15;
-    
-    @Test
+    private static final int TEST_TIMEOUT = TEST_DURATION * 2000;
+
+    @Test(timeout=TEST_TIMEOUT)
     public void demonstrateASimpleWebPerformanceTest() {
 
         SimpleWebScenario scenario = new SimpleWebScenario();

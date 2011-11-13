@@ -11,8 +11,9 @@ public class SimplePerformanceTest {
 
     private static final int MAX_THROUGHPUT = 100;
     private static final int TEST_DURATION = 15;
+    private static final int TEST_TIMEOUT = TEST_DURATION * 2000;
 
-    @Test
+    @Test(timeout=TEST_TIMEOUT)
     public void demonstrateASimplePerformanceTest() {
 
         ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);

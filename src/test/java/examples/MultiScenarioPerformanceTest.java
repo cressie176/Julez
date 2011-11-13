@@ -12,9 +12,10 @@ public class MultiScenarioPerformanceTest {
 
     private static final int MAX_THROUGHPUT = 50;
     private static final int TEST_DURATION = 15;
+    private static final int TEST_TIMEOUT = TEST_DURATION * 2000;
 
-    @Test
-    public void demonstrateHowToRunMultipleScenariosInParellel() throws Throwable {
+    @Test(timeout=TEST_TIMEOUT)
+    public void demonstrateMultipleScenariosInParellel() throws Throwable {
 
         ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
         ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner(new GoodbyeWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);

@@ -17,9 +17,10 @@ public class ResultRecordingPerformanceTest {
 
     private static final int MAX_THROUGHPUT = 100;
     private static final int TEST_DURATION = 15;
+    private static final int TEST_TIMEOUT = TEST_DURATION * 2000;
 
-    @Test
-    public void demonstrateHowToRecordScenarioResults() {
+    @Test(timeout=TEST_TIMEOUT)
+    public void demonstrateRecordingScenarioResults() {
 
         ResultFactory resultFactory = new DefaultResultFactory("Some Scenario");
         ResultRecorder recorder = new InMemoryResultRecorder(resultFactory);
