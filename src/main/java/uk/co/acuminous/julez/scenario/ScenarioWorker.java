@@ -1,14 +1,14 @@
-package uk.co.acuminous.julez;
+package uk.co.acuminous.julez.scenario;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.DelayQueue;
 
-public class QueueWorker implements Runnable {
+public class ScenarioWorker implements Runnable {
 
     private DelayQueue<DelayedScenario> queue;
     private CountDownLatch latch;
 
-    public QueueWorker(DelayQueue<DelayedScenario> queue, CountDownLatch latch) {
+    public ScenarioWorker(DelayQueue<DelayedScenario> queue, CountDownLatch latch) {
         this.queue = queue;
         this.latch = latch;
     }

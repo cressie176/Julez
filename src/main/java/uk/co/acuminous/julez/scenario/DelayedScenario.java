@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez;
+package uk.co.acuminous.julez.scenario;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 

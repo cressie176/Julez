@@ -1,24 +1,24 @@
 package examples;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static uk.co.acuminous.julez.PerformanceAssert.assertMaxFailures;
-import static uk.co.acuminous.julez.PerformanceAssert.assertMinPasses;
-import static uk.co.acuminous.julez.PerformanceAssert.assertThroughput;
+import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import java.util.List;
 
 import org.jbehave.core.configuration.MostUsefulConfiguration;
 import org.jbehave.core.embedder.Embedder;
 import org.jbehave.core.embedder.SilentEmbedderMonitor;
+import org.jbehave.core.embedder.Embedder.RunningStoriesFailed;
 import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.InstanceStepsFactory;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.InMemoryResultRecorder;
-import uk.co.acuminous.julez.ResultRecorder;
-import uk.co.acuminous.julez.Scenario;
+import examples.jbehave.Scenario1Steps;
+
+import uk.co.acuminous.julez.scenario.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.scenario.Scenario;
+import uk.co.acuminous.julez.test.WebTestCase;
 
 public class JBehavePerformanceTest extends WebTestCase {
 
@@ -28,39 +28,35 @@ public class JBehavePerformanceTest extends WebTestCase {
     @Test
     public void testTheSystemSupportsTheRequiredNumberOfJBehaveScenariosPerSecond() {
 
-        ResultRecorder recorder = new InMemoryResultRecorder();
-        JBehaveScenario scenario = new JBehaveScenario("scenario1.txt", recorder);
+        JBehaveScenario scenario = new JBehaveScenario("scenario1.txt");
         ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.useNumberOfWorkers(15);
         concurrentTestRunner.run();
 
-        assertMinPasses(1, recorder.successCount());
-        assertMaxFailures(5, recorder.failureCount());
-        assertThroughput(20, concurrentTestRunner.actualThroughput());
+        assertMinimumThroughput(20, concurrentTestRunner.actualThroughput());
     }
 
     class JBehaveScenario implements Scenario {
 
-        ResultRecorder recorder;
         private final String scenario;
 
-        public JBehaveScenario(String scenario, ResultRecorder recorder) {
+        public JBehaveScenario(String scenario) {
             this.scenario = scenario;
-            this.recorder = recorder;
         }
 
         public void execute() {
-            try {
-                Embedder embedder = new Embedder();
-                embedder.useEmbedderMonitor(new SilentEmbedderMonitor(null));
-                embedder.useConfiguration(new MostUsefulConfiguration().usePendingStepStrategy(new FailingUponPendingStep()));
-                embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), new JBehaveSteps(recorder)).createCandidateSteps());
+            Embedder embedder = new Embedder();
+            embedder.useEmbedderMonitor(new SilentEmbedderMonitor(null));
+            embedder.useConfiguration(new MostUsefulConfiguration().usePendingStepStrategy(new FailingUponPendingStep()));
+            embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), new Scenario1Steps()).createCandidateSteps());
 
-                List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(JBehavePerformanceTest.class), scenario, "");
+            List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(JBehavePerformanceTest.class), scenario, "");
+            
+            try {
                 embedder.runStoriesAsPaths(storyPaths);
-            } catch (Throwable t) {
-                recorder.fail(t.getMessage());
-            }
+            } catch (RunningStoriesFailed e) {
+                // Test probably finished leaving some stories queued
+            }            
         }
     }
 }

@@ -1,4 +1,4 @@
-package examples;
+package uk.co.acuminous.julez.test;
 
 import java.io.IOException;
 

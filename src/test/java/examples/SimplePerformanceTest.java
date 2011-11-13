@@ -1,11 +1,11 @@
 package examples;
 
-import static uk.co.acuminous.julez.PerformanceAssert.assertThroughput;
+import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.Scenario;
+import uk.co.acuminous.julez.scenario.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.scenario.Scenario;
 
 public class SimplePerformanceTest {
 
@@ -18,7 +18,7 @@ public class SimplePerformanceTest {
         ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.run();
         
-        assertThroughput(20, concurrentTestRunner.actualThroughput());
+        assertMinimumThroughput(20, concurrentTestRunner.actualThroughput());
     }
 
     class HelloWorldScenario implements Scenario {

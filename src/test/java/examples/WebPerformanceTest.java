@@ -1,18 +1,14 @@
 package examples;
 
-import static uk.co.acuminous.julez.PerformanceAssert.assertMaxFailures;
-import static uk.co.acuminous.julez.PerformanceAssert.assertMinPasses;
-import static uk.co.acuminous.julez.PerformanceAssert.assertThroughput;
+import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.InMemoryResultRecorder;
-import uk.co.acuminous.julez.ResultRecorder;
-import uk.co.acuminous.julez.Scenario;
+import uk.co.acuminous.julez.scenario.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.scenario.Scenario;
+import uk.co.acuminous.julez.test.WebTestCase;
 
 import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class WebPerformanceTest extends WebTestCase {
 
@@ -22,23 +18,14 @@ public class WebPerformanceTest extends WebTestCase {
     @Test
     public void testTheSystemCanSupportTheRequiredNumberOfSimpleWebScenariosPerSecond() {
 
-        ResultRecorder recorder = new InMemoryResultRecorder();
-        SimpleWebScenario scenario = new SimpleWebScenario(recorder);
+        SimpleWebScenario scenario = new SimpleWebScenario();
         ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.run();
 
-        assertMinPasses(1, recorder.successCount());
-        assertMaxFailures(5, recorder.failureCount());
-        assertThroughput(50, concurrentTestRunner.actualThroughput());
+        assertMinimumThroughput(30, concurrentTestRunner.actualThroughput());
     }
 
     class SimpleWebScenario implements Scenario {
-
-        ResultRecorder recorder;
-
-        SimpleWebScenario(ResultRecorder recorder) {
-            this.recorder = recorder;
-        }
 
         public void execute() {
 
@@ -47,14 +34,9 @@ public class WebPerformanceTest extends WebTestCase {
             webClient.setJavaScriptEnabled(false);
 
             try {
-                HtmlPage page = webClient.getPage("http://localhost:8080");
-                if (page.getWebResponse().getStatusCode() != 200) {
-                    recorder.fail(String.valueOf(page.getWebResponse().getStatusCode()));
-                } else {
-                    recorder.pass();
-                }
+                webClient.getPage("http://localhost:8080");
             } catch (Exception e) {
-                recorder.fail(e.getMessage());
+                // See recorder example for how to handle errors
             } finally {
                 webClient.closeAllWindows();
             }

@@ -1,12 +1,12 @@
 package examples;
 
-import static uk.co.acuminous.julez.PerformanceAssert.assertThroughput;
+import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.MultiConcurrentScenarioRunner;
-import uk.co.acuminous.julez.Scenario;
+import uk.co.acuminous.julez.scenario.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.scenario.MultiConcurrentScenarioRunner;
+import uk.co.acuminous.julez.scenario.Scenario;
 
 public class MultiScenarioPerformanceTest {
 
@@ -22,8 +22,8 @@ public class MultiScenarioPerformanceTest {
         MultiConcurrentScenarioRunner multiTestRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
         multiTestRunner.run();
 
-        assertThroughput(20, runner1.actualThroughput());
-        assertThroughput(20, runner2.actualThroughput());
+        assertMinimumThroughput(20, runner1.actualThroughput());
+        assertMinimumThroughput(20, runner2.actualThroughput());
     }
 
     class HelloWorldScenario implements Scenario {
