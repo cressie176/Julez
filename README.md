@@ -4,7 +4,7 @@ An extremely lightweight toolkit for running simple performance tests via jUnit.
 You write a "Scenario" using your test tool of choice (junit, htmlunit, jbehave, selenium, etc), 
 then use Julez to run the scenario repeatedly from multiple threads at a capped rate. e.g.
 
-    @Test(timeout=TEST_DURATION * 2000)
+    @Test(timeout=TEST_TIMEOUT)
 	public void demonstrateASimplePerformanceTest() {
 	
 		Scenario scenario = new HelloWorldScenario();
@@ -22,7 +22,7 @@ then use Julez to run the scenario repeatedly from multiple threads at a capped 
 
 Want to write your scenarios using JBehave instead? Here's how...
 
-    @Test(timeout=TEST_DURATION * 2000)
+    @Test(timeout=TEST_TIMEOUT)
 	public void testJBehaveScenario() {
 	
         JBehaveScenario scenario = new JBehaveScenario("scenario1.txt", new Scenario1Steps());
