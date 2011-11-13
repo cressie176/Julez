@@ -7,7 +7,8 @@ then use Julez to run the scenario repeatedly from multiple threads at a capped 
     @Test(timeout=TEST_DURATION * 2000)
 	public void testSimpleScenario() {
 	
-	    ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
+		Scenario scenario = new HelloWorldScenario();
+	    ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, DURATION);
 	    runner.run();
 	    
 	    assertMinimumThroughput(20, runner.actualThroughput());
@@ -24,35 +25,38 @@ Want to write your scenarios using JBehave instead? Here's how...
     @Test(timeout=TEST_DURATION * 2000)
 	public void testJBehaveScenario() {
 	
-	    ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(new JBehaveScenario("scenario.txt"), MAX_THROUGHPUT, DURATION);
+        JBehaveScenario scenario = new JBehaveScenario("scenario1.txt", new Scenario1Steps());
+	    ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, DURATION);
 	    runner.run();
 	    
 	    assertThroughput(2, runner.actualThroughput());
 	}
 	
-    class JBehaveScenario implements Scenario {
-
-        private final String scenario;
-
-        public JBehaveScenario(String scenario) {
-            this.scenario = scenario;
-        }
-
-        public void execute() {
-			Embedder embedder = new Embedder();
-            embedder.useEmbedderMonitor(new SilentEmbedderMonitor(null));
-            embedder.useConfiguration(new MostUsefulConfiguration().usePendingStepStrategy(new FailingUponPendingStep()));
-            embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), new JBehaveSteps()).createCandidateSteps());
-
-            List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(JBehavePerformanceTest.class), scenario, "");
-
-            try {
-                embedder.runStoriesAsPaths(storyPaths);
-            } catch (RunningStoriesFailed e) {
-                // Test probably finished leaving some stories queued
-            }           
-        }
-    }	
+	public class JBehaveScenario implements Scenario {
+	
+	    private final String scenario;
+	    private final Object[] steps;
+	
+	    public JBehaveScenario(String scenario, Object... steps) {
+	        this.scenario = scenario;
+	        this.steps = steps;
+	    }
+	
+	    public void execute() {
+	        Embedder embedder = new Embedder();
+	        embedder.useEmbedderMonitor(new SilentEmbedderMonitor(null));
+	        embedder.useConfiguration(new MostUsefulConfiguration().usePendingStepStrategy(new FailingUponPendingStep()));
+	        embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), steps).createCandidateSteps());
+	
+	        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), scenario, "");
+	        
+	        try {
+	            embedder.runStoriesAsPaths(storyPaths);
+	        } catch (RunningStoriesFailed e) {
+	            // Test probably finished leaving some stories queued
+	        }
+	    }
+	}	
 
 You can also run different scenarios in parallel using the MultiConcurrentScenarioRunner... 
 
