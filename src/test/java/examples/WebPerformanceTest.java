@@ -23,7 +23,7 @@ public class WebPerformanceTest extends WebTestCase {
         ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.run();
 
-        assertMinimumThroughput(30, concurrentTestRunner.actualThroughput());
+        assertMinimumThroughput(14, concurrentTestRunner.actualThroughput());
     }
 
     class SimpleWebScenario implements Scenario {

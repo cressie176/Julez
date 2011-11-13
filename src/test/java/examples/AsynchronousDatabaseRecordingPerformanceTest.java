@@ -14,16 +14,19 @@ import uk.co.acuminous.julez.recorder.DefaultResultFactory;
 import uk.co.acuminous.julez.recorder.JmsResultRecorder;
 import uk.co.acuminous.julez.result.JdbcResultRepository;
 import uk.co.acuminous.julez.result.JmsResultListener;
+import uk.co.acuminous.julez.result.ResultStatus;
 import uk.co.acuminous.julez.scenario.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveScenario;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 import examples.jbehave.Scenario2Steps;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+
 
 public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
 
-    private static final int MAX_THROUGHPUT = 50;
-    private static final int TEST_DURATION = 15;
+    private static final int MAX_THROUGHPUT = 20;
+    private static final int TEST_DURATION = 30;
     private static final int TEST_TIMEOUT = TEST_DURATION * 5000;
 
     private ActiveMQConnectionFactory connectionFactory;
@@ -41,29 +44,30 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
         resultRepository = new JdbcResultRepository(dataSource);
         resultRepository.ddl(); 
         
-        resultListener = new JmsResultListener(connectionFactory, resultRepository).listen();
+        resultListener = new JmsResultListener(connectionFactory, resultRepository).listen();        
     }
     
     @After
     public void nuke() {
-        TestUtils.nukeDatabase();
         TestUtils.nukeBroker();
+        TestUtils.nukeDatabase();        
     }
     
     @Test(timeout=TEST_TIMEOUT)    
     public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {
         
         JmsResultRecorder recorder = new JmsResultRecorder(connectionFactory, new DefaultResultFactory("Scenario 2"));
-        JBehaveScenario scenario = new JBehaveScenario("scenario2.txt", new Scenario2Steps(recorder));
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);
+        JBehaveScenario scenario = new JBehaveScenario(codeLocationFromClass(this.getClass()), "scenario2.txt", new Scenario2Steps(recorder));
         
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);        
         runner.run();
+        
         recorder.shutdownGracefully();        
         resultListener.shutdownGracefully();
         
-        assertMinimumThroughput(10, runner.actualThroughput());
-        assertPassMark(90, recorder.percentage()); 
-
-        resultRepository.dump();
+        resultRepository.dump(ResultStatus.FAIL);
+                
+        assertMinimumThroughput(5, runner.actualThroughput());
+        assertPassMark(95, recorder.percentage()); 
     }       
 }

@@ -8,11 +8,9 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.jms.JMSException;
-import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.TextMessage;
 
-import org.apache.activemq.broker.BrokerService;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -28,27 +26,21 @@ import com.google.gson.Gson;
 
 public class JmsResultRecorderTest {
 
-    private BrokerService broker;    
     private QueueConnectionFactory connectionFactory;
-    private QueueConnection testConnection;
     private ResultRecorder recorder;
 
     @Before
     public void init() throws Exception {
                 
-        broker = TestUtils.createBroker();
+        TestUtils.createBroker();
         connectionFactory = TestUtils.getConnectionFactory();        
 
-        testConnection = connectionFactory.createQueueConnection();
-        testConnection.start();
-        
         recorder = new JmsResultRecorder(connectionFactory, new TestResultFactory());
     }
     
     @After
-    public void tidyUp() throws Exception {
-        testConnection.close();
-        broker.stop();        
+    public void nuke() throws Exception {
+        TestUtils.nukeBroker();
     }
     
     @Test
@@ -85,11 +77,29 @@ public class JmsResultRecorderTest {
     public void countsNumberOfPasses() throws Exception {
         for (int i = 0; i < 10; i++) {
             recorder.pass(String.valueOf(i));
+        }
+        
+        assertEquals(10, recorder.passCount());
+        
+        for (int i = 0; i < 5; i++) {
+            recorder.pass(String.valueOf(i));
+        }
+
+        assertEquals(15, recorder.passCount());        
+    }    
+    
+    @Test
+    public void calulcatesThePercentage() {
+        for (int i = 0; i < 10; i++) {
             recorder.pass();
         }
         
-        assertEquals(20, recorder.passCount());
-    }    
+        for (int i = 0; i < 5; i++) {
+            recorder.fail("");
+        }        
+        
+        assertEquals(66, recorder.percentage());        
+    }
     
     @Test
     public void recorderIsThreadSafe() throws Exception {

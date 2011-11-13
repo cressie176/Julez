@@ -7,7 +7,7 @@ import org.mortbay.jetty.servlet.Context;
 import org.mortbay.jetty.servlet.ServletHolder;
 
 
-public class WebTestCase {
+public abstract class WebTestCase {
 
     private static Server server;    
     

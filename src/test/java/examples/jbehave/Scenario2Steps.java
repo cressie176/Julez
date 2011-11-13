@@ -5,19 +5,15 @@ import org.jbehave.core.annotations.When;
 
 import uk.co.acuminous.julez.recorder.ResultRecorder;
 
-import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.Page;
 import com.gargoylesoftware.htmlunit.html.HtmlElement;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class Scenario2Steps extends WebSteps {
 
-    private final ResultRecorder resultRecorder;    
-    private final WebClient webClient;
-    private HtmlPage page;    
-
-    public Scenario2Steps(ResultRecorder recorder) {
-        this.resultRecorder = recorder;
-        this.webClient = getWebClient();
+    private final ResultRecorder resultRecorder;
+    
+    public Scenario2Steps(ResultRecorder resultsRecorder) {
+        this.resultRecorder = resultsRecorder;
     }
 
     @When("I open the demo page")
@@ -28,8 +24,8 @@ public class Scenario2Steps extends WebSteps {
     @When("search for $query")
     public void searchFor(String query) {
         try {
-            page.getElementById("query").setAttribute("value", query);
-            click(page.getElementById("search"));
+            currentPage().getElementById("query").setAttribute("value", query);
+            click(currentPage().getElementById("search"));
         } catch (Exception e) {
             resultRecorder.fail(e.getMessage());                        
             throw new RuntimeException(e);
@@ -39,12 +35,11 @@ public class Scenario2Steps extends WebSteps {
     @Then("record success")
     public void recordSuccess() {        
         resultRecorder.pass();
-        webClient.closeAllWindows();
     }
 
     private void get(String url) {
         try {
-            page = webClient.getPage(url);
+            setCurrentPage(getWebClient().<Page>getPage(url));
         } catch (Exception e) {
             resultRecorder.fail(e.getMessage());            
             throw new RuntimeException(e);            
@@ -52,20 +47,22 @@ public class Scenario2Steps extends WebSteps {
         
         failIfNot200();       
     }
-    
+
     private void click(HtmlElement element) {
         try {
-            page = element.click();
+            setCurrentPage(element.click());
         } catch (Exception e) {
             resultRecorder.fail(e.getMessage());
+          throw new RuntimeException(e);                        
         }
         
         failIfNot200();
     }    
     
     private void failIfNot200() {
-        if (page.getWebResponse().getStatusCode() != 200) {
-            resultRecorder.fail(String.valueOf(page.getWebResponse().getStatusCode()));
+        if (currentPage().getWebResponse().getStatusCode() != 200) {
+            resultRecorder.fail(String.valueOf(currentPage().getWebResponse().getStatusCode()));
+            throw new RuntimeException("Non 200 Response Code");
         }
     }
 }

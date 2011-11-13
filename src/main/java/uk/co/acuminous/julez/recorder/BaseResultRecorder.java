@@ -16,7 +16,7 @@ public abstract class BaseResultRecorder implements ResultRecorder {
         int passCount = passCount();
         int failCount = failureCount();        
         int totalCount = passCount + failCount;
-        return totalCount > 0 ? passCount / totalCount * 100 : 0;
+        return totalCount > 0 ? (passCount * 100) / totalCount : 0;
     }
     
     @Override

@@ -29,13 +29,13 @@ public class MultiScenarioPerformanceTest {
 
     class HelloWorldScenario implements Scenario {
         public void execute() {
-            System.out.println("Hello World");
+            System.out.print("Hello World ");
         }
     }
 
     class GoodbyeWorldScenario implements Scenario {
         public void execute() {
-            System.out.println("Goodbye World");
+            System.out.print("Goodbye World ");
         }
     }
 }

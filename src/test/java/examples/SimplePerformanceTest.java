@@ -24,7 +24,7 @@ public class SimplePerformanceTest {
 
     class HelloWorldScenario implements Scenario {
         public void execute() {
-            System.out.println("Hello World");
+            System.out.print("Hello World ");
         }
     }
 }

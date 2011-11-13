@@ -59,6 +59,13 @@ public class JdbcResultRepository implements ResultRepository {
             System.out.println(result);
         }        
     }
+    
+    @Override
+    public void dump(ResultStatus status) {
+        for(Result result : jdbcTemplate.query("SELECT * FROM result WHERE status = ? ORDER BY timestamp DESC", new ResultRowMapper(), status.name())) {
+            System.out.println(result);
+        }         
+    }
 
     class ResultRowMapper implements RowMapper<Result> {
         @Override

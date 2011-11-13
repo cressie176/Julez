@@ -34,10 +34,12 @@ Want to write your scenarios using JBehave instead? Here's how...
 	
 	public class JBehaveScenario implements Scenario {
 	
+	    private final URL codeLocation;    
 	    private final String scenario;
 	    private final Object[] steps;
 	
-	    public JBehaveScenario(String scenario, Object... steps) {
+	    public JBehaveScenario(URL codeLocation, String scenario, Object... steps) {
+	        this.codeLocation = codeLocation;
 	        this.scenario = scenario;
 	        this.steps = steps;
 	    }
@@ -45,16 +47,16 @@ Want to write your scenarios using JBehave instead? Here's how...
 	    public void execute() {
 	        Embedder embedder = new Embedder();
 	        embedder.useEmbedderMonitor(new SilentEmbedderMonitor(null));
+	        embedder.embedderControls().doIgnoreFailureInStories(true);
 	        embedder.useConfiguration(new MostUsefulConfiguration().usePendingStepStrategy(new FailingUponPendingStep()));
 	        embedder.useCandidateSteps(new InstanceStepsFactory(embedder.configuration(), steps).createCandidateSteps());
 	
-	        List<String> storyPaths = new StoryFinder().findPaths(codeLocationFromClass(this.getClass()), scenario, "");
-	        
-	        try {
-	            embedder.runStoriesAsPaths(storyPaths);
-	        } catch (RunningStoriesFailed e) {
-	            // Test probably finished leaving some stories queued
+	        List<String> storyPaths = new StoryFinder().findPaths(codeLocation, scenario, "");
+	        if (storyPaths.isEmpty()) {
+	            throw new RuntimeException(String.format("Cannot find story for %s", scenario));
 	        }
+	        
+	        embedder.runStoriesAsPaths(storyPaths);
 	    }
 	}	
 
@@ -77,20 +79,21 @@ You can record results asynchronously to a database for trending / reports
 
     @Test(timeout=TEST_TIMEOUT)    
     public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {
-
-        JmsResultListener resultListener = new JmsResultListener(connectionFactory, resultRepository).listen();                
         
-        JmsResultRecorder resultRecorder = new JmsResultRecorder(connectionFactory, new DefaultResultFactory("Scenario 2"));
-        JBehaveScenario scenario = new JBehaveScenario("scenario2.txt", resultRecorder);
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);
+        JmsResultRecorder recorder = new JmsResultRecorder(connectionFactory, new DefaultResultFactory("Scenario 2"));
+        JBehaveScenario scenario = new JBehaveScenario(codeLocationFromClass(this.getClass()), "scenario2.txt", new Scenario2Steps(recorder));
         
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);        
         runner.run();
-        resultRecorder.shutdownGracefully();        
+        
+        recorder.shutdownGracefully();        
         resultListener.shutdownGracefully();
         
-        assertMinimumThroughput(10, runner.actualThroughput());
-        assertPassMark(90, recorder.percentage()); 
-    } 
+        resultRepository.dump(ResultStatus.FAIL);
+                
+        assertMinimumThroughput(5, runner.actualThroughput());
+        assertPassMark(95, recorder.percentage()); 
+    }
 
 Best of all, because they're just junit tests you can schedule them from your CI environment.
 

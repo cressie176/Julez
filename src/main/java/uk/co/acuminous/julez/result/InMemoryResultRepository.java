@@ -30,4 +30,13 @@ public class InMemoryResultRepository implements ResultRepository {
         }
     }
 
+    @Override
+    public void dump(ResultStatus status) {
+        for (Result result : results.values()) {
+            if (status == result.getStatus()) {
+                System.out.println(result);
+            }
+        }
+    }
+
 }
