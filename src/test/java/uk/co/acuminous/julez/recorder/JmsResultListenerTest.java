@@ -40,7 +40,7 @@ public class JmsResultListenerTest {
     public void resultsAreAddedToTheRepository() throws InterruptedException {
         putAPassOnTheQueue();
                 
-        listener.shutdownWhenQuiet(5);
+        listener.shutdownGracefully();
         
         assertEquals(1, resultRepository.count());
     }
