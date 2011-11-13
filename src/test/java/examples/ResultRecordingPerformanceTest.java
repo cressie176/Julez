@@ -19,7 +19,7 @@ public class ResultRecordingPerformanceTest {
     private static final int TEST_DURATION = 15;
 
     @Test
-    public void testResultsCanBeRecorded() {
+    public void demonstrateHowToRecordScenarioResults() {
 
         ResultFactory resultFactory = new DefaultResultFactory("Some Scenario");
         ResultRecorder recorder = new InMemoryResultRecorder(resultFactory);

@@ -16,7 +16,7 @@ public class WebPerformanceTest extends WebTestCase {
     private static final int TEST_DURATION = 15;
     
     @Test
-    public void testTheSystemCanSupportTheRequiredNumberOfSimpleWebScenariosPerSecond() {
+    public void demonstrateASimpleWebPerformanceTest() {
 
         SimpleWebScenario scenario = new SimpleWebScenario();
         ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);

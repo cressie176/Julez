@@ -20,7 +20,7 @@ import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 import examples.jbehave.Scenario2Steps;
 
-public class TheWholeShebangTest extends WebTestCase {
+public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
 
     private static final int MAX_THROUGHPUT = 50;
     private static final int TEST_DURATION = 15;
@@ -50,7 +50,7 @@ public class TheWholeShebangTest extends WebTestCase {
     }
     
     @Test(timeout=TEST_DURATION * 5000)
-    public void demonstrateARealisticPerformanceTest() {
+    public void demonstrateHowToRecordScenarioResultsAsynchronouslyToADatabase() {
         
         JmsResultRecorder recorder = new JmsResultRecorder(connectionFactory, new DefaultResultFactory("Scenario 2"));
         JBehaveScenario scenario = new JBehaveScenario("scenario2.txt", new Scenario2Steps(recorder));

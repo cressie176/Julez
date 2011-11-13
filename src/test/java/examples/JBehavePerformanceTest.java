@@ -16,7 +16,7 @@ public class JBehavePerformanceTest extends WebTestCase {
     private static final int TEST_DURATION = 15;
 
     @Test
-    public void testTheSystemSupportsTheRequiredNumberOfJBehaveScenariosPerSecond() {
+    public void demonstrateHowToRunASimpleJBehaveScenario() {
 
         JBehaveScenario scenario = new JBehaveScenario("scenario1.txt", new Scenario1Steps());
         ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);

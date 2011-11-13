@@ -13,7 +13,7 @@ public class SimplePerformanceTest {
     private static final int TEST_DURATION = 15;
 
     @Test
-    public void testTheSystemCanSupportTheRequiredNumberOfHelloWorldScenariosPerSecond() {
+    public void demonstrateASimplePerformanceTest() {
 
         ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
         concurrentTestRunner.run();

@@ -14,7 +14,7 @@ public class MultiScenarioPerformanceTest {
     private static final int TEST_DURATION = 15;
 
     @Test
-    public void testTheSystemSupportsRunningDifferentScenariosInParallel() throws Throwable {
+    public void demonstrateHowToRunMultipleScenariosInParellel() throws Throwable {
 
         ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
         ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner(new GoodbyeWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
