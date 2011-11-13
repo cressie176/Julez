@@ -29,7 +29,7 @@ Want to write your scenarios using JBehave instead? Here's how...
 	    ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, DURATION);
 	    runner.run();
 	    
-	    assertThroughput(2, runner.actualThroughput());
+	    assertMinimumThroughput(2, runner.actualThroughput());
 	}
 	
 	public class JBehaveScenario implements Scenario {
@@ -69,8 +69,8 @@ You can also run different scenarios in parallel using the MultiConcurrentScenar
 	    MultiConcurrentScenarioRunner multiTestRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
 	    multiTestRunner.run();
 	
-	    assertThroughput(20, runner1.actualThroughput());
-	    assertThroughput(20, runner2.actualThroughput());	
+	    assertMinimumThroughput(20, runner1.actualThroughput());
+	    assertMinimumThroughput(20, runner2.actualThroughput());	
 	}
 	
 You can record results asynchronously to a database for trending / reports	
