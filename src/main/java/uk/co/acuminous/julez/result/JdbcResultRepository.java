@@ -17,7 +17,7 @@ public class JdbcResultRepository implements ResultRepository {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }
     
-    public void ddl() {
+    public JdbcResultRepository ddl() {
         jdbcTemplate.execute(
             "CREATE TABLE result (" +
             "id VARCHAR(36) NOT NULL, " +
@@ -29,6 +29,7 @@ public class JdbcResultRepository implements ResultRepository {
             "description VARCHAR(4096) NULL, " +
             "PRIMARY KEY (id)" +
         ")");
+        return this;
     }
 
     @Override

@@ -7,7 +7,7 @@ import java.util.concurrent.TimeUnit;
 
 import org.joda.time.DateTime;
 
-public class DelayedScenario implements Scenario, Delayed {
+public class DelayedScenario extends BaseScenario implements Delayed {
 
     private final DateTime trigger;
     private final Scenario scenario;
@@ -17,12 +17,8 @@ public class DelayedScenario implements Scenario, Delayed {
         this.scenario = scenario;
     }
 
-    public void execute() {
-        try {
-            scenario.execute();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
+    public void run() {
+        scenario.run();
     }
 
     public int compareTo(Delayed other) {
@@ -30,7 +26,7 @@ public class DelayedScenario implements Scenario, Delayed {
     }
 
     public long getDelay(TimeUnit timeUnit) {
-        Long millis = trigger.getMillis() - new DateTime().getMillis();
+        Long millis = trigger.getMillis() - System.currentTimeMillis();
         return timeUnit.convert(millis, MILLISECONDS);
     }
 }

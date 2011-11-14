@@ -1,7 +1,7 @@
 package examples;
 
-import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumPasses;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
+import static uk.co.acuminous.julez.util.PerformanceAssert.assertPassMark;
 
 import org.apache.commons.lang.math.RandomUtils;
 import org.junit.Test;
@@ -10,44 +10,48 @@ import uk.co.acuminous.julez.recorder.DefaultResultFactory;
 import uk.co.acuminous.julez.recorder.InMemoryResultRecorder;
 import uk.co.acuminous.julez.recorder.ResultRecorder;
 import uk.co.acuminous.julez.result.ResultFactory;
-import uk.co.acuminous.julez.scenario.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.scenario.Scenario;
+import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.runner.ScenarioRunner;
+import uk.co.acuminous.julez.scenario.BaseScenario;
+import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.test.TestUtils;
 
 public class ResultRecordingPerformanceTest {
 
-    private static final int MAX_THROUGHPUT = 100;
-    private static final int TEST_DURATION = 15;
-    private static final int TEST_TIMEOUT = TEST_DURATION * 2000;
-
-    @Test(timeout=TEST_TIMEOUT)
+    @Test
     public void demonstrateRecordingScenarioResults() {
 
         ResultFactory resultFactory = new DefaultResultFactory("Some Scenario");
-        ResultRecorder recorder = new InMemoryResultRecorder(resultFactory);
-        ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(new ResultRecordingScenario(recorder), MAX_THROUGHPUT, TEST_DURATION);
-        concurrentTestRunner.run();
-        
-        recorder.shutdownGracefully();
-        
-        assertMinimumThroughput(20, concurrentTestRunner.actualThroughput());
-        assertMinimumPasses(50, recorder.passCount());
+        ResultRecorder resultRecorder = new InMemoryResultRecorder(resultFactory);
+
+        ResultRecordingScenario scenario = new ResultRecordingScenario(resultRecorder);
+        Scenarios scenarios = TestUtils.getScenarios(scenario, 100);
+
+        ScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
+        runner.run();
+
+        resultRecorder.shutdownGracefully();
+
+        assertMinimumThroughput(5000, runner.throughput());
+        assertPassMark(20, resultRecorder.percentage());
     }
 
-    class ResultRecordingScenario implements Scenario {
-        
+    class ResultRecordingScenario extends BaseScenario {
+
         private final ResultRecorder recorder;
 
         public ResultRecordingScenario(ResultRecorder recorder) {
             this.recorder = recorder;
         }
 
-        public void execute() {            
+        public void run() {
             if (RandomUtils.nextBoolean()) {
                 recorder.fail("on noes");
             } else {
                 recorder.pass();
             }
+            notifyComplete();
         }
-    }    
-    
+    }
+
 }

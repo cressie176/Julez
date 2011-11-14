@@ -25,19 +25,14 @@ public class JdbcResultRepositoryTest {
 
     @Test
     public void resultIsAddedToRepository() {
-        Result result = new Result("source", "run", "scenario", 1234, ResultStatus.FAIL, "foo");
-
-        repo.add(result);
-
+        repo.add(aFailure());
         assertEquals(1, repo.count());
     }
 
     @Test
     public void countsAllResultsInRepository() {
-
-        repo.add(new Result("source", "run", "scenario", 1234, ResultStatus.FAIL, "foo"));
-        repo.add(new Result("source", "run", "scenario", 1234, ResultStatus.FAIL, "foo"));
-
+        repo.add(aFailure());
+        repo.add(aFailure());
         assertEquals(2, repo.count());
     }
 
@@ -59,4 +54,9 @@ public class JdbcResultRepositoryTest {
         assertEquals(ResultStatus.FAIL, dbResult.getStatus());
         assertEquals("foo", dbResult.getDescription());
     }
+    
+
+    private Result aFailure() {
+        return new Result("source", "run", "scenario", 1234, ResultStatus.FAIL, "foo");
+    }    
 }

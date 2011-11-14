@@ -5,7 +5,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.jms.JMSException;
 import javax.jms.QueueConnectionFactory;
@@ -17,8 +16,6 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.result.Result;
 import uk.co.acuminous.julez.result.ResultStatus;
-import uk.co.acuminous.julez.scenario.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
@@ -27,7 +24,7 @@ import com.google.gson.Gson;
 public class JmsResultRecorderTest {
 
     private QueueConnectionFactory connectionFactory;
-    private ResultRecorder recorder;
+    private ResultRecorder resultRecorder;
 
     @Before
     public void init() throws Exception {
@@ -35,7 +32,7 @@ public class JmsResultRecorderTest {
         TestUtils.createBroker();
         connectionFactory = TestUtils.getConnectionFactory();        
 
-        recorder = new JmsResultRecorder(connectionFactory, new TestResultFactory());
+        resultRecorder = new JmsResultRecorder(connectionFactory, new TestResultFactory());
     }
     
     @After
@@ -45,21 +42,21 @@ public class JmsResultRecorderTest {
     
     @Test
     public void failuresAreWrittenToTheResultsQueue() throws JMSException, InterruptedException {        
-        recorder.fail("foo");        
+        resultRecorder.fail("foo");        
         Result result = new Gson().fromJson(getOnlyMessage().getText(), Result.class);        
         assertResult(result, ResultStatus.FAIL, "foo");
     } 
         
     @Test
     public void passesAreWrittenToTheResultsQueue() throws Exception {        
-        recorder.pass("bar");        
+        resultRecorder.pass("bar");        
         Result result = new Gson().fromJson(getOnlyMessage().getText(), Result.class);        
         assertResult(result, ResultStatus.PASS, "bar");        
     }
         
     @Test
     public void passesWithoutDescriptionsAreWrittenToTheResultsQueue() throws Exception {
-        recorder.pass();        
+        resultRecorder.pass();        
         Result result = new Gson().fromJson(getOnlyMessage().getText(), Result.class);        
         assertResult(result, ResultStatus.PASS, "");                        
     }
@@ -67,64 +64,38 @@ public class JmsResultRecorderTest {
     @Test
     public void countsNumberOfFailures() throws Exception {
         for (int i = 0; i < 10; i++) {
-            recorder.fail(String.valueOf(i));
+            resultRecorder.fail(String.valueOf(i));
         }
         
-        assertEquals(10, recorder.failureCount());
+        assertEquals(10, resultRecorder.failureCount());
     }    
     
     @Test
     public void countsNumberOfPasses() throws Exception {
         for (int i = 0; i < 10; i++) {
-            recorder.pass(String.valueOf(i));
+            resultRecorder.pass(String.valueOf(i));
         }
         
-        assertEquals(10, recorder.passCount());
+        assertEquals(10, resultRecorder.passCount());
         
         for (int i = 0; i < 5; i++) {
-            recorder.pass(String.valueOf(i));
+            resultRecorder.pass(String.valueOf(i));
         }
 
-        assertEquals(15, recorder.passCount());        
+        assertEquals(15, resultRecorder.passCount());        
     }    
     
     @Test
     public void calulcatesThePercentage() {
         for (int i = 0; i < 10; i++) {
-            recorder.pass();
+            resultRecorder.pass();
         }
         
         for (int i = 0; i < 5; i++) {
-            recorder.fail("");
+            resultRecorder.fail("");
         }        
         
-        assertEquals(66, recorder.percentage());        
-    }
-    
-    @Test
-    public void recorderIsThreadSafe() throws Exception {
-        int scenariosPerSecond = 10;        
-        int testDuration = 10;
-        
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(new Scenario() {
-            AtomicInteger counter = new AtomicInteger();
-            
-            @Override public void execute() {
-                if ((counter.get() % 10) != 0) {
-                    recorder.pass();                        
-                } else {
-                    recorder.fail("foo");
-                }
-                
-                counter.incrementAndGet();
-            }
-        }, scenariosPerSecond, testDuration);
-        
-        runner.run();
-                 
-        assertEquals(scenariosPerSecond * testDuration, getMessages().size());
-        assertEquals((int) (scenariosPerSecond * testDuration * 0.1), recorder.failureCount());
-        assertEquals((int) (scenariosPerSecond * testDuration * 0.9), recorder.passCount());
+        assertEquals(66, resultRecorder.percentage());        
     }
     
     public void recorderBlocksUntilComplete() throws Exception {
@@ -133,7 +104,7 @@ public class JmsResultRecorderTest {
         
         new Thread(new Runnable() {
             @Override public void run() {
-                recorder.shutdownGracefully();  
+                resultRecorder.shutdownGracefully();  
                 latch.countDown();
             }            
         }).start();
@@ -145,8 +116,8 @@ public class JmsResultRecorderTest {
     
     @Test(timeout=2000)
     public void recorderAbortsCompleteAfterTimeout() throws Exception {
-        recorder.pass();
-        recorder.complete(1);
+        resultRecorder.pass();
+        resultRecorder.complete(1);
     }    
 
     private TextMessage getOnlyMessage() {
@@ -160,7 +131,6 @@ public class JmsResultRecorderTest {
         return JmsHelper.browseMessages(connectionFactory, JmsResultRecorder.DEFAULT_QUEUE_NAME);        
     }
       
-
     private void assertResult(Result result, ResultStatus status, String description) {
         assertEquals("Julez", result.getSource());
         assertEquals("ABC", result.getRun());

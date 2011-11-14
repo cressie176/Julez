@@ -24,7 +24,7 @@ public class JmsHelper {
         try {
             connection = connectionFactory.createQueueConnection();
             connection.start();
-        } catch (Exception e) {
+        } catch (JMSException e) {
             new RuntimeException(e);
         }
         return connection;        
@@ -72,8 +72,7 @@ public class JmsHelper {
         } finally {
             JmsHelper.close(session);
         }        
-    }
-    
+    }    
 
     @SuppressWarnings("unchecked")
     public static List<TextMessage> browseMessages(QueueConnectionFactory connectionFactory, String queueName) {

@@ -1,32 +1,33 @@
 package examples;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
+
+import java.net.URL;
 
 import org.junit.Test;
 
-import examples.jbehave.Scenario1Steps;
-
-import uk.co.acuminous.julez.scenario.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.runner.ScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveScenario;
+import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
-
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-
+import examples.jbehave.Scenario1Steps;
 
 public class JBehavePerformanceTest extends WebTestCase {
 
-    private static final int MAX_THROUGHPUT = 20;
-    private static final int TEST_DURATION = 15;
-    private static final int TEST_TIMEOUT = TEST_DURATION * 2000;
-
-    @Test(timeout=TEST_TIMEOUT)
+    @Test
     public void demonstrateASimpleJBehavePerformanceTest() {
 
-        JBehaveScenario scenario = new JBehaveScenario(codeLocationFromClass(this.getClass()), "scenario1.txt", new Scenario1Steps());
-        ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);
-        concurrentTestRunner.useNumberOfWorkers(15);
-        concurrentTestRunner.run();
+        URL scenarioLocation = codeLocationFromClass(this.getClass());
+        JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "scenario1.txt", new Scenario1Steps());
+        Scenarios scenarios = TestUtils.getScenarios(scenario, 100);
 
-        assertMinimumThroughput(7, concurrentTestRunner.actualThroughput());
+        ScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios).timeOutAfter(30, SECONDS);
+        runner.run();
+
+        assertMinimumThroughput(5, runner.throughput());
     }
 }

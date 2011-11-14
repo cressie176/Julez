@@ -13,7 +13,18 @@ public class DemoServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        resp.getWriter().append("<html><head><title>Demo Servlet</title></head><body><form><input id='query' name='query'/><input id='search' type='submit' /></form></body></html>");
+        resp.getWriter().append(
+            "<html>" +
+            "   <head>" +
+            "       <title>Demo Servlet</title>" +
+            "   </head>" +
+            "   <body>" +
+            "       <form>" +
+            "           <input id='query' name='query'/>" +
+            "           <input id='search' type='submit' />" +
+            "       </form>" +
+            "   </body>" +
+            "</html>");
     }
     
 }

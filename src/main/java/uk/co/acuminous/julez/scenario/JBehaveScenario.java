@@ -10,7 +10,7 @@ import org.jbehave.core.failures.FailingUponPendingStep;
 import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.InstanceStepsFactory;
 
-public class JBehaveScenario implements Scenario {
+public class JBehaveScenario extends BaseScenario {
 
     private final URL codeLocation;    
     private final String scenario;
@@ -22,7 +22,7 @@ public class JBehaveScenario implements Scenario {
         this.steps = steps;
     }
 
-    public void execute() {
+    public void run() {
         Embedder embedder = new Embedder();
         embedder.useEmbedderMonitor(new SilentEmbedderMonitor(null));
         embedder.embedderControls().doIgnoreFailureInStories(true);
@@ -35,5 +35,7 @@ public class JBehaveScenario implements Scenario {
         }
         
         embedder.runStoriesAsPaths(storyPaths);
+        
+        notifyComplete();
     }
 }

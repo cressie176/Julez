@@ -1,41 +1,42 @@
 package examples;
 
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
-
-import org.junit.Test;
-
-import uk.co.acuminous.julez.scenario.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.scenario.MultiConcurrentScenarioRunner;
-import uk.co.acuminous.julez.scenario.Scenario;
+import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.runner.MultiConcurrentScenarioRunner;
+import uk.co.acuminous.julez.runner.ScenarioRunner;
+import uk.co.acuminous.julez.scenario.BaseScenario;
+import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.test.TestUtils;
 
 public class MultiScenarioPerformanceTest {
 
-    private static final int MAX_THROUGHPUT = 50;
-    private static final int TEST_DURATION = 15;
-    private static final int TEST_TIMEOUT = TEST_DURATION * 2000;
+    public void demonstrateMultipleScenariosInParellel() {
 
-    @Test(timeout=TEST_TIMEOUT)
-    public void demonstrateMultipleScenariosInParellel() throws Throwable {
+        Scenarios helloWorldScenarios = TestUtils.getScenarios(new HelloWorldScenario(), 100);
+        ScenarioRunner runner1 = new ConcurrentScenarioRunner().queue(helloWorldScenarios);
 
-        ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
-        ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner(new GoodbyeWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
+        Scenarios goodbyeWorldScenarios = TestUtils.getScenarios(new GoodbyeWorldScenario(), 100);
+        ScenarioRunner runner2 = new ConcurrentScenarioRunner().queue(goodbyeWorldScenarios);
 
-        MultiConcurrentScenarioRunner multiTestRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
-        multiTestRunner.run();
+        ScenarioRunner multiRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
+        multiRunner.run();
 
-        assertMinimumThroughput(20, runner1.actualThroughput());
-        assertMinimumThroughput(20, runner2.actualThroughput());
+        assertMinimumThroughput(1000, runner1.throughput());
+        assertMinimumThroughput(1000, runner2.throughput());
+        assertMinimumThroughput(2000, multiRunner.throughput());
     }
 
-    class HelloWorldScenario implements Scenario {
-        public void execute() {
+    class HelloWorldScenario extends BaseScenario {
+        public void run() {
             System.out.print("Hello World ");
+            notifyComplete();
         }
     }
 
-    class GoodbyeWorldScenario implements Scenario {
-        public void execute() {
+    class GoodbyeWorldScenario extends BaseScenario {
+        public void run() {
             System.out.print("Goodbye World ");
+            notifyComplete();
         }
     }
 }

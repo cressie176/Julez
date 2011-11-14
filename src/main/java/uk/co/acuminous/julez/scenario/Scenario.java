@@ -1,7 +1,8 @@
 package uk.co.acuminous.julez.scenario;
 
-public interface Scenario {
+public interface Scenario extends Runnable {
 
-    void execute();
+    void run();
+    void registerListener(ScenarioListener listener);
 
 }

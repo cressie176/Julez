@@ -23,7 +23,7 @@ public class InMemoryResultRecorder extends BaseResultRecorder {
     }
 
     @Override
-    public void pass(String description) {
+    public void pass(String description) {        
         results.add(resultFactory.getInstance(ResultStatus.PASS, description));
     }
 
@@ -47,6 +47,6 @@ public class InMemoryResultRecorder extends BaseResultRecorder {
 
     @Override
     public void shutdownGracefully() {
-        // NOOP        
+        // NOOP
     }
 }

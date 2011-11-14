@@ -1,10 +1,10 @@
 package uk.co.acuminous.julez.recorder;
 
 import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+
+import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 public abstract class BaseResultRecorder implements ResultRecorder {
-    
     
     @Override
     public void pass() {
@@ -24,19 +24,15 @@ public abstract class BaseResultRecorder implements ResultRecorder {
         
         final ResultRecorder me = this;
         final CountDownLatch latch = new CountDownLatch(1);
-        Thread t = new Thread(new Runnable() {
+        
+        Runnable r = new Runnable() {
             @Override public void run() {
                 me.shutdownGracefully();
                 latch.countDown();
-            }            
-        });
-        t.start();
+            }
+        };
         
-        try {
-            latch.await(timeout, TimeUnit.SECONDS);
-        } catch (InterruptedException e) {
-            // Meh
-        }
+        ConcurrencyUtils.await(r, latch, timeout);
     }    
-
+    
 }

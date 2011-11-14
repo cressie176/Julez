@@ -64,9 +64,13 @@ public class JmsResultRecorder extends BaseResultRecorder {
         } catch (InterruptedException e) {
             // Meh
         } finally {            
-            JmsHelper.close(connection);
+            shutdown();
         }
-    }      
+    }
+    
+    public void shutdown() {
+        JmsHelper.close(connection);        
+    }
     
     @Override
     protected void finalize() {

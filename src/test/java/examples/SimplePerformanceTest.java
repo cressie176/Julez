@@ -4,27 +4,29 @@ import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughp
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.scenario.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.scenario.Scenario;
+import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.runner.ScenarioRunner;
+import uk.co.acuminous.julez.scenario.BaseScenario;
+import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.test.TestUtils;
 
 public class SimplePerformanceTest {
 
-    private static final int MAX_THROUGHPUT = 100;
-    private static final int TEST_DURATION = 15;
-    private static final int TEST_TIMEOUT = TEST_DURATION * 2000;
-
-    @Test(timeout=TEST_TIMEOUT)
+    @Test
     public void demonstrateASimplePerformanceTest() {
 
-        ConcurrentScenarioRunner concurrentTestRunner = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, TEST_DURATION);
-        concurrentTestRunner.run();
-        
-        assertMinimumThroughput(20, concurrentTestRunner.actualThroughput());
+        Scenarios scenarios = TestUtils.getScenarios(new HelloWorldScenario(), 100);
+
+        ScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
+        runner.run();
+
+        assertMinimumThroughput(10000, runner.throughput());
     }
 
-    class HelloWorldScenario implements Scenario {
-        public void execute() {
+    class HelloWorldScenario extends BaseScenario {
+        public void run() {
             System.out.print("Hello World ");
+            notifyComplete();
         }
     }
 }

@@ -33,7 +33,7 @@ public class Scenario2Steps extends WebSteps {
     }
 
     @Then("record success")
-    public void recordSuccess() {        
+    public void recordSuccess() {    
         resultRecorder.pass();
     }
 

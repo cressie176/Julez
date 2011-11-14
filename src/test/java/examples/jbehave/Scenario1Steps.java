@@ -24,7 +24,7 @@ public class Scenario1Steps extends WebSteps {
 
     @Then("record success")
     public void recordSuccess() { 
-        // N/A
+        // NOOP
     }
 
     private void get(String url) {

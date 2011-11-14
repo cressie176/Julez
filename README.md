@@ -1,38 +1,44 @@
 # Julez
+====================
 
 An extremely lightweight toolkit for running simple performance tests via jUnit.
 You write a "Scenario" using your test tool of choice (junit, htmlunit, jbehave, selenium, etc), 
-then use Julez to run the scenario repeatedly from multiple threads at a capped rate. e.g.
+then use Julez to run the scenario repeatedly from multiple threads. e.g.
 
-    @Test(timeout=TEST_TIMEOUT)
-	public void demonstrateASimplePerformanceTest() {
-	
-		Scenario scenario = new HelloWorldScenario();
-	    ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, DURATION);
-	    runner.run();
-	    
-	    assertMinimumThroughput(20, runner.actualThroughput());
-	}
-	
-	class HelloWorldScenario implements Scenario {
-	    public void execute() {
-	        System.out.println("Hello World");
-	    }
-	}
+    @Test
+    public void demonstrateASimplePerformanceTest() {
+
+        Scenarios scenarios = TestUtils.getScenarios(new HelloWorldScenario(), 100);
+
+        ScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
+        runner.run();
+
+        assertMinimumThroughput(10000, runner.throughput());
+    }
+
+    class HelloWorldScenario extends BaseScenario {
+        public void run() {
+            System.out.print("Hello World ");
+            notifyComplete();
+        }
+    }
 
 Want to write your scenarios using JBehave instead? Here's how...
 
-    @Test(timeout=TEST_TIMEOUT)
-	public void testJBehaveScenario() {
+    @Test
+    public void demonstrateASimpleJBehavePerformanceTest() {
+
+        URL scenarioLocation = codeLocationFromClass(this.getClass());
+        JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "scenario1.txt", new Scenario1Steps());
+        Scenarios scenarios = TestUtils.getScenarios(scenario, 100);
+
+        ScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios).timeOutAfter(30, SECONDS);
+        runner.run();
+
+        assertMinimumThroughput(5, runner.throughput());
+    }
 	
-        JBehaveScenario scenario = new JBehaveScenario("scenario1.txt", new Scenario1Steps());
-	    ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, DURATION);
-	    runner.run();
-	    
-	    assertMinimumThroughput(2, runner.actualThroughput());
-	}
-	
-	public class JBehaveScenario implements Scenario {
+	public class JBehaveScenario extends BaseScenario {
 	
 	    private final URL codeLocation;    
 	    private final String scenario;
@@ -44,7 +50,7 @@ Want to write your scenarios using JBehave instead? Here's how...
 	        this.steps = steps;
 	    }
 	
-	    public void execute() {
+	    public void run() {
 	        Embedder embedder = new Embedder();
 	        embedder.useEmbedderMonitor(new SilentEmbedderMonitor(null));
 	        embedder.embedderControls().doIgnoreFailureInStories(true);
@@ -57,44 +63,69 @@ Want to write your scenarios using JBehave instead? Here's how...
 	        }
 	        
 	        embedder.runStoriesAsPaths(storyPaths);
+	        
+	        notifyComplete();
 	    }
 	}	
 
 You can also run different scenarios in parallel using the MultiConcurrentScenarioRunner... 
 
-    @Test(timeout=TEST_TIMEOUT)
-    public void demonstrateMultipleScenariosInParellel() throws Throwable {
-	
-	    ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner(new HelloWorldScenario(), MAX_THROUGHPUT, DURATION);
-	    ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner(new GoodbyeWorldScenario(), MAX_THROUGHPUT, DURATION);
-	
-	    MultiConcurrentScenarioRunner multiTestRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
-	    multiTestRunner.run();
-	
-	    assertMinimumThroughput(20, runner1.actualThroughput());
-	    assertMinimumThroughput(20, runner2.actualThroughput());	
-	}
+    public void demonstrateMultipleScenariosInParellel() {
+
+        Scenarios helloWorldScenarios = TestUtils.getScenarios(new HelloWorldScenario(), 100);
+        ScenarioRunner runner1 = new ConcurrentScenarioRunner().queue(helloWorldScenarios);
+
+        Scenarios goodbyeWorldScenarios = TestUtils.getScenarios(new GoodbyeWorldScenario(), 100);
+        ScenarioRunner runner2 = new ConcurrentScenarioRunner().queue(goodbyeWorldScenarios);
+
+        ScenarioRunner multiRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
+        multiRunner.run();
+
+        assertMinimumThroughput(1000, runner1.throughput());
+        assertMinimumThroughput(1000, runner2.throughput());
+        assertMinimumThroughput(2000, multiRunner.throughput());
+    }
 	
 You can record results asynchronously to a database for trending / reports	
-
-    @Test(timeout=TEST_TIMEOUT)    
+    
+    @Test    
     public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {
         
-        JmsResultRecorder recorder = new JmsResultRecorder(connectionFactory, new DefaultResultFactory("Scenario 2"));
-        JBehaveScenario scenario = new JBehaveScenario(codeLocationFromClass(this.getClass()), "scenario2.txt", new Scenario2Steps(recorder));
+        JmsResultRecorder resultRecorder = new JmsResultRecorder(connectionFactory, new DefaultResultFactory("Scenario 2"));
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenario, MAX_THROUGHPUT, TEST_DURATION);        
+        URL scenarioLocation = codeLocationFromClass(this.getClass());
+        JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "scenario2.txt", new Scenario2Steps(resultRecorder));        
+        Scenarios scenarios = TestUtils.getScenarios(scenario, 100);               
+        
+        ScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios); 
         runner.run();
         
-        recorder.shutdownGracefully();        
+        resultRecorder.shutdownGracefully();        
         resultListener.shutdownGracefully();
         
         resultRepository.dump(ResultStatus.FAIL);
-                
-        assertMinimumThroughput(5, runner.actualThroughput());
-        assertPassMark(95, recorder.percentage()); 
+                        
+        assertMinimumThroughput(5, runner.throughput());
+        assertPassMark(95, resultRecorder.percentage()); 
     }
 
 Best of all, because they're just junit tests you can schedule them from your CI environment.
 
 See the "example" tests for more detail.
+
+# Project Status
+====================
+The project is in very early stages of development. There's guaranteed to be a lot of API thrashing.
+
+# Road Map (In no particular order)
+====================
+* Throttled ScenarioQueue
+* ScenarioQueue that can be asynchronously filled (maybe when the size reaches a threshold)
+* Mechanism to assign junit tests to profiles so that can be run / skipped
+* Create a proper event model for scenarios and scenario runner
+* Move throughput calculation from ConcurrentScenarioRecorder to the results recorder
+* Mechanism to configure a synchronised start from command line so the suites can be synchronised from multiple hosts
+* Make the JdbcResultRepository and JmsResultListener implement ResultRecorder
+* Make ResultRecorders chainable
+* Create a web based admin ui for monitoring status of a test run in realtime
+* Separate out JMS & JDBC classes into a different project so the core is ultra lightweight
