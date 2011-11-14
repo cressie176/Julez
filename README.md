@@ -1,7 +1,6 @@
-# Julez
+Julez
 ====================
-
-An extremely lightweight toolkit for running simple performance tests via jUnit.
+Julez is an extremely lightweight toolkit for running simple performance tests via jUnit.
 You write a "Scenario" using your test tool of choice (junit, htmlunit, jbehave, selenium, etc), 
 then use Julez to run the scenario repeatedly from multiple threads. e.g.
 
@@ -114,12 +113,12 @@ Best of all, because they're just junit tests you can schedule them from your CI
 
 See the "example" tests for more detail.
 
-# Project Status
-====================
+Project Status
+---------------------
 The project is in very early stages of development. There's guaranteed to be a lot of API thrashing.
 
-# Road Map (In no particular order)
-====================
+Road Map (In no particular order)
+---------------------
 * Throttled ScenarioQueue
 * ScenarioQueue that can be asynchronously filled (maybe when the size reaches a threshold)
 * Mechanism to assign junit tests to profiles so that can be run / skipped
