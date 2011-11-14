@@ -25,9 +25,9 @@ public class MultiScenarioPerformanceTest {
         ScenarioRunner multiRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
         multiRunner.run();
 
-        assertMinimumThroughput(1000, runner1.throughput());
-        assertMinimumThroughput(1000, runner2.throughput());
-        assertMinimumThroughput(2000, multiRunner.throughput());
+        assertMinimumThroughput(500, runner1.throughput());
+        assertMinimumThroughput(500, runner2.throughput());
+        assertMinimumThroughput(1000, multiRunner.throughput());
     }
 
     class HelloWorldScenario extends BaseScenario {
