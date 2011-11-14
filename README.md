@@ -70,6 +70,7 @@ Want to write your scenarios using JBehave instead? Here's how...
 
 You can also run different scenarios in parallel using the MultiConcurrentScenarioRunner... 
 
+	@Test
     public void demonstrateMultipleScenariosInParellel() {
 
         Scenarios helloWorldScenarios = TestUtils.getScenarios(new HelloWorldScenario(), 100);

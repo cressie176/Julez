@@ -20,7 +20,7 @@ public class SimplePerformanceTest {
         ScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
         runner.run();
 
-        assertMinimumThroughput(10000, runner.throughput());
+        assertMinimumThroughput(2000, runner.throughput());
     }
 
     class HelloWorldScenario extends BaseScenario {
