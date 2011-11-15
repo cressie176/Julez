@@ -1,6 +1,8 @@
 package uk.co.acuminous.julez.recorder;
 
-public interface ResultRecorder {
+import uk.co.acuminous.julez.ResultSink;
+
+public interface ResultRecorder extends ResultSink, ResultExaminer {
     int passCount();
     int failureCount();
     int percentage();    
