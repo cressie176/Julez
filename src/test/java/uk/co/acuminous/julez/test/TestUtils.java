@@ -1,19 +1,19 @@
 package uk.co.acuminous.julez.test;
 
 import java.sql.SQLException;
+import java.util.Deque;
+import java.util.LinkedList;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.apache.activemq.broker.BrokerService;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.scenario.ScenarioQueue;
-import uk.co.acuminous.julez.scenario.Scenarios;
 
 public class TestUtils {
 
-    public static Scenarios getScenarios(Scenario scenario, int size) {
-        ScenarioQueue scenarios = new ScenarioQueue();
+    public static Deque<Scenario> getScenarios(Scenario scenario, int size) {
+        Deque<Scenario> scenarios = new LinkedList<Scenario>();
         for (int i = 0; i < size; i++) {
             scenarios.add(scenario);
         }

@@ -5,6 +5,7 @@ import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughp
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertPassMark;
 
 import java.net.URL;
+import java.util.Deque;
 
 import javax.sql.DataSource;
 
@@ -21,11 +22,10 @@ import uk.co.acuminous.julez.result.ResultStatus;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveScenario;
-import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 import examples.jbehave.Scenario2Steps;
-
 
 public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
 
@@ -58,7 +58,7 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
         
         URL scenarioLocation = codeLocationFromClass(this.getClass());
         JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "scenario2.txt", new Scenario2Steps(resultRecorder));        
-        Scenarios scenarios = TestUtils.getScenarios(scenario, 100);               
+        Deque<Scenario> scenarios = TestUtils.getScenarios(scenario, 100);               
         
         ScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios); 
         runner.run();
