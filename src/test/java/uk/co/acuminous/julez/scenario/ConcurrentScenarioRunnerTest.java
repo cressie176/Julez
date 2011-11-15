@@ -14,16 +14,6 @@ import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 public class ConcurrentScenarioRunnerTest {
-
-    public void runsAGivenNumberOfScenarios() {
-        
-        Scenarios scenarios = TestUtils.getScenarios(new NoopScenario(), 10);        
-        
-        ScenarioRunner runner = singleThreadedRunner().queue(5, scenarios);
-        runner.run();
-        
-        assertEquals(5, scenarios.available());        
-    }
     
     public void timesOutWhenScenariosTakeTooLong() {
         

@@ -25,11 +25,7 @@ public class ConcurrentScenarioRunner implements ScenarioRunner, ScenarioListene
     private long started;
     
     public ConcurrentScenarioRunner queue(Scenarios scenarios) {
-        return queue(scenarios.available(), scenarios);
-    }     
-    
-    public ConcurrentScenarioRunner queue(int numberOfScenarios, Scenarios scenarios) {
-        this.numberOfScenarios = numberOfScenarios;
+        this.numberOfScenarios = scenarios.available();
         this.scenarios = scenarios;
         return this;        
     }    
