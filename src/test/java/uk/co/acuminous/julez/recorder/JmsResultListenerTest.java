@@ -8,6 +8,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.co.acuminous.julez.result.DefaultResultFactory;
 import uk.co.acuminous.julez.result.InMemoryResultRepository;
 import uk.co.acuminous.julez.result.JmsResultListener;
 import uk.co.acuminous.julez.result.Result;

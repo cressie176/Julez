@@ -14,6 +14,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.co.acuminous.julez.result.DefaultResultFactory;
 import uk.co.acuminous.julez.result.Result;
 import uk.co.acuminous.julez.result.ResultStatus;
 import uk.co.acuminous.julez.test.TestUtils;

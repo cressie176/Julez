@@ -6,9 +6,9 @@ import static uk.co.acuminous.julez.util.PerformanceAssert.assertPassMark;
 import org.apache.commons.lang.math.RandomUtils;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.recorder.DefaultResultFactory;
 import uk.co.acuminous.julez.recorder.InMemoryResultRecorder;
 import uk.co.acuminous.julez.recorder.ResultRecorder;
+import uk.co.acuminous.julez.result.DefaultResultFactory;
 import uk.co.acuminous.julez.result.ResultFactory;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunner;
