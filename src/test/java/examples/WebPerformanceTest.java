@@ -2,12 +2,14 @@ package examples;
 
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
+import java.util.Deque;
+
 import org.junit.Test;
 
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
-import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 
@@ -18,7 +20,7 @@ public class WebPerformanceTest extends WebTestCase {
     @Test
     public void demonstrateASimpleWebPerformanceTest() {
 
-        Scenarios scenarios = TestUtils.getScenarios(new SimpleWebScenario(), 100);
+    	Deque<Scenario> scenarios = TestUtils.getScenarios(new SimpleWebScenario(), 100);
 
         ScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
         runner.run();

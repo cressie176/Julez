@@ -2,13 +2,15 @@ package examples;
 
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
+import java.util.Deque;
+
 import org.junit.Test;
 
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.MultiConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
-import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.test.TestUtils;
 
 public class MultiScenarioPerformanceTest {
@@ -16,10 +18,10 @@ public class MultiScenarioPerformanceTest {
     @Test
     public void demonstrateMultipleScenariosInParellel() {
 
-        Scenarios helloWorldScenarios = TestUtils.getScenarios(new HelloWorldScenario(), 100);
+    	Deque<Scenario> helloWorldScenarios = TestUtils.getScenarios(new HelloWorldScenario(), 100);
         ScenarioRunner runner1 = new ConcurrentScenarioRunner().queue(helloWorldScenarios);
 
-        Scenarios goodbyeWorldScenarios = TestUtils.getScenarios(new GoodbyeWorldScenario(), 100);
+        Deque<Scenario> goodbyeWorldScenarios = TestUtils.getScenarios(new GoodbyeWorldScenario(), 100);
         ScenarioRunner runner2 = new ConcurrentScenarioRunner().queue(goodbyeWorldScenarios);
 
         ScenarioRunner multiRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
