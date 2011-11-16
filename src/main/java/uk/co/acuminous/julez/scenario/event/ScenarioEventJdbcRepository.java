@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.RowMapper;
 
 
 
-public class ScenarioEventJdbcRepository implements ScenarioEventRepository {
+public class ScenarioEventJdbcRepository implements ScenarioEventRepository, ScenarioEventHandler {
 
     private JdbcTemplate jdbcTemplate;
 
@@ -29,6 +29,11 @@ public class ScenarioEventJdbcRepository implements ScenarioEventRepository {
         return this;
     }
 
+    @Override
+    public void onScenarioEvent(ScenarioEvent event) {
+       add(event);        
+    }    
+    
     @Override
     public void add(ScenarioEvent event) {
         jdbcTemplate.update("INSERT INTO scenario_event (id, timestamp, type) VALUES (?, ?, ?)", 
@@ -71,5 +76,4 @@ public class ScenarioEventJdbcRepository implements ScenarioEventRepository {
             );
         }  
     }
-    
 }

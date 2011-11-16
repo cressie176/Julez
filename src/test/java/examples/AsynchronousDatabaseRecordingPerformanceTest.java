@@ -1,7 +1,7 @@
 package examples;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
+import static org.junit.Assert.assertEquals;
 
 import java.net.URL;
 
@@ -15,11 +15,9 @@ import org.junit.Test;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveScenario;
 import uk.co.acuminous.julez.scenario.Scenarios;
-import uk.co.acuminous.julez.scenario.event.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.event.ScenarioEventJdbcRepository;
 import uk.co.acuminous.julez.scenario.event.ScenarioEventJmsListener;
 import uk.co.acuminous.julez.scenario.event.ScenarioEventJmsSender;
-import uk.co.acuminous.julez.scenario.event.ThroughputMonitor;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 import examples.jbehave.Scenario2Steps;
@@ -45,26 +43,25 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
     }
     
     @Test    
-    public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {
+    public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {        
         
         URL scenarioLocation = codeLocationFromClass(this.getClass());
         JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "scenario2.txt", new Scenario2Steps());        
 
-        ScenarioEventJdbcRepository resultRepository = new ScenarioEventJdbcRepository(dataSource).ddl();
-        ScenarioEventJmsListener resultListener = new ScenarioEventJmsListener(connectionFactory).listen();    
+        ScenarioEventJdbcRepository repository = new ScenarioEventJdbcRepository(dataSource).ddl();
+        ScenarioEventJmsListener jmsListener = new ScenarioEventJmsListener(connectionFactory);
+        jmsListener.registerListeners(repository);
+        jmsListener.listen();
         
-        ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         ScenarioEventJmsSender jmsSender = new ScenarioEventJmsSender(connectionFactory);               
-        scenario.registerListeners(throughputMonitor, jmsSender);
+        scenario.registerListeners(jmsSender);
         
         Scenarios scenarios = TestUtils.getScenarios(scenario, 100);  
         
         new ConcurrentScenarioRunner().queue(scenarios).run();
         
-        resultListener.shutdownGracefully();
+        jmsListener.shutdownGracefully();
         
-        resultRepository.dump(ScenarioEvent.FAIL);
-                        
-        assertMinimumThroughput(5, throughputMonitor.getThroughput());
+        assertEquals(200, repository.count());                        
     }
 }
