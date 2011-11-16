@@ -1,5 +1,6 @@
 package uk.co.acuminous.julez.scenario.event;
 
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 
@@ -12,7 +13,7 @@ public class ThroughputMonitor implements ScenarioEventHandler {
     public void onScenarioEvent(ScenarioEvent event) {        
         if (ScenarioEvent.START.equals(event.getType())) {
             started = event.getTimestamp();
-        } else if (ScenarioEvent.PASS.equals(event.getType()) || ScenarioEvent.FAIL.equals(event.getType())) {
+        } else if (Arrays.asList(ScenarioEvent.PASS, ScenarioEvent.FAIL).contains(event.getType())) {
             completed.incrementAndGet();
         }
     }

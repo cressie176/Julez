@@ -8,5 +8,4 @@ public interface ScenarioEventRepository {
     void add(ScenarioEvent event);
     void dump();
     void dump(String type);
-
 }
