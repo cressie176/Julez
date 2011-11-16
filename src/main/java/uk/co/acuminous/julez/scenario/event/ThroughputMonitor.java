@@ -11,7 +11,8 @@ public class ThroughputMonitor implements ScenarioEventHandler {
     
     @Override
     public void onScenarioEvent(ScenarioEvent event) {        
-        if (ScenarioEvent.START.equals(event.getType())) {
+        // Only setting started when it's zero is a dumb bug fix until I add Scenario runner events
+        if (ScenarioEvent.START.equals(event.getType()) && started == 0) {
             started = event.getTimestamp();
         } else if (Arrays.asList(ScenarioEvent.PASS, ScenarioEvent.FAIL).contains(event.getType())) {
             completed.incrementAndGet();
