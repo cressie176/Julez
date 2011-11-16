@@ -19,9 +19,9 @@ import uk.co.acuminous.julez.result.JdbcResultRepository;
 import uk.co.acuminous.julez.result.JmsResultListener;
 import uk.co.acuminous.julez.result.ResultStatus;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.runner.ScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveScenario;
 import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.scenario.ThroughputMonitor;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 import examples.jbehave.Scenario2Steps;
@@ -58,17 +58,20 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
         
         URL scenarioLocation = codeLocationFromClass(this.getClass());
         JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "scenario2.txt", new Scenario2Steps(resultRecorder));        
-        Scenarios scenarios = TestUtils.getScenarios(scenario, 100);               
+
+        ThroughputMonitor throughputMonitor = new ThroughputMonitor();
+        scenario.registerListeners(throughputMonitor);
         
-        ScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios); 
-        runner.run();
+        Scenarios scenarios = TestUtils.getScenarios(scenario, 100);  
+        
+        new ConcurrentScenarioRunner().queue(scenarios).run();
         
         resultRecorder.shutdownGracefully();        
         resultListener.shutdownGracefully();
         
         resultRepository.dump(ResultStatus.FAIL);
                         
-        assertMinimumThroughput(5, runner.throughput());
+        assertMinimumThroughput(5, throughputMonitor.getThroughput());
         assertPassMark(95, resultRecorder.percentage()); 
     }
 }

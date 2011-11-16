@@ -35,13 +35,4 @@ public class MultiConcurrentScenarioRunner implements ScenarioRunner {
         
         ConcurrencyUtils.await(latch);        
     }
-
-    @Override
-    public int throughput() {
-        int totalThroughput = 0;
-        for (ScenarioRunner runner : runners) {
-            totalThroughput += runner.throughput() ;            
-        }
-        return totalThroughput;
-    }
 }

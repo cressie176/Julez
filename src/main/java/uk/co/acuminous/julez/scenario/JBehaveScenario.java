@@ -23,6 +23,9 @@ public class JBehaveScenario extends BaseScenario {
     }
 
     public void run() {
+        
+        notify(ScenarioEvent.start());
+        
         Embedder embedder = new Embedder();
         embedder.useEmbedderMonitor(new SilentEmbedderMonitor(null));
         embedder.embedderControls().doIgnoreFailureInStories(true);
@@ -36,6 +39,6 @@ public class JBehaveScenario extends BaseScenario {
         
         embedder.runStoriesAsPaths(storyPaths);
         
-        notifyComplete();
+        notify(ScenarioEvent.pass());
     }
 }

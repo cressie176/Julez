@@ -5,24 +5,20 @@ import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.joda.time.DateTime;
 
 import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.scenario.ScenarioListener;
 import uk.co.acuminous.julez.scenario.Scenarios;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
-public class ConcurrentScenarioRunner implements ScenarioRunner, ScenarioListener {
+public class ConcurrentScenarioRunner implements ScenarioRunner {
     
     private ExecutorService executor = Executors.newFixedThreadPool(10);
     private Scenarios scenarios;    
     private int numberOfScenarios;        
     private long timeout = 365 * 24 * 60 * 60 * 1000;
-    private AtomicInteger completedCounter = new AtomicInteger();
     private DateTime startTime = new DateTime();    
-    private long started;
     
     public ConcurrentScenarioRunner queue(Scenarios scenarios) {
         this.numberOfScenarios = scenarios.available();
@@ -41,7 +37,7 @@ public class ConcurrentScenarioRunner implements ScenarioRunner, ScenarioListene
         return this;
     }
     
-    public ConcurrentScenarioRunner blockUntil(DateTime startTime) {        
+    public ConcurrentScenarioRunner waitUntil(DateTime startTime) {        
         this.startTime = startTime;
         return this;
     }    
@@ -50,13 +46,10 @@ public class ConcurrentScenarioRunner implements ScenarioRunner, ScenarioListene
     public void run() {
         
         ConcurrencyUtils.sleep(startTime.getMillis() - new DateTime().getMillis(), MILLISECONDS);
-        
-        started = System.currentTimeMillis();        
-        
+                
         try {
             for (int i = 0; i < numberOfScenarios; i++) {
                 Scenario scenario = scenarios.next();
-                scenario.registerListener(this);
                 executor.execute(scenario);
             }
             executor.shutdown();            
@@ -66,17 +59,5 @@ public class ConcurrentScenarioRunner implements ScenarioRunner, ScenarioListene
         } catch (InterruptedException e) {
             // Meh
         }    
-    }
-
-    @Override
-    public int throughput() {
-        double completed = completedCounter.get(); 
-        double duration = System.currentTimeMillis() - started;        
-        return duration > 0 ? (int) Math.round(completed * 1000 / duration) : 0;
-    }
-
-    @Override
-    public void onComplete() {
-        completedCounter.incrementAndGet();        
     }
 }
