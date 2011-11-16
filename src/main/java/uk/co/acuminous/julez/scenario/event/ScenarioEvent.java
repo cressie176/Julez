@@ -1,4 +1,8 @@
-package uk.co.acuminous.julez.scenario;
+package uk.co.acuminous.julez.scenario.event;
+
+import java.util.UUID;
+
+import com.google.gson.Gson;
 
 public class ScenarioEvent {
 
@@ -6,6 +10,7 @@ public class ScenarioEvent {
     public static final String PASS = "PASS";
     public static final String FAIL = "FAIL";
     
+    private String id;
     private String type;
     private long timestamp;
 
@@ -22,8 +27,17 @@ public class ScenarioEvent {
     }    
     
     public ScenarioEvent(String type) {
+        this(UUID.randomUUID().toString(), System.currentTimeMillis(), type);
+    }
+    
+    public ScenarioEvent(String id, long timestamp, String type) {
+        this.id = id;
+        this.timestamp = timestamp;        
         this.type = type;
-        this.timestamp = System.currentTimeMillis();
+    }
+
+    public String getId() {
+        return id;
     }
     
     public String getType() {
@@ -32,5 +46,17 @@ public class ScenarioEvent {
 
     public long getTimestamp() {
         return timestamp;
+    }
+
+    public String toString() {
+        return toJson();
+    }
+    
+    public String toJson() {
+        return new Gson().toJson(this);
+    }    
+    
+    public static ScenarioEvent fromJson(String json) {
+        return new Gson().fromJson(json, ScenarioEvent.class);
     }
 }

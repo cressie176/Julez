@@ -24,8 +24,6 @@ public class JBehaveScenario extends BaseScenario {
 
     public void run() {
         
-        notify(ScenarioEvent.start());
-        
         Embedder embedder = new Embedder();
         embedder.useEmbedderMonitor(new SilentEmbedderMonitor(null));
         embedder.embedderControls().doIgnoreFailureInStories(true);
@@ -35,10 +33,14 @@ public class JBehaveScenario extends BaseScenario {
         List<String> storyPaths = new StoryFinder().findPaths(codeLocation, scenario, "");
         if (storyPaths.isEmpty()) {
             throw new RuntimeException(String.format("Cannot find story for %s", scenario));
-        }
+        }       
         
-        embedder.runStoriesAsPaths(storyPaths);
-        
-        notify(ScenarioEvent.pass());
+        try {
+            start();            
+            embedder.runStoriesAsPaths(storyPaths);
+            pass();
+        } catch (Throwable t) {
+            fail();
+        }        
     }
 }

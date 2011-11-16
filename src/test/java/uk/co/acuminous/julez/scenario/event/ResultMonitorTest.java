@@ -1,8 +1,11 @@
-package uk.co.acuminous.julez.scenario;
+package uk.co.acuminous.julez.scenario.event;
 
 import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
+
+import uk.co.acuminous.julez.scenario.event.ResultMonitor;
+import uk.co.acuminous.julez.scenario.event.ScenarioEvent;
 
 public class ResultMonitorTest {
 

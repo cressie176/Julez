@@ -8,8 +8,8 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
-import uk.co.acuminous.julez.scenario.ResultMonitor;
 import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.scenario.event.ResultMonitor;
 import uk.co.acuminous.julez.test.TestUtils;
 
 public class ResultRecordingPerformanceTest {

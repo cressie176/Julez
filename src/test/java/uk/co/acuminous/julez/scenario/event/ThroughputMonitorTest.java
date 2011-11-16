@@ -1,7 +1,9 @@
-package uk.co.acuminous.julez.scenario;
+package uk.co.acuminous.julez.scenario.event;
 
 import org.junit.Test;
 
+import uk.co.acuminous.julez.scenario.event.ScenarioEvent;
+import uk.co.acuminous.julez.scenario.event.ThroughputMonitor;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 import static java.util.concurrent.TimeUnit.*;
 import static org.junit.Assert.assertEquals;

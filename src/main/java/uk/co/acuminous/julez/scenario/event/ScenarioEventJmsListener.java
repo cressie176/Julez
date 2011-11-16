@@ -1,4 +1,8 @@
-package uk.co.acuminous.julez.result;
+package uk.co.acuminous.julez.scenario.event;
+
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -6,30 +10,32 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSession;
 
-import uk.co.acuminous.julez.recorder.JmsResultRecorder;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
-public class JmsResultListener implements MessageListener, Runnable {
+public class ScenarioEventJmsListener implements MessageListener, Runnable {
 
     private final QueueConnection connection;
     private final String queueName;
-    private final ResultRepository repository;
     private QueueSession session;
     private long lastReceivedTimestamp = System.currentTimeMillis();
     private Thread listenerThread;
+    private Set<ScenarioEventHandler> listeners = new HashSet<ScenarioEventHandler>();
 
-    public JmsResultListener(QueueConnectionFactory connectionFactory, ResultRepository repository) {
-        this(connectionFactory, JmsResultRecorder.DEFAULT_QUEUE_NAME, repository);
+    public ScenarioEventJmsListener(QueueConnectionFactory connectionFactory) {
+        this(connectionFactory, ScenarioEventJmsSender.DEFAULT_QUEUE_NAME);
     }
 
-    public JmsResultListener(QueueConnectionFactory connectionFactory, String queueName, ResultRepository repository) {
+    public ScenarioEventJmsListener(QueueConnectionFactory connectionFactory, String queueName) {
         this.connection = JmsHelper.getConnection(connectionFactory);
         this.queueName = queueName;
-        this.repository = repository;
     }
 
-    public JmsResultListener listen() {
+    public void registerListeners(ScenarioEventHandler... listeners) {
+        this.listeners.addAll(Arrays.asList(listeners));     
+    }        
+    
+    public ScenarioEventJmsListener listen() {
         listenerThread = ConcurrencyUtils.start(this);
         return this;
     }    
@@ -51,8 +57,10 @@ public class JmsResultListener implements MessageListener, Runnable {
     public void onMessage(Message message) {
         lastReceivedTimestamp = System.currentTimeMillis();
         String json = JmsHelper.getText(message);
-        Result result = Result.fromJson(json);
-        repository.add(result);
+        ScenarioEvent event = ScenarioEvent.fromJson(json);
+        for (ScenarioEventHandler listener : listeners) {
+            listener.onScenarioEvent(event);
+        }
     }
 
     public void shutdownGracefully() {
@@ -78,4 +86,5 @@ public class JmsResultListener implements MessageListener, Runnable {
     protected void finalize() {
         JmsHelper.close(session, connection);
     }
+
 }

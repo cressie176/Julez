@@ -1,13 +1,15 @@
 package uk.co.acuminous.julez.scenario;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
+import uk.co.acuminous.julez.scenario.event.ScenarioEvent;
+import uk.co.acuminous.julez.scenario.event.ScenarioEventHandler;
+
 public abstract class BaseScenario implements Scenario {
 
-    protected Set<ScenarioEventHandler> listeners = Collections.synchronizedSet(new HashSet<ScenarioEventHandler>());
+    protected Set<ScenarioEventHandler> listeners = new HashSet<ScenarioEventHandler>();
     
     @Override
     public void registerListeners(ScenarioEventHandler... listeners) {

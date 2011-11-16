@@ -2,7 +2,6 @@ package examples;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
-import static uk.co.acuminous.julez.util.PerformanceAssert.assertPassMark;
 
 import java.net.URL;
 
@@ -13,15 +12,14 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.recorder.JmsResultRecorder;
-import uk.co.acuminous.julez.result.DefaultResultFactory;
-import uk.co.acuminous.julez.result.JdbcResultRepository;
-import uk.co.acuminous.julez.result.JmsResultListener;
-import uk.co.acuminous.julez.result.ResultStatus;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveScenario;
 import uk.co.acuminous.julez.scenario.Scenarios;
-import uk.co.acuminous.julez.scenario.ThroughputMonitor;
+import uk.co.acuminous.julez.scenario.event.ScenarioEvent;
+import uk.co.acuminous.julez.scenario.event.ScenarioEventJdbcRepository;
+import uk.co.acuminous.julez.scenario.event.ScenarioEventJmsListener;
+import uk.co.acuminous.julez.scenario.event.ScenarioEventJmsSender;
+import uk.co.acuminous.julez.scenario.event.ThroughputMonitor;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 import examples.jbehave.Scenario2Steps;
@@ -31,18 +29,13 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
 
     private ActiveMQConnectionFactory connectionFactory;
     private DataSource dataSource;
-    private JdbcResultRepository resultRepository;
-    private JmsResultListener resultListener;    
     
     @Before
     public void init() throws Exception {                
         TestUtils.createBroker();
 
         connectionFactory = TestUtils.getConnectionFactory();        
-        dataSource = TestUtils.getDataSource();
-        
-        resultRepository = new JdbcResultRepository(dataSource).ddl();        
-        resultListener = new JmsResultListener(connectionFactory, resultRepository).listen();        
+        dataSource = TestUtils.getDataSource();        
     }
     
     @After
@@ -54,24 +47,24 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
     @Test    
     public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {
         
-        JmsResultRecorder resultRecorder = new JmsResultRecorder(connectionFactory, new DefaultResultFactory("Scenario 2"));
-        
         URL scenarioLocation = codeLocationFromClass(this.getClass());
-        JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "scenario2.txt", new Scenario2Steps(resultRecorder));        
+        JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "scenario2.txt", new Scenario2Steps());        
 
+        ScenarioEventJdbcRepository resultRepository = new ScenarioEventJdbcRepository(dataSource).ddl();
+        ScenarioEventJmsListener resultListener = new ScenarioEventJmsListener(connectionFactory).listen();    
+        
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
-        scenario.registerListeners(throughputMonitor);
+        ScenarioEventJmsSender jmsSender = new ScenarioEventJmsSender(connectionFactory);               
+        scenario.registerListeners(throughputMonitor, jmsSender);
         
         Scenarios scenarios = TestUtils.getScenarios(scenario, 100);  
         
         new ConcurrentScenarioRunner().queue(scenarios).run();
         
-        resultRecorder.shutdownGracefully();        
         resultListener.shutdownGracefully();
         
-        resultRepository.dump(ResultStatus.FAIL);
+        resultRepository.dump(ScenarioEvent.FAIL);
                         
         assertMinimumThroughput(5, throughputMonitor.getThroughput());
-        assertPassMark(95, resultRecorder.percentage()); 
     }
 }
