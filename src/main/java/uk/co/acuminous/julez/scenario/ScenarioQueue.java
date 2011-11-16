@@ -15,6 +15,4 @@ public class ScenarioQueue extends LinkedList<Scenario> implements Scenarios {
     public int available() {
         return size();
     }
-
-
 }
