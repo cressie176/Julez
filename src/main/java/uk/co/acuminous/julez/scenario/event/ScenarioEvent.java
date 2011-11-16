@@ -12,8 +12,18 @@ public class ScenarioEvent {
     
     private String id;
     private String type;
-    private long timestamp;
-
+    private long timestamp;    
+    
+    public ScenarioEvent(String type) {
+        this(UUID.randomUUID().toString(), System.currentTimeMillis(), type);
+    }
+    
+    public ScenarioEvent(String id, long timestamp, String type) {
+        this.id = id;
+        this.timestamp = timestamp;        
+        this.type = type;
+    }
+    
     public static ScenarioEvent start() {
         return new ScenarioEvent(START);
     }    
@@ -25,16 +35,6 @@ public class ScenarioEvent {
     public static ScenarioEvent fail() {
         return new ScenarioEvent(FAIL);
     }    
-    
-    public ScenarioEvent(String type) {
-        this(UUID.randomUUID().toString(), System.currentTimeMillis(), type);
-    }
-    
-    public ScenarioEvent(String id, long timestamp, String type) {
-        this.id = id;
-        this.timestamp = timestamp;        
-        this.type = type;
-    }
 
     public String getId() {
         return id;
