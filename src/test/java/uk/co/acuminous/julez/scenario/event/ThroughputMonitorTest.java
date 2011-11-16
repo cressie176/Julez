@@ -30,11 +30,34 @@ public class ThroughputMonitorTest {
         assertFalse("Throughput was not calculated for extremely quick scenario", 0 == monitor.getThroughput());
     }
     
-    private void assertThroughput(ScenarioEvent event) {
+    
+    @Test
+    public void workaroundForThroughPutUsingScenarioStartEventInsteadOfScenarioRunnerStartEvent() {
         ThroughputMonitor monitor = new ThroughputMonitor();
         
         monitor.onScenarioEvent(ScenarioEvent.start());
+        monitor.onScenarioEvent(ScenarioEvent.pass());
+        
+        ConcurrencyUtils.sleep(1, SECONDS);
+        
+        monitor.onScenarioEvent(ScenarioEvent.start());
+        monitor.onScenarioEvent(ScenarioEvent.pass());
+
+        ConcurrencyUtils.sleep(1, SECONDS);
+        
+        monitor.onScenarioEvent(ScenarioEvent.start());
+        monitor.onScenarioEvent(ScenarioEvent.pass());
+        
+        ConcurrencyUtils.sleep(1, SECONDS);
+        
+        assertEquals(1, monitor.getThroughput());
+    }    
+    
+    private void assertThroughput(ScenarioEvent event) {
+        ThroughputMonitor monitor = new ThroughputMonitor();
+        
         for (int i = 0; i < 10; i++) {
+            monitor.onScenarioEvent(ScenarioEvent.start());            
             monitor.onScenarioEvent(event);
         }
         ConcurrencyUtils.sleep(1, SECONDS);
