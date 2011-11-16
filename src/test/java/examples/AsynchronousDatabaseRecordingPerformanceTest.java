@@ -44,14 +44,14 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
     
     @Test    
     public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {        
-        
+
         URL scenarioLocation = codeLocationFromClass(this.getClass());
         JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "scenario2.txt", new Scenario2Steps());        
-
+                
         ScenarioEventJdbcRepository repository = new ScenarioEventJdbcRepository(dataSource).ddl();
-        ScenarioEventJmsListener jmsListener = new ScenarioEventJmsListener(connectionFactory);
-        jmsListener.registerListeners(repository);
-        jmsListener.listen();
+        
+        ScenarioEventJmsListener asynchronousListener = new ScenarioEventJmsListener(connectionFactory).listen();
+        asynchronousListener.registerListeners(repository);
         
         ScenarioEventJmsSender jmsSender = new ScenarioEventJmsSender(connectionFactory);               
         scenario.registerListeners(jmsSender);
@@ -60,7 +60,7 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
         
         new ConcurrentScenarioRunner().queue(scenarios).run();
         
-        jmsListener.shutdownGracefully();
+        asynchronousListener.shutdownGracefully();
         
         assertEquals(200, repository.count());                        
     }
