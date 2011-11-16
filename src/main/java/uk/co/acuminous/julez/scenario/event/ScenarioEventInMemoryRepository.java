@@ -3,8 +3,6 @@ package uk.co.acuminous.julez.scenario.event;
 import java.util.HashMap;
 import java.util.Map;
 
-
-
 public class ScenarioEventInMemoryRepository implements ScenarioEventRepository {
 
     Map<String, ScenarioEvent> events = new HashMap<String, ScenarioEvent>();
@@ -34,7 +32,7 @@ public class ScenarioEventInMemoryRepository implements ScenarioEventRepository 
     @Override
     public void dump(String type) {
         for (ScenarioEvent event : events.values()) {
-            if (type == event.getType()) {
+            if (event.getType().equals(type)) {
                 System.out.println(event);
             }
         }
