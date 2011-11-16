@@ -27,6 +27,45 @@ then use Julez to run the scenario repeatedly from multiple threads. e.g.
         }
     }
 
+Because a scenario is just Java you can plug in any java library, e.g. htmlunit
+
+    @Test
+    public void demonstrateASimpleWebPerformanceTest() {
+
+        SimpleWebScenario scenario = new SimpleWebScenario();
+        Scenarios scenarios = TestUtils.getScenarios(scenario, 100);
+
+        ThroughputMonitor throughputMonitor = new ThroughputMonitor();
+        scenario.registerListeners(throughputMonitor);                                
+        
+        new ConcurrentScenarioRunner().queue(scenarios).run();
+
+        assertMinimumThroughput(14, throughputMonitor.getThroughput());
+    }
+
+    class SimpleWebScenario extends BaseScenario {
+
+        public void run() {
+            start();
+            WebClient webClient = new WebClient();
+            try {                
+                webClient.setCssEnabled(false);
+                webClient.setJavaScriptEnabled(false);                
+                
+                HtmlPage page = webClient.getPage("http://localhost:8080");
+                if (page.getWebResponse().getStatusCode() == 200) {
+                    pass();
+                } else {                                               
+                    fail();
+                }
+            } catch (Exception e) {
+                fail();
+            } finally {                
+                webClient.closeAllWindows();
+            }
+        }
+    }
+
 Want to write your scenarios using JBehave instead? Here's how...
 
     @Test
@@ -113,7 +152,7 @@ You can record results asynchronously to a database for trending / reports
         URL scenarioLocation = codeLocationFromClass(this.getClass());
         JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "scenario2.txt", new Scenario2Steps());        
 
-        ScenarioEventJdbcRepository repository = new ScenarioEventJdbcRepository(dataSource).ddl();
+        ScenarioEventJdbcRepository repository = new ScenarioEventJdbcRepository(dataSource);
         ScenarioEventJmsListener jmsListener = new ScenarioEventJmsListener(connectionFactory);
         jmsListener.registerListeners(repository);
         jmsListener.listen();

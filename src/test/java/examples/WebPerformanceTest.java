@@ -12,6 +12,7 @@ import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class WebPerformanceTest extends WebTestCase {
 
@@ -32,18 +33,22 @@ public class WebPerformanceTest extends WebTestCase {
     class SimpleWebScenario extends BaseScenario {
 
         public void run() {
-            try {
-                start();
-                
-                WebClient webClient = new WebClient();
+            start();
+            WebClient webClient = new WebClient();
+            try {                
                 webClient.setCssEnabled(false);
                 webClient.setJavaScriptEnabled(false);                
-                webClient.getPage("http://localhost:8080");
-                webClient.closeAllWindows();
                 
-                pass();                
+                HtmlPage page = webClient.getPage("http://localhost:8080");
+                if (page.getWebResponse().getStatusCode() == 200) {
+                    pass();
+                } else {                                               
+                    fail();
+                }
             } catch (Exception e) {
                 fail();
+            } finally {                
+                webClient.closeAllWindows();
             }
         }
     }
