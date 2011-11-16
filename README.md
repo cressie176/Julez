@@ -89,8 +89,8 @@ You can also run different scenarios in parallel using the MultiConcurrentScenar
         ThroughputMonitor monitor1 = new ThroughputMonitor();
         ThroughputMonitor monitor2 = new ThroughputMonitor();
         
-        ScenarioRunner runner1 = getScenarioRunner(new HelloWorldScenario(), 100, combinedMonitor, monitor1);
-        ScenarioRunner runner2 = getScenarioRunner(new GoodbyeWorldScenario(), 50, combinedMonitor, monitor2);        
+        ScenarioRunner runner1 = prepareForTestRun(new HelloWorldScenario(), 100, combinedMonitor, monitor1);
+        ScenarioRunner runner2 = prepareForTestRun(new GoodbyeWorldScenario(), 50, combinedMonitor, monitor2);        
 
         new MultiConcurrentScenarioRunner(runner1, runner2).run();
 
@@ -99,11 +99,10 @@ You can also run different scenarios in parallel using the MultiConcurrentScenar
         assertMinimumThroughput(750, combinedMonitor.getThroughput());
     }
 
-    private ScenarioRunner getScenarioRunner(Scenario scenario, int size, ThroughputMonitor combinedMonitor, ThroughputMonitor monitor1) {
-        scenario.registerListeners(combinedMonitor, monitor1);        
-        Scenarios helloWorldScenarios = TestUtils.getScenarios(scenario, size);
-        ScenarioRunner runner1 = new ConcurrentScenarioRunner().queue(helloWorldScenarios);
-        return runner1;
+    private ScenarioRunner prepareForTestRun(Scenario scenario, int size, ScenarioEventHandler... listeners) {
+        scenario.registerListeners(listeners);        
+        Scenarios scenarios = TestUtils.getScenarios(scenario, size);
+        return new ConcurrentScenarioRunner().queue(scenarios);
     }
 	
 You can record results asynchronously to a database for trending / reports	

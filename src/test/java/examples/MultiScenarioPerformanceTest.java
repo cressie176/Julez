@@ -10,6 +10,7 @@ import uk.co.acuminous.julez.runner.ScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.scenario.event.ScenarioEventHandler;
 import uk.co.acuminous.julez.scenario.event.ThroughputMonitor;
 import uk.co.acuminous.julez.test.TestUtils;
 
@@ -22,8 +23,8 @@ public class MultiScenarioPerformanceTest {
         ThroughputMonitor monitor1 = new ThroughputMonitor();
         ThroughputMonitor monitor2 = new ThroughputMonitor();
         
-        ScenarioRunner runner1 = getScenarioRunner(new HelloWorldScenario(), 100, combinedMonitor, monitor1);
-        ScenarioRunner runner2 = getScenarioRunner(new GoodbyeWorldScenario(), 50, combinedMonitor, monitor2);        
+        ScenarioRunner runner1 = prepareForTestRun(new HelloWorldScenario(), 100, combinedMonitor, monitor1);
+        ScenarioRunner runner2 = prepareForTestRun(new GoodbyeWorldScenario(), 50, combinedMonitor, monitor2);        
 
         new MultiConcurrentScenarioRunner(runner1, runner2).run();
 
@@ -32,11 +33,10 @@ public class MultiScenarioPerformanceTest {
         assertMinimumThroughput(750, combinedMonitor.getThroughput());
     }
 
-    private ScenarioRunner getScenarioRunner(Scenario scenario, int size, ThroughputMonitor combinedMonitor, ThroughputMonitor monitor1) {
-        scenario.registerListeners(combinedMonitor, monitor1);        
-        Scenarios helloWorldScenarios = TestUtils.getScenarios(scenario, size);
-        ScenarioRunner runner1 = new ConcurrentScenarioRunner().queue(helloWorldScenarios);
-        return runner1;
+    private ScenarioRunner prepareForTestRun(Scenario scenario, int size, ScenarioEventHandler... listeners) {
+        scenario.registerListeners(listeners);        
+        Scenarios scenarios = TestUtils.getScenarios(scenario, size);
+        return new ConcurrentScenarioRunner().queue(scenarios);
     }
 
     class HelloWorldScenario extends BaseScenario {
