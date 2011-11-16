@@ -8,8 +8,6 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-
-
 public class ScenarioEventJdbcRepository implements ScenarioEventRepository, ScenarioEventHandler {
 
     private JdbcTemplate jdbcTemplate;
@@ -66,7 +64,7 @@ public class ScenarioEventJdbcRepository implements ScenarioEventRepository, Sce
         }         
     }
 
-    class ResultRowMapper implements RowMapper<ScenarioEvent> {
+    private class ResultRowMapper implements RowMapper<ScenarioEvent> {
         @Override
         public ScenarioEvent mapRow(ResultSet rs, int rowNum) throws SQLException {
             return new ScenarioEvent (
