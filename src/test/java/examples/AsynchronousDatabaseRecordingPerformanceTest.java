@@ -12,12 +12,12 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.co.acuminous.julez.event.repository.ScenarioEventJdbcRepository;
+import uk.co.acuminous.julez.event.repository.ScenarioEventJmsListener;
+import uk.co.acuminous.julez.event.repository.ScenarioEventJmsSender;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveScenario;
 import uk.co.acuminous.julez.scenario.Scenarios;
-import uk.co.acuminous.julez.scenario.event.ScenarioEventJdbcRepository;
-import uk.co.acuminous.julez.scenario.event.ScenarioEventJmsListener;
-import uk.co.acuminous.julez.scenario.event.ScenarioEventJmsSender;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 import examples.jbehave.Scenario2Steps;
@@ -51,10 +51,10 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
         ScenarioEventJdbcRepository repository = new ScenarioEventJdbcRepository(dataSource).ddl();
         
         ScenarioEventJmsListener asynchronousListener = new ScenarioEventJmsListener(connectionFactory).listen();
-        asynchronousListener.registerListeners(repository);
+        asynchronousListener.registerEventHandler(repository);
         
         ScenarioEventJmsSender jmsSender = new ScenarioEventJmsSender(connectionFactory);               
-        scenario.registerListeners(jmsSender);
+        scenario.registerEventHandler(jmsSender);
         
         Scenarios scenarios = TestUtils.getScenarios(scenario, 100);  
         

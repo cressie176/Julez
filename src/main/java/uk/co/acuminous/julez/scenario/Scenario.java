@@ -1,10 +1,8 @@
 package uk.co.acuminous.julez.scenario;
 
-import uk.co.acuminous.julez.scenario.event.ScenarioEventHandler;
+import uk.co.acuminous.julez.event.EventSource;
 
-public interface Scenario extends Runnable {
+public interface Scenario extends Runnable, EventSource {
 
     void run();
-    void registerListeners(ScenarioEventHandler... listeners);
-
 }

@@ -6,7 +6,7 @@ import java.util.concurrent.CountDownLatch;
 
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
-public class MultiConcurrentScenarioRunner implements ScenarioRunner {
+public class MultiConcurrentScenarioRunner extends BaseScenarioRunner {
 
     private final CountDownLatch latch;
     private List<ScenarioRunner> runners;
@@ -17,6 +17,8 @@ public class MultiConcurrentScenarioRunner implements ScenarioRunner {
     }
 
     public void run() {
+        
+        begin();
         
         for (final ScenarioRunner runner : runners) {
             
@@ -33,6 +35,8 @@ public class MultiConcurrentScenarioRunner implements ScenarioRunner {
             ConcurrencyUtils.start(r);
         }
         
-        ConcurrencyUtils.await(latch);        
+        ConcurrencyUtils.await(latch);   
+        
+        end();
     }
 }

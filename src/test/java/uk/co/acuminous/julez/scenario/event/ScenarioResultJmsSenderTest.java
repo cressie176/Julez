@@ -12,8 +12,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.scenario.event.ScenarioEvent;
-import uk.co.acuminous.julez.scenario.event.ScenarioEventJmsSender;
+import uk.co.acuminous.julez.event.repository.ScenarioEventJmsSender;
+import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
@@ -40,13 +40,13 @@ public class ScenarioResultJmsSenderTest {
     
     @Test
     public void failuresAreWrittenToTheResultsQueue() throws JMSException, InterruptedException {        
-        jmsSender.onScenarioEvent(ScenarioEvent.fail());                
+        jmsSender.onEvent(ScenarioEvent.fail());                
         assertScenarioEvent(dequeue(), ScenarioEvent.FAIL);
     }
         
     @Test
     public void passesAreWrittenToTheResultsQueue() throws Exception {        
-        jmsSender.onScenarioEvent(ScenarioEvent.pass());                
+        jmsSender.onEvent(ScenarioEvent.pass());                
         assertScenarioEvent(dequeue(), ScenarioEvent.PASS);     
     }
 

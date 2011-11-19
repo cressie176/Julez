@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.scenario.event;
+package uk.co.acuminous.julez.event.repository;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -8,13 +8,17 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-public class ScenarioEventJdbcRepository implements ScenarioEventRepository, ScenarioEventHandler {
+import uk.co.acuminous.julez.event.Event;
+import uk.co.acuminous.julez.event.EventHandler;
+import uk.co.acuminous.julez.scenario.ScenarioEvent;
+
+public class ScenarioEventJdbcRepository implements ScenarioEventRepository, EventHandler {
 
     private JdbcTemplate jdbcTemplate;
 
     public ScenarioEventJdbcRepository(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
-    }
+    }  
     
     public ScenarioEventJdbcRepository ddl() {
         jdbcTemplate.execute(
@@ -28,8 +32,8 @@ public class ScenarioEventJdbcRepository implements ScenarioEventRepository, Sce
     }
 
     @Override
-    public void onScenarioEvent(ScenarioEvent event) {
-       add(event);        
+    public void onEvent(Event event) {
+       add((ScenarioEvent) event);        
     }    
     
     @Override

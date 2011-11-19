@@ -1,7 +1,9 @@
-package uk.co.acuminous.julez.scenario.event;
+package uk.co.acuminous.julez.event.repository;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import uk.co.acuminous.julez.scenario.ScenarioEvent;
 
 public class ScenarioEventInMemoryRepository implements ScenarioEventRepository {
 

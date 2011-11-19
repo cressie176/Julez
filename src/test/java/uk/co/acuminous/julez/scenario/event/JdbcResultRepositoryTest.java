@@ -6,7 +6,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.scenario.event.ScenarioEventJdbcRepository;
+import uk.co.acuminous.julez.event.repository.ScenarioEventJdbcRepository;
+import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.test.TestUtils;
 
 public class JdbcResultRepositoryTest {

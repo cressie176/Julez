@@ -1,4 +1,6 @@
-package uk.co.acuminous.julez.scenario.event;
+package uk.co.acuminous.julez.event.repository;
+
+import uk.co.acuminous.julez.scenario.ScenarioEvent;
 
 
 public interface ScenarioEventRepository {

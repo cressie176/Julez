@@ -1,8 +1,20 @@
 Julez
 ====================
-Julez is an extremely lightweight toolkit for running simple performance tests via jUnit.
-You write a "Scenario" using your test tool of choice (junit, htmlunit, jbehave, selenium, etc), 
-then use Julez to run the scenario repeatedly from multiple threads. e.g.
+Julez is an extremely lightweight toolkit for concurrency testing in java. You can use it 
+to help ensure that your code is thread safe, to detect deadlocks, to soak test or load test.
+Because Julez is just a Java library, and not a standalone test tool you can run it as you 
+would a normal junit test, from within your IDE and from your continuous integration 
+environment. If you have a server farm you could even configure your build to run load 
+tests from several client machines at once.
+
+At the heart of Julez are scenarios. You write scenarios using your test tools of choice 
+(junit, htmlunit, jbehave, selenium, etc), then use Julez to run the scenario repeatedly 
+from multiple threads. If you want to capture performance statistics while your scenarios are 
+running they you can through events, and configure event handles to listen for them and 
+respond accordingly. The following example demonstrates a simple "Hello World" scenario 
+which is run 100 times concurrently by 10 threads (the default for the ConcurrentScenarioRunner)
+The throughput monitor listens for scenario (pass) and scenario runner events (start, stop) 
+in order to calculate the throughput.
 
     @Test
     public void demonstrateASimplePerformanceTest() {
@@ -27,7 +39,13 @@ then use Julez to run the scenario repeatedly from multiple threads. e.g.
         }
     }
 
-Because a scenario is just Java you can plug in any java library, e.g. htmlunit
+It's common to write functional or acceptance tests for web applications with tools like webdriver, selenium and html unit, but less 
+common to use these tool for non functional tests like deadlock detection, load testing or load testing. Part of the reason for this 
+is because these tools are slower than the protocol level record and playback approach taken by many performance test tools. I accept 
+this, but think that given the increasing use of virtualisation, and easy availability of powever continuation servers it's 
+becoming less necessary. If your application only needs to support 50 requests / second and using html unit and jbehave you can 
+generate 10 requests per second, and you have a virtual server farm of 5 servers you could easily configure your build system to 
+run nightly performance tests, written in JBehave's given - when - then syntax, and executed from htmlunt or web drvier.
 
     @Test
     public void demonstrateASimpleWebPerformanceTest() {
@@ -66,7 +84,7 @@ Because a scenario is just Java you can plug in any java library, e.g. htmlunit
         }
     }
 
-Want to write your scenarios using JBehave instead? Here's how...
+Want to write your scenarios using JBehave? Here's how...
 
     @Test
     public void demonstrateASimpleJBehavePerformanceTest() {
@@ -118,8 +136,9 @@ Want to write your scenarios using JBehave instead? Here's how...
 	        }        
 	    }
 	}	
-
-You can also run different scenarios in parallel using the MultiConcurrentScenarioRunner... 
+For realistic metrics you'll need to run
+multiple different scenarios concurrently, at a capped throughput and in the correct ratio. Julez supports this 
+via the MutiConcurentScenarioRunner. e.g.
 
     @Test
     public void demonstrateMultipleScenariosInParellel() {
@@ -144,8 +163,11 @@ You can also run different scenarios in parallel using the MultiConcurrentScenar
         return new ConcurrentScenarioRunner().queue(scenarios);
     }
 	
-You can record results asynchronously to a database for trending / reports	
-    
+Once you start building up a set of healthy performance tests you'll probably want to analyse the statistics.
+Julez provides some analysers, such as the ThroughputMonitor and ResultMonitor, but it's always been expected 
+that you'll want to write your own. We also provide a mechanism for persisting events asynchronously to a 
+database so that you can analyse, report and trend the data using a whole host of 3rd party products. 
+	    
     @Test    
     public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {        
         
@@ -169,7 +191,6 @@ You can record results asynchronously to a database for trending / reports
         assertEquals(200, repository.count());                        
     }
 
-Best of all, because they're just junit tests you can schedule them from your CI environment.
 
 See the "example" tests for more detail.
 

@@ -6,10 +6,10 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
+import uk.co.acuminous.julez.event.handlers.ResultMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenarios;
-import uk.co.acuminous.julez.scenario.event.ResultMonitor;
 import uk.co.acuminous.julez.test.TestUtils;
 
 public class ResultRecordingPerformanceTest {
@@ -20,7 +20,7 @@ public class ResultRecordingPerformanceTest {
         ResultRecordingScenario scenario = new ResultRecordingScenario();
         
         ResultMonitor resultMonitor = new ResultMonitor();
-        scenario.registerListeners(resultMonitor);        
+        scenario.registerEventHandler(resultMonitor);        
         
         Scenarios scenarios = TestUtils.getScenarios(scenario, 200);
         
@@ -36,7 +36,7 @@ public class ResultRecordingPerformanceTest {
         private AtomicInteger counter = new AtomicInteger();
 
         public void run() {
-            start();
+            begin();
             if (counter.incrementAndGet() % 4 == 0) {
                 fail();
             } else {

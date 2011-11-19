@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.scenario;
+package uk.co.acuminous.julez.runner;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -6,8 +6,9 @@ import java.util.Set;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
+import uk.co.acuminous.julez.event.EventSource;
 
-public abstract class BaseScenario implements Scenario {
+public abstract class BaseScenarioRunner implements ScenarioRunner, EventSource {
 
     protected Set<EventHandler> handlers = new HashSet<EventHandler>();
     
@@ -17,21 +18,13 @@ public abstract class BaseScenario implements Scenario {
     }
     
     protected void begin() {
-        raise(new ScenarioEvent(ScenarioEvent.BEGIN));
-    }    
+        raise(new ScenarioRunnerEvent(ScenarioRunnerEvent.BEGIN));
+    }  
     
-    protected void pass() {
-        raise(new ScenarioEvent(ScenarioEvent.PASS));
-    }
-    
-    protected void fail() {
-        raise(new ScenarioEvent(ScenarioEvent.FAIL));
-    }
-        
-    protected void error() {
-        raise(new ScenarioEvent(ScenarioEvent.ERROR));
-    }    
-    
+    protected void end() {
+        raise(new ScenarioRunnerEvent(ScenarioRunnerEvent.END));
+    }     
+            
     protected void raise(Event event) {
         for (EventHandler handler : handlers) {
             handler.onEvent(event);

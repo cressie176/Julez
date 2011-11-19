@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.scenario.event.ResultMonitor;
-import uk.co.acuminous.julez.scenario.event.ScenarioEvent;
+import uk.co.acuminous.julez.event.handlers.ResultMonitor;
+import uk.co.acuminous.julez.scenario.ScenarioEvent;
 
 public class ResultMonitorTest {
 
@@ -14,10 +14,10 @@ public class ResultMonitorTest {
         ResultMonitor resultMonitor = new ResultMonitor();
         assertEquals(0, resultMonitor.getPassCount());
         
-        resultMonitor.onScenarioEvent(ScenarioEvent.pass());
+        resultMonitor.onEvent(ScenarioEvent.pass());
         assertEquals(1, resultMonitor.getPassCount());
         
-        resultMonitor.onScenarioEvent(ScenarioEvent.fail());
+        resultMonitor.onEvent(ScenarioEvent.fail());
         assertEquals(1, resultMonitor.getPassCount());        
     }
     
@@ -26,10 +26,10 @@ public class ResultMonitorTest {
         ResultMonitor resultMonitor = new ResultMonitor();
         assertEquals(0, resultMonitor.getFailureCount());
         
-        resultMonitor.onScenarioEvent(ScenarioEvent.fail());
+        resultMonitor.onEvent(ScenarioEvent.fail());
         assertEquals(1, resultMonitor.getFailureCount());
         
-        resultMonitor.onScenarioEvent(ScenarioEvent.pass());
+        resultMonitor.onEvent(ScenarioEvent.pass());
         assertEquals(1, resultMonitor.getFailureCount());        
     }    
     
@@ -39,14 +39,14 @@ public class ResultMonitorTest {
         ResultMonitor resultMonitor = new ResultMonitor();
         assertEquals(0, resultMonitor.getPercentage());
         
-        resultMonitor.onScenarioEvent(ScenarioEvent.fail());
+        resultMonitor.onEvent(ScenarioEvent.fail());
         assertEquals(0, resultMonitor.getPercentage());
         
-        resultMonitor.onScenarioEvent(ScenarioEvent.pass());
+        resultMonitor.onEvent(ScenarioEvent.pass());
         assertEquals(50, resultMonitor.getPercentage()); 
         
-        resultMonitor.onScenarioEvent(ScenarioEvent.fail());
-        resultMonitor.onScenarioEvent(ScenarioEvent.fail());        
+        resultMonitor.onEvent(ScenarioEvent.fail());
+        resultMonitor.onEvent(ScenarioEvent.fail());        
         assertEquals(25, resultMonitor.getPercentage());
     }       
 }

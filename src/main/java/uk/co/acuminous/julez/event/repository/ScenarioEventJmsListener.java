@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.scenario.event;
+package uk.co.acuminous.julez.event.repository;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -10,17 +10,20 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSession;
 
+import uk.co.acuminous.julez.event.EventHandler;
+import uk.co.acuminous.julez.event.EventSource;
+import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
-public class ScenarioEventJmsListener implements MessageListener, Runnable {
+public class ScenarioEventJmsListener implements MessageListener, Runnable, EventSource {
 
     private final QueueConnection connection;
     private final String queueName;
     private QueueSession session;
     private long lastReceivedTimestamp = System.currentTimeMillis();
     private Thread listenerThread;
-    private Set<ScenarioEventHandler> listeners = new HashSet<ScenarioEventHandler>();
+    private Set<EventHandler> handlers = new HashSet<EventHandler>();
 
     public ScenarioEventJmsListener(QueueConnectionFactory connectionFactory) {
         this(connectionFactory, ScenarioEventJmsSender.DEFAULT_QUEUE_NAME);
@@ -31,8 +34,9 @@ public class ScenarioEventJmsListener implements MessageListener, Runnable {
         this.queueName = queueName;
     }
 
-    public void registerListeners(ScenarioEventHandler... listeners) {
-        this.listeners.addAll(Arrays.asList(listeners));     
+    @Override
+    public void registerEventHandler(EventHandler... handlers) {
+        this.handlers.addAll(Arrays.asList(handlers));     
     }        
     
     public ScenarioEventJmsListener listen() {
@@ -58,8 +62,8 @@ public class ScenarioEventJmsListener implements MessageListener, Runnable {
         lastReceivedTimestamp = System.currentTimeMillis();
         String json = JmsHelper.getText(message);
         ScenarioEvent event = ScenarioEvent.fromJson(json);
-        for (ScenarioEventHandler listener : listeners) {
-            listener.onScenarioEvent(event);
+        for (EventHandler handler : handlers) {
+            handler.onEvent(event);
         }
     }
 
@@ -86,5 +90,4 @@ public class ScenarioEventJmsListener implements MessageListener, Runnable {
     protected void finalize() {
         JmsHelper.close(session, connection);
     }
-
 }

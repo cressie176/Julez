@@ -4,10 +4,10 @@ import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughp
 
 import org.junit.Test;
 
+import uk.co.acuminous.julez.event.handlers.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenarios;
-import uk.co.acuminous.julez.scenario.event.ThroughputMonitor;
 import uk.co.acuminous.julez.test.TestUtils;
 
 public class SimplePerformanceTest {
@@ -18,18 +18,20 @@ public class SimplePerformanceTest {
         HelloWorldScenario scenario = new HelloWorldScenario();
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
-        scenario.registerListeners(throughputMonitor);                        
+        scenario.registerEventHandler(throughputMonitor);                        
 
         Scenarios scenarios = TestUtils.getScenarios(scenario, 100);        
         
-        new ConcurrentScenarioRunner().queue(scenarios).run();
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
+        runner.registerEventHandler(throughputMonitor);
+        runner.run();
 
         assertMinimumThroughput(500, throughputMonitor.getThroughput());
     }
 
     class HelloWorldScenario extends BaseScenario {        
         public void run() {
-            start();
+            begin();
             System.out.print("Hello World ");
             pass();
         }

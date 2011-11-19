@@ -11,10 +11,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.scenario.event.ScenarioEvent;
-import uk.co.acuminous.julez.scenario.event.ScenarioEventHandler;
-import uk.co.acuminous.julez.scenario.event.ScenarioEventJmsListener;
-import uk.co.acuminous.julez.scenario.event.ScenarioEventJmsSender;
+import uk.co.acuminous.julez.event.Event;
+import uk.co.acuminous.julez.event.EventHandler;
+import uk.co.acuminous.julez.event.repository.ScenarioEventJmsListener;
+import uk.co.acuminous.julez.event.repository.ScenarioEventJmsSender;
+import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.test.TestUtils;
 
 public class ScenarioEventJmsListenerTest {
@@ -39,23 +40,23 @@ public class ScenarioEventJmsListenerTest {
         ScenarioEventRecorder recorder = new ScenarioEventRecorder();
         
         ScenarioEventJmsListener listener = new ScenarioEventJmsListener(connectionFactory);
-        listener.registerListeners(recorder);
+        listener.registerEventHandler(recorder);
         listener.listen();                        
                 
         ScenarioEventJmsSender scenarioEventJmsSender = new ScenarioEventJmsSender(connectionFactory);
-        scenarioEventJmsSender.onScenarioEvent(ScenarioEvent.pass());
+        scenarioEventJmsSender.onEvent(ScenarioEvent.pass());
         
         listener.shutdownGracefully();
         
         assertEquals(1, recorder.events.size());
     }
 
-    class ScenarioEventRecorder implements ScenarioEventHandler {
+    class ScenarioEventRecorder implements EventHandler {
 
-        List<ScenarioEvent> events = new ArrayList<ScenarioEvent>();
+        List<Event> events = new ArrayList<Event>();
         
         @Override
-        public void onScenarioEvent(ScenarioEvent event) {
+        public void onEvent(Event event) {
             events.add(event);
         }
         

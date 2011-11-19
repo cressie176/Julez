@@ -36,7 +36,7 @@ public class JBehaveScenario extends BaseScenario {
         }       
         
         try {
-            start();            
+            begin();            
             embedder.runStoriesAsPaths(storyPaths);
             pass();
         } catch (Throwable t) {

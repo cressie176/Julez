@@ -4,10 +4,10 @@ import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughp
 
 import org.junit.Test;
 
+import uk.co.acuminous.julez.event.handlers.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenarios;
-import uk.co.acuminous.julez.scenario.event.ThroughputMonitor;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 
@@ -23,9 +23,11 @@ public class WebPerformanceTest extends WebTestCase {
         Scenarios scenarios = TestUtils.getScenarios(scenario, 100);
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
-        scenario.registerListeners(throughputMonitor);                                
+        scenario.registerEventHandler(throughputMonitor);                                
         
-        new ConcurrentScenarioRunner().queue(scenarios).run();
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
+        runner.registerEventHandler(throughputMonitor);
+        runner.run();
 
         assertMinimumThroughput(14, throughputMonitor.getThroughput());
     }
@@ -33,7 +35,7 @@ public class WebPerformanceTest extends WebTestCase {
     class SimpleWebScenario extends BaseScenario {
 
         public void run() {
-            start();
+            begin();
             WebClient webClient = new WebClient();
             try {                
                 webClient.setCssEnabled(false);
@@ -46,7 +48,7 @@ public class WebPerformanceTest extends WebTestCase {
                     fail();
                 }
             } catch (Exception e) {
-                fail();
+                error();
             } finally {                
                 webClient.closeAllWindows();
             }

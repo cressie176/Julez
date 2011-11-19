@@ -1,11 +1,13 @@
-package uk.co.acuminous.julez.scenario.event;
+package uk.co.acuminous.julez.event.repository;
 
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 
+import uk.co.acuminous.julez.event.Event;
+import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.util.JmsHelper;
 
-public class ScenarioEventJmsSender implements ScenarioEventHandler {
+public class ScenarioEventJmsSender implements EventHandler {
 
     public static final String DEFAULT_QUEUE_NAME = "julez";
     private final QueueConnection connection;
@@ -21,7 +23,7 @@ public class ScenarioEventJmsSender implements ScenarioEventHandler {
     }
 
     @Override
-    public void onScenarioEvent(ScenarioEvent event) {
+    public void onEvent(Event event) {
         JmsHelper.send(connection, queueName, event.toJson());
     } 
     

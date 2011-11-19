@@ -4,14 +4,13 @@ import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughp
 
 import org.junit.Test;
 
+import uk.co.acuminous.julez.event.EventHandler;
+import uk.co.acuminous.julez.event.handlers.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.MultiConcurrentScenarioRunner;
-import uk.co.acuminous.julez.runner.ScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.Scenarios;
-import uk.co.acuminous.julez.scenario.event.ScenarioEventHandler;
-import uk.co.acuminous.julez.scenario.event.ThroughputMonitor;
 import uk.co.acuminous.julez.test.TestUtils;
 
 public class MultiScenarioPerformanceTest {
@@ -23,25 +22,30 @@ public class MultiScenarioPerformanceTest {
         ThroughputMonitor monitor1 = new ThroughputMonitor();
         ThroughputMonitor monitor2 = new ThroughputMonitor();
         
-        ScenarioRunner runner1 = prepareForTestRun(new HelloWorldScenario(), 100, combinedMonitor, monitor1);
-        ScenarioRunner runner2 = prepareForTestRun(new GoodbyeWorldScenario(), 50, combinedMonitor, monitor2);        
-
-        new MultiConcurrentScenarioRunner(runner1, runner2).run();
+        ConcurrentScenarioRunner runner1 = prepareForTestRun(new HelloWorldScenario(), 100, combinedMonitor, monitor1);
+        runner1.registerEventHandler(monitor1);
+        
+        ConcurrentScenarioRunner runner2 = prepareForTestRun(new GoodbyeWorldScenario(), 50, combinedMonitor, monitor2);        
+        runner2.registerEventHandler(monitor2);
+        
+        MultiConcurrentScenarioRunner runner = new MultiConcurrentScenarioRunner(runner1, runner2);
+        runner.registerEventHandler(combinedMonitor);
+        runner.run();
 
         assertMinimumThroughput(500, monitor1.getThroughput());
         assertMinimumThroughput(250, monitor2.getThroughput());
         assertMinimumThroughput(750, combinedMonitor.getThroughput());
     }
 
-    private ScenarioRunner prepareForTestRun(Scenario scenario, int size, ScenarioEventHandler... listeners) {
-        scenario.registerListeners(listeners);        
+    private ConcurrentScenarioRunner prepareForTestRun(Scenario scenario, int size, EventHandler... handlers) {
+        scenario.registerEventHandler(handlers);        
         Scenarios scenarios = TestUtils.getScenarios(scenario, size);
         return new ConcurrentScenarioRunner().queue(scenarios);
     }
 
     class HelloWorldScenario extends BaseScenario {
         public void run() {
-            start();
+            begin();
             System.out.print("Hello World ");
             pass();
         }
@@ -49,7 +53,7 @@ public class MultiScenarioPerformanceTest {
 
     class GoodbyeWorldScenario extends BaseScenario {
         public void run() {
-            start();
+            begin();
             System.out.print("Goodbye World ");
             pass();
         }

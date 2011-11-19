@@ -12,7 +12,7 @@ import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.Scenarios;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
-public class ConcurrentScenarioRunner implements ScenarioRunner {
+public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     
     private ExecutorService executor = Executors.newFixedThreadPool(10);
     private Scenarios scenarios;    
@@ -44,9 +44,11 @@ public class ConcurrentScenarioRunner implements ScenarioRunner {
     
     @Override
     public void run() {
-        
-        ConcurrencyUtils.sleep(startTime.getMillis() - new DateTime().getMillis(), MILLISECONDS);
                 
+        ConcurrencyUtils.sleep(startTime.getMillis() - new DateTime().getMillis(), MILLISECONDS);
+        
+        begin();        
+        
         try {
             for (int i = 0; i < numberOfScenarios; i++) {
                 Scenario scenario = scenarios.next();
@@ -59,5 +61,7 @@ public class ConcurrentScenarioRunner implements ScenarioRunner {
         } catch (InterruptedException e) {
             // Meh
         }    
+        
+        end();
     }
 }

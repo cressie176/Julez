@@ -1,15 +1,19 @@
-package uk.co.acuminous.julez.scenario.event;
+package uk.co.acuminous.julez.event.handlers;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import uk.co.acuminous.julez.event.Event;
+import uk.co.acuminous.julez.event.EventHandler;
+import uk.co.acuminous.julez.scenario.ScenarioEvent;
 
-public class ResultMonitor implements ScenarioEventHandler {
+
+public class ResultMonitor implements EventHandler {
 
     private AtomicInteger passCount = new AtomicInteger();
     private AtomicInteger failureCount = new AtomicInteger();
     
     @Override
-    public void onScenarioEvent(ScenarioEvent event) {
+    public void onEvent(Event event) {
         if (ScenarioEvent.PASS.equals(event.getType())) {
             passCount.incrementAndGet();
         } else if (ScenarioEvent.FAIL.equals(event.getType())) {
