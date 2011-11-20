@@ -7,7 +7,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
-import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.Scenarios;
 import uk.co.acuminous.julez.test.InvocationCountingScenario;
 import uk.co.acuminous.julez.test.SleepingScenario;
@@ -16,23 +15,19 @@ import uk.co.acuminous.julez.test.TestUtils;
 public class ThroughputLimiterTest {
 
     private ThroughputMonitor throughputMonitor;
-    private ScenarioRunnerEventFactory scenarioRunnerEventFactory;
-    private ScenarioEventFactory scenarioEventFactory;
     private ConcurrentScenarioRunner runner;
 
     @Before
     public void init() {
         throughputMonitor = new ThroughputMonitor();
-        scenarioRunnerEventFactory = new ScenarioRunnerEventFactory();
-        scenarioEventFactory = new ScenarioEventFactory();
         
-        runner = new ConcurrentScenarioRunner(scenarioRunnerEventFactory);
+        runner = new ConcurrentScenarioRunner();
         runner.registerEventHandler(throughputMonitor);        
     }
     
     @Test
     public void capsThroughputToSpecifiedFrequency() {        
-        InvocationCountingScenario scenario = new InvocationCountingScenario(scenarioEventFactory);
+        InvocationCountingScenario scenario = new InvocationCountingScenario();
         scenario.registerEventHandler(throughputMonitor);
         
         Scenarios scenarios = TestUtils.getScenarios(scenario, 100);
@@ -46,7 +41,7 @@ public class ThroughputLimiterTest {
     
     @Test
     public void cappingThroughputForLongRunningScenariosDoesntCauseLag() {
-        SleepingScenario scenario = new SleepingScenario(scenarioEventFactory);
+        SleepingScenario scenario = new SleepingScenario();
         scenario.registerEventHandler(throughputMonitor);
         
         Scenarios scenarios = TestUtils.getScenarios(scenario, 5);

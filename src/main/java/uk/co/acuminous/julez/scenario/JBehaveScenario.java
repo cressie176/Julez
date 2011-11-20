@@ -16,8 +16,7 @@ public class JBehaveScenario extends BaseScenario {
     private final String scenario;
     private final Object[] steps;
 
-    public JBehaveScenario(ScenarioEventFactory eventFactory, URL codeLocation, String scenario, Object... steps) {
-        super(eventFactory);
+    public JBehaveScenario(URL codeLocation, String scenario, Object... steps) {;
         this.codeLocation = codeLocation;
         this.scenario = scenario;
         this.steps = steps;

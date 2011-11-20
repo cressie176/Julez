@@ -19,11 +19,9 @@ public class MultiConcurrentScenarioRunnerTest {
     public void init() {
         recorder = new EventRecorder();
         
-        ScenarioRunnerEventFactory eventFactory = new ScenarioRunnerEventFactory();        
-        
-        runner1 = new ConcurrentScenarioRunner(eventFactory);
-        runner2 = new ConcurrentScenarioRunner(eventFactory);        
-        multiRunner = new MultiConcurrentScenarioRunner(eventFactory, runner1, runner2);
+        runner1 = new ConcurrentScenarioRunner();
+        runner2 = new ConcurrentScenarioRunner();        
+        multiRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
     }
     
     @Test

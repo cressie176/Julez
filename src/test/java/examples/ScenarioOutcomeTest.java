@@ -2,36 +2,29 @@ package examples;
 
 import static org.junit.Assert.assertEquals;
 
-import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.handler.ResultMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.BaseScenario;
-import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.Scenarios;
 import uk.co.acuminous.julez.test.TestUtils;
 
-public class ResultRecordingPerformanceTest {
+public class ScenarioOutcomeTest {
 
     @Test
-    public void demonstrateRecordingScenarioResults() {
+    public void demonstrateRecordingConcurrentScenarioResults() {
         
-        String correlationId = UUID.randomUUID().toString();
-        ScenarioRunnerEventFactory scenarioRunnerEventFactory = new ScenarioRunnerEventFactory(correlationId);        
-        ScenarioEventFactory scenarioEventFactory = new ScenarioEventFactory(correlationId);
+        final ResultRecordingScenario scenario = new ResultRecordingScenario();
         
-        ResultRecordingScenario scenario = new ResultRecordingScenario(scenarioEventFactory);
-        
-        ResultMonitor resultMonitor = new ResultMonitor();
+        final ResultMonitor resultMonitor = new ResultMonitor();
         scenario.registerEventHandler(resultMonitor);        
         
-        Scenarios scenarios = TestUtils.getScenarios(scenario, 200);
+        final Scenarios scenarios = TestUtils.getScenarios(scenario, 200);
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenarioRunnerEventFactory).queue(scenarios);
+        final ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
         runner.run();
 
         assertEquals(150, resultMonitor.getPassCount());
@@ -42,10 +35,6 @@ public class ResultRecordingPerformanceTest {
     class ResultRecordingScenario extends BaseScenario {
 
         private final AtomicInteger counter = new AtomicInteger();
-
-        public ResultRecordingScenario(ScenarioEventFactory eventFactory) {
-            super(eventFactory);
-        }
 
         public void run() {
             raise(eventFactory.begin());

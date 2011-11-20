@@ -2,35 +2,27 @@ package examples;
 
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
-import java.util.UUID;
-
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.BaseScenario;
-import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.Scenarios;
 import uk.co.acuminous.julez.test.TestUtils;
 
-public class SimplePerformanceTest {
+public class ConcurrentThroughputTest {
 
     @Test
-    public void demonstrateASimplePerformanceTest() {
+    public void demonstrateAConcurrentThroughputTest() {
 
-        String correlationId = UUID.randomUUID().toString();
-        ScenarioRunnerEventFactory scenarioRunnerEventFactory = new ScenarioRunnerEventFactory(correlationId);        
-        ScenarioEventFactory scenarioEventFactory = new ScenarioEventFactory(correlationId);
-        
-        HelloWorldScenario scenario = new HelloWorldScenario(scenarioEventFactory);
+        HelloWorldScenario scenario = new HelloWorldScenario();
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.registerEventHandler(throughputMonitor);                        
 
         Scenarios scenarios = TestUtils.getScenarios(scenario, 100);        
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenarioRunnerEventFactory).queue(scenarios);
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
         runner.registerEventHandler(throughputMonitor);
         runner.run();
 
@@ -39,10 +31,6 @@ public class SimplePerformanceTest {
 
     class HelloWorldScenario extends BaseScenario {        
         
-        public HelloWorldScenario(ScenarioEventFactory eventFactory) {
-            super(eventFactory);
-        }
-
         public void run() {
             raise(eventFactory.begin());
             System.out.print("Hello World ");

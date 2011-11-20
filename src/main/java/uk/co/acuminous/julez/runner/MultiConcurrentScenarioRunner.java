@@ -10,14 +10,17 @@ public class MultiConcurrentScenarioRunner extends BaseScenarioRunner {
 
     private final CountDownLatch latch;
     private List<ScenarioRunner> runners;
-    private final ScenarioRunnerEventFactory eventFactory;
+    private ScenarioRunnerEventFactory eventFactory = new ScenarioRunnerEventFactory();
 
-    public MultiConcurrentScenarioRunner(ScenarioRunnerEventFactory eventFactory, ScenarioRunner... concurrentTestRunners) {
-        this.eventFactory = eventFactory;
+    public MultiConcurrentScenarioRunner(ScenarioRunner... concurrentTestRunners) {
         runners = Arrays.asList(concurrentTestRunners);
         latch = new CountDownLatch(runners.size());
     }
 
+    public void usingEventFactory(ScenarioRunnerEventFactory eventFactory) {
+        this.eventFactory = eventFactory;
+    }
+    
     public void run() {
         
         raise(eventFactory.begin());

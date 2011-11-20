@@ -4,7 +4,6 @@ import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static org.junit.Assert.assertEquals;
 
 import java.net.URL;
-import java.util.UUID;
 
 import javax.sql.DataSource;
 
@@ -16,19 +15,17 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.async.JmsEventListener;
 import uk.co.acuminous.julez.event.async.JmsEventSender;
 import uk.co.acuminous.julez.event.filter.EventClassFilter;
-import uk.co.acuminous.julez.event.repository.ScenarioEventJdbcRepository;
+import uk.co.acuminous.julez.event.repository.JdbcScenarioEventRepository;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.JBehaveScenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
-import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.Scenarios;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 import examples.jbehave.Scenario2Steps;
 
 
-public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
+public class AsynchronousDatabaseRecordingTest extends WebTestCase {
 
     private ActiveMQConnectionFactory connectionFactory;
     private DataSource dataSource;
@@ -50,14 +47,10 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
     @Test
     public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {        
 
-        String correlationId = UUID.randomUUID().toString();
-        ScenarioRunnerEventFactory scenarioRunnerEventFactory = new ScenarioRunnerEventFactory(correlationId);        
-        ScenarioEventFactory scenarioEventFactory = new ScenarioEventFactory(correlationId);
-        
         URL scenarioLocation = codeLocationFromClass(this.getClass());
-        JBehaveScenario scenario = new JBehaveScenario(scenarioEventFactory, scenarioLocation, "scenario2.txt", new Scenario2Steps());        
+        JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "scenario2.txt", new Scenario2Steps());        
                 
-        ScenarioEventJdbcRepository scenarioEventRepository = new ScenarioEventJdbcRepository(dataSource).ddl();
+        JdbcScenarioEventRepository scenarioEventRepository = new JdbcScenarioEventRepository(dataSource).ddl();
         EventClassFilter<ScenarioEvent> scenarioEventFilter = new EventClassFilter<ScenarioEvent>(ScenarioEvent.class);
         scenarioEventFilter.registerEventHandler(scenarioEventRepository);
         
@@ -69,7 +62,7 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
         
         Scenarios scenarios = TestUtils.getScenarios(scenario, 100);  
         
-        new ConcurrentScenarioRunner(scenarioRunnerEventFactory).queue(scenarios).run();
+        new ConcurrentScenarioRunner().queue(scenarios).run();
         
         asynchronousListener.shutdownGracefully();
         

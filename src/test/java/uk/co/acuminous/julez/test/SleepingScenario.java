@@ -6,19 +6,17 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import java.util.concurrent.TimeUnit;
 
 import uk.co.acuminous.julez.scenario.BaseScenario;
-import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 public class SleepingScenario extends BaseScenario {
 
     private final long duration;
 
-    public SleepingScenario(ScenarioEventFactory eventFactory) {
-        this(eventFactory, 1, SECONDS);
+    public SleepingScenario() {
+        this(1, SECONDS);
     }
     
-    public SleepingScenario(ScenarioEventFactory eventFactory, long duration, TimeUnit units) {
-        super(eventFactory);
+    public SleepingScenario(long duration, TimeUnit units) {
         this.duration = MILLISECONDS.convert(duration, units);
         
     }    

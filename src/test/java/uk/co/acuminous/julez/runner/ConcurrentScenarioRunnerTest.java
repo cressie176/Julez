@@ -4,39 +4,26 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.UUID;
 import java.util.concurrent.Executors;
 
 import org.joda.time.DateTime;
-import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.scenario.BaseScenario;
-import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.Scenarios;
 import uk.co.acuminous.julez.test.EventRecorder;
 import uk.co.acuminous.julez.test.InvocationCountingScenario;
+import uk.co.acuminous.julez.test.SleepingScenario;
 import uk.co.acuminous.julez.test.TestUtils;
-import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 public class ConcurrentScenarioRunnerTest {
     
-    private ScenarioRunnerEventFactory scenarioRunnerEventFactory;
-    private ScenarioEventFactory scenarioEventFactory;
-
-    @Before
-    public void init() {        
-        String correlationId = UUID.randomUUID().toString();
-        scenarioRunnerEventFactory = new ScenarioRunnerEventFactory(correlationId);        
-        scenarioEventFactory = new ScenarioEventFactory(correlationId);        
-    }
-    
     @Test
     public void runsScenarios() {
-        InvocationCountingScenario scenario = new InvocationCountingScenario(scenarioEventFactory);
+        InvocationCountingScenario scenario = new InvocationCountingScenario();
         Scenarios scenarios = TestUtils.getScenarios(scenario, 10);        
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenarioRunnerEventFactory).usingExecutor(Executors.newFixedThreadPool(1));                
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));                
         runner.queue(scenarios);        
         runner.run();
         
@@ -45,9 +32,9 @@ public class ConcurrentScenarioRunnerTest {
     
     @Test    
     public void timesOutWhenScenariosTakeTooLong() {                       
-        Scenarios scenarios = TestUtils.getScenarios(new SleepingScenario(scenarioEventFactory), 10);        
+        Scenarios scenarios = TestUtils.getScenarios(new SleepingScenario(), 10);        
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenarioRunnerEventFactory).usingExecutor(Executors.newFixedThreadPool(1));
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
         runner.queue(scenarios).timeOutAfter(5, SECONDS);
         runner.run();
         
@@ -59,10 +46,10 @@ public class ConcurrentScenarioRunnerTest {
         DateTime now = new DateTime();
         DateTime desiredStartTime = now.plusSeconds(5);       
 
-        StartTimeCapturingScenario scenario = new StartTimeCapturingScenario(scenarioEventFactory);        
+        StartTimeCapturingScenario scenario = new StartTimeCapturingScenario();        
         Scenarios scenarios = TestUtils.getScenarios(scenario, 1);        
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenarioRunnerEventFactory).usingExecutor(Executors.newFixedThreadPool(1));
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
         runner.queue(scenarios).waitUntil(desiredStartTime);
         runner.run();
         
@@ -71,12 +58,12 @@ public class ConcurrentScenarioRunnerTest {
     
     @Test
     public void raisesBeginEvent() {
-        InvocationCountingScenario scenario = new InvocationCountingScenario(scenarioEventFactory);
+        InvocationCountingScenario scenario = new InvocationCountingScenario();
         Scenarios scenarios = TestUtils.getScenarios(scenario, 10);        
 
         EventRecorder eventRecorder = new EventRecorder();        
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenarioRunnerEventFactory).usingExecutor(Executors.newFixedThreadPool(1));
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
         runner.registerEventHandler(eventRecorder);
         runner.queue(scenarios);        
         runner.run();
@@ -85,16 +72,16 @@ public class ConcurrentScenarioRunnerTest {
     }   
 
     @Test
-    public void raisesBeginEventFiresOnOrAfterDeferedStart() {
+    public void raisesBeginEventOnOrAfterDeferedStart() {
         DateTime now = new DateTime();
         DateTime desiredStartTime = now.plusSeconds(5);       
 
         EventRecorder eventRecorder = new EventRecorder();        
         
-        StartTimeCapturingScenario scenario = new StartTimeCapturingScenario(scenarioEventFactory);        
+        StartTimeCapturingScenario scenario = new StartTimeCapturingScenario();        
         Scenarios scenarios = TestUtils.getScenarios(scenario, 1);        
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenarioRunnerEventFactory).usingExecutor(Executors.newFixedThreadPool(1));
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
         runner.queue(scenarios).waitUntil(desiredStartTime);
         runner.registerEventHandler(eventRecorder);                
         runner.run();
@@ -104,12 +91,12 @@ public class ConcurrentScenarioRunnerTest {
     
     @Test
     public void raisesEndEvent() {
-        InvocationCountingScenario scenario = new InvocationCountingScenario(scenarioEventFactory);
+        InvocationCountingScenario scenario = new InvocationCountingScenario();
         Scenarios scenarios = TestUtils.getScenarios(scenario, 10);        
 
         EventRecorder eventRecorder = new EventRecorder();        
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenarioRunnerEventFactory).usingExecutor(Executors.newFixedThreadPool(1));
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
         runner.registerEventHandler(eventRecorder);
         runner.queue(scenarios);        
         runner.run();
@@ -117,24 +104,9 @@ public class ConcurrentScenarioRunnerTest {
         assertEquals(ScenarioRunnerEvent.END, eventRecorder.events.get(1).getType());
     }
     
-    class SleepingScenario extends BaseScenario {
-        
-        public SleepingScenario(ScenarioEventFactory eventFactory) {
-            super(eventFactory);
-        }
-
-        @Override public void run() {
-            ConcurrencyUtils.sleep(1, SECONDS);
-        }
-    }
-    
     class StartTimeCapturingScenario extends BaseScenario { 
 
         DateTime actualStartTime;                
-        
-        public StartTimeCapturingScenario(ScenarioEventFactory eventFactory) {
-            super(eventFactory);
-        }
         
         @Override public void run() {
             actualStartTime = new DateTime();

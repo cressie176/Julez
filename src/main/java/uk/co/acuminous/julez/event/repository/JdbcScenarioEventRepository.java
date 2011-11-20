@@ -12,21 +12,21 @@ import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 
-public class ScenarioEventJdbcRepository implements ScenarioEventRepository, EventHandler {
+public class JdbcScenarioEventRepository implements ScenarioEventRepository, EventHandler {
 
     private JdbcTemplate jdbcTemplate;
 
-    public ScenarioEventJdbcRepository(DataSource dataSource) {
+    public JdbcScenarioEventRepository(DataSource dataSource) {
         jdbcTemplate = new JdbcTemplate(dataSource);
     }  
     
-    public ScenarioEventJdbcRepository ddl() {
+    public JdbcScenarioEventRepository ddl() {
         jdbcTemplate.execute(
             "CREATE TABLE scenario_event (" +
             "id VARCHAR(36) NOT NULL, " +
             "timestamp DOUBLE NOT NULL, " +
             "type VARCHAR(255) NOT NULL, " +
-            "correlation_id VARCHAR(255) NOT NULL, " +            
+            "correlation_id VARCHAR(255) NULL, " +            
             "PRIMARY KEY (id)" +
         ")");
         return this;

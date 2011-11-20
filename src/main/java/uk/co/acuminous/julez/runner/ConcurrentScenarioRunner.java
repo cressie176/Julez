@@ -19,10 +19,9 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     private int numberOfScenarios;        
     private long timeout = 365 * 24 * 60 * 60 * 1000;
     private DateTime startTime = new DateTime();
-    private final ScenarioRunnerEventFactory eventFactory;    
+    private ScenarioRunnerEventFactory eventFactory = new ScenarioRunnerEventFactory();    
     
-    public ConcurrentScenarioRunner(ScenarioRunnerEventFactory eventFactory) {
-        this.eventFactory = eventFactory;        
+    public ConcurrentScenarioRunner() {
     }
     
     public ConcurrentScenarioRunner queue(Scenarios scenarios) {
@@ -40,6 +39,10 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
         this.executor.shutdownNow();
         this.executor = executor;
         return this;
+    }
+    
+    public void useEventFactory(ScenarioRunnerEventFactory eventFactory) {
+        this.eventFactory = eventFactory;
     }
     
     public ConcurrentScenarioRunner waitUntil(DateTime startTime) {        

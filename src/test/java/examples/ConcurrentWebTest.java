@@ -2,15 +2,11 @@ package examples;
 
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
-import java.util.UUID;
-
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.BaseScenario;
-import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.Scenarios;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
@@ -18,22 +14,18 @@ import uk.co.acuminous.julez.test.WebTestCase;
 import com.gargoylesoftware.htmlunit.WebClient;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
-public class WebPerformanceTest extends WebTestCase {
+public class ConcurrentWebTest extends WebTestCase {
 
     @Test
-    public void demonstrateASimpleWebPerformanceTest() {
+    public void demonstrateAConcurrentWebTest() {
 
-        String correlationId = UUID.randomUUID().toString();
-        ScenarioRunnerEventFactory scenarioRunnerEventFactory = new ScenarioRunnerEventFactory(correlationId);        
-        ScenarioEventFactory scenarioEventFactory = new ScenarioEventFactory(correlationId);
-        
-        SimpleWebScenario scenario = new SimpleWebScenario(scenarioEventFactory);
+        SimpleWebScenario scenario = new SimpleWebScenario();
         Scenarios scenarios = TestUtils.getScenarios(scenario, 100);
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.registerEventHandler(throughputMonitor);                                
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenarioRunnerEventFactory).queue(scenarios);
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
         runner.registerEventHandler(throughputMonitor);
         runner.run();
 
@@ -41,10 +33,6 @@ public class WebPerformanceTest extends WebTestCase {
     }
 
     class SimpleWebScenario extends BaseScenario {
-
-        public SimpleWebScenario(ScenarioEventFactory eventFactory) {
-            super(eventFactory);
-        }
 
         public void run() {
             raise(eventFactory.begin());
