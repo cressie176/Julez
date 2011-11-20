@@ -6,10 +6,10 @@ import com.google.gson.Gson;
 
 public class ScenarioEvent extends Event<ScenarioEvent> {
 
-    public static final String BEGIN = "ScenarioEvent.BEGIN";
-    public static final String PASS = "ScenarioEvent.PASS";
-    public static final String FAIL = "ScenarioEvent.FAIL";
-    public static final String ERROR = "ScenarioEvent.ERROR";
+    public static final String BEGIN = "ScenarioEvent/BEGIN";
+    public static final String PASS = "ScenarioEvent/PASS";
+    public static final String FAIL = "ScenarioEvent/FAIL";
+    public static final String ERROR = "ScenarioEvent/ERROR";
        
     public ScenarioEvent() {        
     }

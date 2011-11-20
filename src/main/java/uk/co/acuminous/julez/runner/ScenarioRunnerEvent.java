@@ -6,8 +6,8 @@ import uk.co.acuminous.julez.event.Event;
 
 public class ScenarioRunnerEvent extends Event<ScenarioRunnerEvent> {
 
-    public static String BEGIN = "ScenarioRunnerEvent.BEGIN";
-    public static String END = "ScenarioRunnerEvent.END"; 
+    public static String BEGIN = "ScenarioRunnerEvent/BEGIN";
+    public static String END = "ScenarioRunnerEvent/END"; 
     
     public ScenarioRunnerEvent() {        
     }
