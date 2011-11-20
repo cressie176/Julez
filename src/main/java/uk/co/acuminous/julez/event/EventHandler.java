@@ -1,5 +1,5 @@
 package uk.co.acuminous.julez.event;
 
 public interface EventHandler {
-    void onEvent(Event event);
+    void onEvent(Event<?> event);
 }

@@ -11,6 +11,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.event.EventJmsListener;
@@ -41,6 +43,7 @@ public class ScenarioEventJmsListenerTest {
         ScenarioEventRecorder recorder = new ScenarioEventRecorder();
         
         EventJmsListener listener = new EventJmsListener(connectionFactory);
+        listener.setShutdownDelay(1, SECONDS);
         listener.registerEventHandler(recorder);
         listener.listen();                        
                 
@@ -54,10 +57,10 @@ public class ScenarioEventJmsListenerTest {
 
     class ScenarioEventRecorder implements EventHandler {
 
-        List<Event> events = new ArrayList<Event>();
+        List<Event<?>> events = new ArrayList<Event<?>>();
         
         @Override
-        public void onEvent(Event event) {
+        public void onEvent(Event<?> event) {
             events.add(event);
         }
         

@@ -9,10 +9,10 @@ import uk.co.acuminous.julez.event.EventHandler;
 
 public class EventRecorder implements EventHandler {
 
-    public List<Event> events = new ArrayList<Event>();
+    public List<Event<?>> events = new ArrayList<Event<?>>();
     
     @Override
-    public void onEvent(Event event) {
+    public void onEvent(Event<?> event) {
         events.add(event);            
     }        
 }

@@ -12,7 +12,6 @@ import javax.jms.Queue;
 import javax.jms.QueueBrowser;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
-import javax.jms.QueueSender;
 import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.jms.TextMessage;
@@ -59,20 +58,7 @@ public class JmsHelper {
         } catch (JMSException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    public static void send(QueueConnection connection, String queueName, String msg) {
-        QueueSession session = null;        
-        try {
-            session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);             
-            QueueSender sender = session.createSender(session.createQueue(queueName));                                
-            sender.send(session.createTextMessage(msg));        
-        } catch (JMSException e) {
-            throw new RuntimeException(e);
-        } finally {
-            JmsHelper.close(session);
-        }        
-    }    
+    }   
 
     @SuppressWarnings("unchecked")
     public static List<TextMessage> browseMessages(QueueConnectionFactory connectionFactory, String queueName) {

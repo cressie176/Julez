@@ -1,12 +1,14 @@
 package uk.co.acuminous.julez.event;
 
+import java.util.concurrent.TimeUnit;
+import static java.util.concurrent.TimeUnit.*;
+
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSession;
 
-import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
@@ -15,8 +17,9 @@ public class EventJmsListener extends BaseEventSource implements MessageListener
     private final QueueConnection connection;
     private final String queueName;
     private QueueSession session;
-    private long lastReceivedTimestamp = System.currentTimeMillis();
     private Thread listenerThread;
+    private long lastReceivedTimestamp = System.currentTimeMillis();    
+    private long shutdownDelay = 10000;
 
     public EventJmsListener(QueueConnectionFactory connectionFactory) {
         this(connectionFactory, EventJmsSender.DEFAULT_QUEUE_NAME);
@@ -30,7 +33,11 @@ public class EventJmsListener extends BaseEventSource implements MessageListener
     public EventJmsListener listen() {
         listenerThread = ConcurrencyUtils.start(this);
         return this;
-    }    
+    }
+    
+    public void setShutdownDelay(long duration, TimeUnit timeUnit) {
+        this.shutdownDelay = MILLISECONDS.convert(duration, timeUnit);
+    }
     
     public void run() {
         synchronized (this) {
@@ -46,24 +53,24 @@ public class EventJmsListener extends BaseEventSource implements MessageListener
     }
 
     @Override
+    @SuppressWarnings({ "unchecked" })    
     public void onMessage(Message message) {
         try {
             lastReceivedTimestamp = System.currentTimeMillis();
             String json = JmsHelper.getText(message);
-            ScenarioEvent event = ScenarioEvent.fromJson(json);
-            raise(event);
+            String className = message.getStringProperty(EventJmsSender.EVENT_CLASS);
+            Class<Event<?>> eventClass = (Class<Event<?>>) Class.forName(className);
+            raise((Event<?>) eventClass.newInstance().fromJson(json));
         } catch (Throwable t) {
             System.err.println(t);
         }
     }
 
     public void shutdownGracefully() {
-        try {
-            while (System.currentTimeMillis() - lastReceivedTimestamp < 10000) {
-                Thread.sleep(1000);
+        try {            
+            while (System.currentTimeMillis() - lastReceivedTimestamp < shutdownDelay) {
+                ConcurrencyUtils.sleep(1, SECONDS);
             }
-        } catch (InterruptedException e) {
-            // Meh
         } finally {
             shutdown();
         }

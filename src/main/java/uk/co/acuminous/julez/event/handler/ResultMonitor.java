@@ -13,7 +13,7 @@ public class ResultMonitor implements EventHandler {
     private AtomicInteger failureCount = new AtomicInteger();
     
     @Override
-    public void onEvent(Event event) {
+    public void onEvent(Event<?> event) {
         if (ScenarioEvent.PASS.equals(event.getType())) {
             passCount.incrementAndGet();
         } else if (ScenarioEvent.FAIL.equals(event.getType())) {

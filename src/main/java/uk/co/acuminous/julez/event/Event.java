@@ -2,17 +2,18 @@ package uk.co.acuminous.julez.event;
 
 import java.util.UUID;
 
-import uk.co.acuminous.julez.scenario.ScenarioEvent;
-
 import com.google.gson.Gson;
 
-public class Event {
+public abstract class Event<T> {
     
     private String id;
     private long timestamp;    
     private String type;
     private String correlationId;        
 
+    public Event() {        
+    }
+    
     public Event(String type, String correlationId) {
         this(UUID.randomUUID().toString(), System.currentTimeMillis(), type, correlationId);
     }
@@ -48,7 +49,5 @@ public class Event {
         return new Gson().toJson(this);
     }    
     
-    public static ScenarioEvent fromJson(String json) {
-        return new Gson().fromJson(json, ScenarioEvent.class);
-    }
+    public abstract T fromJson(String json);
 }
