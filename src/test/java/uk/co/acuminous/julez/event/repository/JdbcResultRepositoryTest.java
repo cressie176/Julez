@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.scenario.event;
+package uk.co.acuminous.julez.event.repository;
 
 import static org.junit.Assert.assertEquals;
 

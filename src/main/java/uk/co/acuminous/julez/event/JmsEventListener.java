@@ -12,7 +12,7 @@ import javax.jms.QueueSession;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
-public class EventJmsListener extends BaseEventSource implements MessageListener, Runnable {
+public class JmsEventListener extends BaseEventSource implements MessageListener, Runnable {
 
     private final QueueConnection connection;
     private final String queueName;
@@ -21,16 +21,16 @@ public class EventJmsListener extends BaseEventSource implements MessageListener
     private long lastReceivedTimestamp = System.currentTimeMillis();    
     private long shutdownDelay = 10000;
 
-    public EventJmsListener(QueueConnectionFactory connectionFactory) {
+    public JmsEventListener(QueueConnectionFactory connectionFactory) {
         this(connectionFactory, EventJmsSender.DEFAULT_QUEUE_NAME);
     }
 
-    public EventJmsListener(QueueConnectionFactory connectionFactory, String queueName) {
+    public JmsEventListener(QueueConnectionFactory connectionFactory, String queueName) {
         this.connection = JmsHelper.getConnection(connectionFactory);
         this.queueName = queueName;
     }    
     
-    public EventJmsListener listen() {
+    public JmsEventListener listen() {
         listenerThread = ConcurrencyUtils.start(this);
         return this;
     }

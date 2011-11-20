@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.scenario.event;
+package uk.co.acuminous.julez.event;
 
 import static org.junit.Assert.assertEquals;
 
@@ -20,7 +20,7 @@ import uk.co.acuminous.julez.util.JmsHelper;
 
 import com.google.gson.Gson;
 
-public class ScenarioResultJmsSenderTest {
+public class JmsSenderTest {
 
     private QueueConnectionFactory connectionFactory;
     private EventJmsSender jmsSender;
