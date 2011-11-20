@@ -10,7 +10,7 @@ import javax.jms.TextMessage;
 
 import uk.co.acuminous.julez.util.JmsHelper;
 
-public class EventJmsSender implements EventHandler {
+public class JmsEventSender implements EventHandler {
 
     public static final String EVENT_TYPE = "EventType";
     public static final String EVENT_CLASS = "EventClass";
@@ -18,11 +18,11 @@ public class EventJmsSender implements EventHandler {
     private final QueueConnection connection;
     private final String queueName;
     
-    public EventJmsSender(QueueConnectionFactory connectionFactory) {  
+    public JmsEventSender(QueueConnectionFactory connectionFactory) {  
         this(connectionFactory, DEFAULT_QUEUE_NAME);
     }
         
-    public EventJmsSender(QueueConnectionFactory connectionFactory, String queueName) {        
+    public JmsEventSender(QueueConnectionFactory connectionFactory, String queueName) {        
         this.connection = JmsHelper.getConnection(connectionFactory);
         this.queueName = queueName;        
     }

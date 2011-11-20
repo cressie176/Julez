@@ -16,21 +16,21 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.event.JmsEventListener;
-import uk.co.acuminous.julez.event.EventJmsSender;
+import uk.co.acuminous.julez.event.JmsEventSender;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.test.TestUtils;
 
-public class JmsListenerTest {
+public class JmsEventListenerTest {
 
     private QueueConnectionFactory connectionFactory;
     private ScenarioEventFactory scenarioEventFactory;
     private ScenarioRunnerEventFactory scenarioRunnerEventFactory;
     private JmsEventListener listener;
     private ScenarioEventRecorder recorder;
-    private EventJmsSender scenarioEventJmsSender;
+    private JmsEventSender scenarioEventJmsSender;
     
     @Before
     public void init() {
@@ -41,7 +41,7 @@ public class JmsListenerTest {
         recorder = new ScenarioEventRecorder();                
         initilaiseJmsEventListener();
         
-        scenarioEventJmsSender = new EventJmsSender(connectionFactory);        
+        scenarioEventJmsSender = new JmsEventSender(connectionFactory);        
     }
     
     private void initilaiseJmsEventListener() {

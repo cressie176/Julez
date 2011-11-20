@@ -22,7 +22,7 @@ public class JmsEventListener extends BaseEventSource implements MessageListener
     private long shutdownDelay = 10000;
 
     public JmsEventListener(QueueConnectionFactory connectionFactory) {
-        this(connectionFactory, EventJmsSender.DEFAULT_QUEUE_NAME);
+        this(connectionFactory, JmsEventSender.DEFAULT_QUEUE_NAME);
     }
 
     public JmsEventListener(QueueConnectionFactory connectionFactory, String queueName) {
@@ -58,7 +58,7 @@ public class JmsEventListener extends BaseEventSource implements MessageListener
         try {
             lastReceivedTimestamp = System.currentTimeMillis();
             String json = JmsHelper.getText(message);
-            String className = message.getStringProperty(EventJmsSender.EVENT_CLASS);
+            String className = message.getStringProperty(JmsEventSender.EVENT_CLASS);
             Class<Event<?>> eventClass = (Class<Event<?>>) Class.forName(className);
             raise((Event<?>) eventClass.newInstance().fromJson(json));
         } catch (Throwable t) {

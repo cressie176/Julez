@@ -14,7 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.JmsEventListener;
-import uk.co.acuminous.julez.event.EventJmsSender;
+import uk.co.acuminous.julez.event.JmsEventSender;
 import uk.co.acuminous.julez.event.filter.EventClassFilter;
 import uk.co.acuminous.julez.event.repository.ScenarioEventJdbcRepository;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
@@ -64,7 +64,7 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
         JmsEventListener asynchronousListener = new JmsEventListener(connectionFactory).listen();
         asynchronousListener.registerEventHandler(scenarioEventFilter);
         
-        EventJmsSender jmsSender = new EventJmsSender(connectionFactory);               
+        JmsEventSender jmsSender = new JmsEventSender(connectionFactory);               
         scenario.registerEventHandler(jmsSender);
         
         Scenarios scenarios = TestUtils.getScenarios(scenario, 100);  
