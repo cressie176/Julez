@@ -15,6 +15,7 @@ import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.Scenarios;
 import uk.co.acuminous.julez.test.EventRecorder;
+import uk.co.acuminous.julez.test.InvocationCountingScenario;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
@@ -32,14 +33,14 @@ public class ConcurrentScenarioRunnerTest {
     
     @Test
     public void runsScenarios() {
-        NoopScenario scenario = new NoopScenario(scenarioEventFactory);
+        InvocationCountingScenario scenario = new InvocationCountingScenario(scenarioEventFactory);
         Scenarios scenarios = TestUtils.getScenarios(scenario, 10);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner(scenarioRunnerEventFactory).usingExecutor(Executors.newFixedThreadPool(1));                
         runner.queue(scenarios);        
         runner.run();
         
-        assertEquals(10, scenario.counter);        
+        assertEquals(10, scenario.counter.get());        
     }
     
     @Test    
@@ -70,7 +71,7 @@ public class ConcurrentScenarioRunnerTest {
     
     @Test
     public void raisesBeginEvent() {
-        NoopScenario scenario = new NoopScenario(scenarioEventFactory);
+        InvocationCountingScenario scenario = new InvocationCountingScenario(scenarioEventFactory);
         Scenarios scenarios = TestUtils.getScenarios(scenario, 10);        
 
         EventRecorder eventRecorder = new EventRecorder();        
@@ -103,7 +104,7 @@ public class ConcurrentScenarioRunnerTest {
     
     @Test
     public void raisesEndEvent() {
-        NoopScenario scenario = new NoopScenario(scenarioEventFactory);
+        InvocationCountingScenario scenario = new InvocationCountingScenario(scenarioEventFactory);
         Scenarios scenarios = TestUtils.getScenarios(scenario, 10);        
 
         EventRecorder eventRecorder = new EventRecorder();        
@@ -114,19 +115,6 @@ public class ConcurrentScenarioRunnerTest {
         runner.run();
         
         assertEquals(ScenarioRunnerEvent.END, eventRecorder.events.get(1).getType());
-    }
-    
-    class NoopScenario extends BaseScenario {
-
-        int counter;        
-                
-        public NoopScenario(ScenarioEventFactory eventFactory) {
-            super(eventFactory);
-        }
-        
-        @Override public void run() {
-            counter++;
-        }
     }
     
     class SleepingScenario extends BaseScenario {

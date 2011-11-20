@@ -1,0 +1,32 @@
+package uk.co.acuminous.julez.test;
+
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
+import java.util.concurrent.TimeUnit;
+
+import uk.co.acuminous.julez.scenario.BaseScenario;
+import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
+import uk.co.acuminous.julez.util.ConcurrencyUtils;
+
+public class SleepingScenario extends BaseScenario {
+
+    private final long duration;
+
+    public SleepingScenario(ScenarioEventFactory eventFactory) {
+        this(eventFactory, 1, SECONDS);
+    }
+    
+    public SleepingScenario(ScenarioEventFactory eventFactory, long duration, TimeUnit units) {
+        super(eventFactory);
+        this.duration = MILLISECONDS.convert(duration, units);
+        
+    }    
+
+    @Override
+    public void run() {
+        raise(eventFactory.begin());        
+        ConcurrencyUtils.sleep(duration, MILLISECONDS);
+        raise(eventFactory.pass());        
+    }
+}
