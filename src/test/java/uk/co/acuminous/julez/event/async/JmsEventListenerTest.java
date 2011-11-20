@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.event;
+package uk.co.acuminous.julez.event.async;
 
 import static org.junit.Assert.assertEquals;
 
@@ -15,8 +15,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
-import uk.co.acuminous.julez.event.JmsEventListener;
-import uk.co.acuminous.julez.event.JmsEventSender;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;

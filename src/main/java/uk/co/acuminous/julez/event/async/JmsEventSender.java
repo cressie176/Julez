@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.event;
+package uk.co.acuminous.julez.event.async;
 
 import javax.jms.JMSException;
 import javax.jms.QueueConnection;
@@ -8,6 +8,8 @@ import javax.jms.QueueSession;
 import javax.jms.Session;
 import javax.jms.TextMessage;
 
+import uk.co.acuminous.julez.event.Event;
+import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.util.JmsHelper;
 
 public class JmsEventSender implements EventHandler {

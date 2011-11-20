@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.event;
+package uk.co.acuminous.julez.event.async;
 
 import java.util.concurrent.TimeUnit;
 import static java.util.concurrent.TimeUnit.*;
@@ -9,6 +9,8 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSession;
 
+import uk.co.acuminous.julez.event.BaseEventSource;
+import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 

@@ -13,8 +13,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.JmsEventListener;
-import uk.co.acuminous.julez.event.JmsEventSender;
+import uk.co.acuminous.julez.event.async.JmsEventListener;
+import uk.co.acuminous.julez.event.async.JmsEventSender;
 import uk.co.acuminous.julez.event.filter.EventClassFilter;
 import uk.co.acuminous.julez.event.repository.ScenarioEventJdbcRepository;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;

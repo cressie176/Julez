@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.event;
+package uk.co.acuminous.julez.event.async;
 
 import static org.junit.Assert.assertEquals;
 
@@ -12,7 +12,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.JmsEventSender;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.test.TestUtils;
