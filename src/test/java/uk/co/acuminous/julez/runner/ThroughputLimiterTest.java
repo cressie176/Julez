@@ -1,11 +1,10 @@
 package uk.co.acuminous.julez.runner;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.Assert.assertEquals;
-import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
-import static java.util.concurrent.TimeUnit.*;
 
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
