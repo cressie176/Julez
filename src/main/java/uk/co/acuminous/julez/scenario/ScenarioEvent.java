@@ -9,27 +9,11 @@ public class ScenarioEvent extends Event {
     public static final String FAIL = "ScenarioEvent.FAIL";
     public static final String ERROR = "ScenarioEvent.ERROR";
         
-    public ScenarioEvent(String type) {
-        super(type);
+    public ScenarioEvent(String type, String correlationId) {
+        super(type, correlationId);
     }
     
-    public ScenarioEvent(String id, long timestamp, String type) {
-        super(id, timestamp, type);
-    }
-    
-    public static ScenarioEvent begin() {
-        return new ScenarioEvent(BEGIN);
-    }    
-    
-    public static ScenarioEvent pass() {
-        return new ScenarioEvent(PASS);
-    }
-    
-    public static ScenarioEvent fail() {
-        return new ScenarioEvent(FAIL);
-    } 
-    
-    public static ScenarioEvent error() {
-        return new ScenarioEvent(ERROR);
+    public ScenarioEvent(String id, long timestamp, String type, String correlationId) {
+        super(id, timestamp, type, correlationId);
     }    
 }

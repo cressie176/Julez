@@ -16,7 +16,8 @@ public class JBehaveScenario extends BaseScenario {
     private final String scenario;
     private final Object[] steps;
 
-    public JBehaveScenario(URL codeLocation, String scenario, Object... steps) {
+    public JBehaveScenario(ScenarioEventFactory eventFactory, URL codeLocation, String scenario, Object... steps) {
+        super(eventFactory);
         this.codeLocation = codeLocation;
         this.scenario = scenario;
         this.steps = steps;
@@ -36,11 +37,11 @@ public class JBehaveScenario extends BaseScenario {
         }       
         
         try {
-            begin();            
+            raise(eventFactory.begin());            
             embedder.runStoriesAsPaths(storyPaths);
-            pass();
+            raise(eventFactory.pass());
         } catch (Throwable t) {
-            fail();
+            raise(eventFactory.fail());
         }        
     }
 }

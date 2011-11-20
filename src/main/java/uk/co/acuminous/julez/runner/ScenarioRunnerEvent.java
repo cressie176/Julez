@@ -8,19 +8,11 @@ public class ScenarioRunnerEvent extends Event {
     public static String BEGIN = "ScenarioRunnerEvent.BEGIN";
     public static String END = "ScenarioRunnerEvent.END"; 
     
-    public ScenarioRunnerEvent(String type) {
-         super(type);
+    public ScenarioRunnerEvent(String type, String correlationId) {
+         super(type, correlationId);
     }
     
-    public ScenarioRunnerEvent(String id, long timestamp, String type) {
-         super(id, timestamp, type);
-    }
-
-    public static Event begin() {
-        return new ScenarioRunnerEvent(BEGIN);
-    }
-
-    public static Event end() {
-        return new ScenarioRunnerEvent(END);
+    public ScenarioRunnerEvent(String id, long timestamp, String type, String correlationId) {
+         super(id, timestamp, type, correlationId);
     }
 }

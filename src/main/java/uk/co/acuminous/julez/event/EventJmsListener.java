@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.event.repository;
+package uk.co.acuminous.julez.event;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -10,13 +10,11 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSession;
 
-import uk.co.acuminous.julez.event.EventHandler;
-import uk.co.acuminous.julez.event.EventSource;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
-public class ScenarioEventJmsListener implements MessageListener, Runnable, EventSource {
+public class EventJmsListener implements MessageListener, Runnable, EventSource {
 
     private final QueueConnection connection;
     private final String queueName;
@@ -25,11 +23,11 @@ public class ScenarioEventJmsListener implements MessageListener, Runnable, Even
     private Thread listenerThread;
     private Set<EventHandler> handlers = new HashSet<EventHandler>();
 
-    public ScenarioEventJmsListener(QueueConnectionFactory connectionFactory) {
-        this(connectionFactory, ScenarioEventJmsSender.DEFAULT_QUEUE_NAME);
+    public EventJmsListener(QueueConnectionFactory connectionFactory) {
+        this(connectionFactory, EventJmsSender.DEFAULT_QUEUE_NAME);
     }
 
-    public ScenarioEventJmsListener(QueueConnectionFactory connectionFactory, String queueName) {
+    public EventJmsListener(QueueConnectionFactory connectionFactory, String queueName) {
         this.connection = JmsHelper.getConnection(connectionFactory);
         this.queueName = queueName;
     }
@@ -39,7 +37,7 @@ public class ScenarioEventJmsListener implements MessageListener, Runnable, Even
         this.handlers.addAll(Arrays.asList(handlers));     
     }        
     
-    public ScenarioEventJmsListener listen() {
+    public EventJmsListener listen() {
         listenerThread = ConcurrencyUtils.start(this);
         return this;
     }    
@@ -59,11 +57,15 @@ public class ScenarioEventJmsListener implements MessageListener, Runnable, Even
 
     @Override
     public void onMessage(Message message) {
-        lastReceivedTimestamp = System.currentTimeMillis();
-        String json = JmsHelper.getText(message);
-        ScenarioEvent event = ScenarioEvent.fromJson(json);
-        for (EventHandler handler : handlers) {
-            handler.onEvent(event);
+        try {
+            lastReceivedTimestamp = System.currentTimeMillis();
+            String json = JmsHelper.getText(message);
+            ScenarioEvent event = ScenarioEvent.fromJson(json);
+            for (EventHandler handler : handlers) {
+                handler.onEvent(event);
+            }
+        } catch (Throwable t) {
+            System.err.println(t);
         }
     }
 

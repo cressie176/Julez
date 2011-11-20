@@ -13,20 +13,21 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
-import uk.co.acuminous.julez.event.repository.ScenarioEventJmsListener;
-import uk.co.acuminous.julez.event.repository.ScenarioEventJmsSender;
-import uk.co.acuminous.julez.scenario.ScenarioEvent;
+import uk.co.acuminous.julez.event.EventJmsListener;
+import uk.co.acuminous.julez.event.EventJmsSender;
+import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.test.TestUtils;
 
 public class ScenarioEventJmsListenerTest {
 
     private QueueConnectionFactory connectionFactory;
-
+    private ScenarioEventFactory scenarioEventFactory;
+    
     @Before
-    public void init() throws Exception {
-        TestUtils.createBroker();
-        
-        connectionFactory = TestUtils.getConnectionFactory();                                
+    public void init() {
+        TestUtils.createBroker();        
+        connectionFactory = TestUtils.getConnectionFactory();
+        scenarioEventFactory = new ScenarioEventFactory("");                
     }
     
     @After
@@ -39,12 +40,12 @@ public class ScenarioEventJmsListenerTest {
 
         ScenarioEventRecorder recorder = new ScenarioEventRecorder();
         
-        ScenarioEventJmsListener listener = new ScenarioEventJmsListener(connectionFactory);
+        EventJmsListener listener = new EventJmsListener(connectionFactory);
         listener.registerEventHandler(recorder);
         listener.listen();                        
                 
-        ScenarioEventJmsSender scenarioEventJmsSender = new ScenarioEventJmsSender(connectionFactory);
-        scenarioEventJmsSender.onEvent(ScenarioEvent.pass());
+        EventJmsSender scenarioEventJmsSender = new EventJmsSender(connectionFactory);
+        scenarioEventJmsSender.onEvent(scenarioEventFactory.pass());
         
         listener.shutdownGracefully();
         

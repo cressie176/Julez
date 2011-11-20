@@ -9,27 +9,16 @@ import uk.co.acuminous.julez.event.EventHandler;
 
 public abstract class BaseScenario implements Scenario {
 
-    protected Set<EventHandler> handlers = new HashSet<EventHandler>();
+    protected final Set<EventHandler> handlers = new HashSet<EventHandler>();
+    protected final ScenarioEventFactory eventFactory;
+    
+    public BaseScenario(ScenarioEventFactory eventFactory) {
+        this.eventFactory = eventFactory;        
+    }
     
     @Override
     public void registerEventHandler(EventHandler... handlers) {
         this.handlers.addAll(Arrays.asList(handlers));     
-    }
-    
-    protected void begin() {
-        raise(new ScenarioEvent(ScenarioEvent.BEGIN));
-    }    
-    
-    protected void pass() {
-        raise(new ScenarioEvent(ScenarioEvent.PASS));
-    }
-    
-    protected void fail() {
-        raise(new ScenarioEvent(ScenarioEvent.FAIL));
-    }
-        
-    protected void error() {
-        raise(new ScenarioEvent(ScenarioEvent.ERROR));
     }    
     
     protected void raise(Event event) {

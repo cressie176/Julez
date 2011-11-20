@@ -8,16 +8,20 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.event.repository.ScenarioEventJdbcRepository;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
+import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.test.TestUtils;
 
 public class JdbcResultRepositoryTest {
 
     private ScenarioEventJdbcRepository repository;
+    private ScenarioEventFactory scenarioEventFactory;
 
     @Before
     public void init() throws Exception {
         repository = new ScenarioEventJdbcRepository(TestUtils.getDataSource());
         repository.ddl();
+        
+        scenarioEventFactory = new ScenarioEventFactory("foo");        
     }
 
     @After
@@ -27,15 +31,15 @@ public class JdbcResultRepositoryTest {
 
     @Test
     public void eventIsAddedToRepository() {
-        repository.add(ScenarioEvent.fail());
+        repository.add(scenarioEventFactory.fail());
         assertEquals(1, repository.count());
     }
 
     @Test
     public void countsAllEventsInRepository() {
-        repository.add(ScenarioEvent.fail());
-        repository.add(ScenarioEvent.fail());
-        repository.add(ScenarioEvent.pass());
+        repository.add(scenarioEventFactory.fail());
+        repository.add(scenarioEventFactory.fail());
+        repository.add(scenarioEventFactory.fail());
         assertEquals(3, repository.count());
     }
 
@@ -44,14 +48,15 @@ public class JdbcResultRepositoryTest {
 
         long timestamp = System.currentTimeMillis();
 
-        ScenarioEvent event = new ScenarioEvent("id", timestamp, ScenarioEvent.FAIL);
+        ScenarioEvent event = new ScenarioEvent("id", timestamp, ScenarioEvent.FAIL, "foo");
 
         repository.add(event);
 
-        ScenarioEvent dbEvent = repository.get(event.getId());
+        ScenarioEvent dbEvent = repository.get("id");
 
-        assertEquals(event.getId(), dbEvent.getId());
+        assertEquals("id", dbEvent.getId());
         assertEquals(timestamp, dbEvent.getTimestamp());
         assertEquals(ScenarioEvent.FAIL, dbEvent.getType());
+        assertEquals("foo", dbEvent.getCorrelationId());
     }    
 }

@@ -18,7 +18,12 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     private Scenarios scenarios;    
     private int numberOfScenarios;        
     private long timeout = 365 * 24 * 60 * 60 * 1000;
-    private DateTime startTime = new DateTime();    
+    private DateTime startTime = new DateTime();
+    private final ScenarioRunnerEventFactory eventFactory;    
+    
+    public ConcurrentScenarioRunner(ScenarioRunnerEventFactory eventFactory) {
+        this.eventFactory = eventFactory;        
+    }
     
     public ConcurrentScenarioRunner queue(Scenarios scenarios) {
         this.numberOfScenarios = scenarios.available();
@@ -47,7 +52,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
                 
         ConcurrencyUtils.sleep(startTime.getMillis() - new DateTime().getMillis(), MILLISECONDS);
         
-        begin();        
+        raise(eventFactory.begin());
         
         try {
             for (int i = 0; i < numberOfScenarios; i++) {
@@ -62,6 +67,6 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
             // Meh
         }    
         
-        end();
+        raise(eventFactory.end());
     }
 }

@@ -26,6 +26,7 @@ public class ScenarioEventJdbcRepository implements ScenarioEventRepository, Eve
             "id VARCHAR(36) NOT NULL, " +
             "timestamp DOUBLE NOT NULL, " +
             "type VARCHAR(255) NOT NULL, " +
+            "correlation_id VARCHAR(255) NOT NULL, " +            
             "PRIMARY KEY (id)" +
         ")");
         return this;
@@ -38,10 +39,11 @@ public class ScenarioEventJdbcRepository implements ScenarioEventRepository, Eve
     
     @Override
     public void add(ScenarioEvent event) {
-        jdbcTemplate.update("INSERT INTO scenario_event (id, timestamp, type) VALUES (?, ?, ?)", 
+        jdbcTemplate.update("INSERT INTO scenario_event (id, timestamp, type, correlation_id) VALUES (?, ?, ?, ?)", 
             event.getId(), 
             event.getTimestamp(), 
-            event.getType());
+            event.getType(),
+            event.getCorrelationId());
     }
 
     @Override
@@ -74,7 +76,8 @@ public class ScenarioEventJdbcRepository implements ScenarioEventRepository, Eve
             return new ScenarioEvent (
                 rs.getString("id"),
                 rs.getLong("timestamp"),
-                rs.getString("type")
+                rs.getString("type"),
+                rs.getString("correlation_id")
             );
         }  
     }

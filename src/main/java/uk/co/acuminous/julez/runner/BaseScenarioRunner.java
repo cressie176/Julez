@@ -15,15 +15,7 @@ public abstract class BaseScenarioRunner implements ScenarioRunner, EventSource 
     @Override
     public void registerEventHandler(EventHandler... handlers) {
         this.handlers.addAll(Arrays.asList(handlers));     
-    }
-    
-    protected void begin() {
-        raise(new ScenarioRunnerEvent(ScenarioRunnerEvent.BEGIN));
     }  
-    
-    protected void end() {
-        raise(new ScenarioRunnerEvent(ScenarioRunnerEvent.END));
-    }     
             
     protected void raise(Event event) {
         for (EventHandler handler : handlers) {

@@ -12,8 +12,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.repository.ScenarioEventJmsSender;
+import uk.co.acuminous.julez.event.EventJmsSender;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
+import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
@@ -22,15 +23,15 @@ import com.google.gson.Gson;
 public class ScenarioResultJmsSenderTest {
 
     private QueueConnectionFactory connectionFactory;
-    private ScenarioEventJmsSender jmsSender;
+    private EventJmsSender jmsSender;
+    private ScenarioEventFactory scenarioEventFactory;    
 
     @Before
-    public void init() throws Exception {
-                
+    public void init() throws Exception {                
         TestUtils.createBroker();
         connectionFactory = TestUtils.getConnectionFactory();        
-
-        jmsSender = new ScenarioEventJmsSender(connectionFactory);
+        scenarioEventFactory = new ScenarioEventFactory("");                
+        jmsSender = new EventJmsSender(connectionFactory);
     }
     
     @After
@@ -40,18 +41,18 @@ public class ScenarioResultJmsSenderTest {
     
     @Test
     public void failuresAreWrittenToTheResultsQueue() throws JMSException, InterruptedException {        
-        jmsSender.onEvent(ScenarioEvent.fail());                
+        jmsSender.onEvent(scenarioEventFactory.fail());                
         assertScenarioEvent(dequeue(), ScenarioEvent.FAIL);
     }
         
     @Test
     public void passesAreWrittenToTheResultsQueue() throws Exception {        
-        jmsSender.onEvent(ScenarioEvent.pass());                
+        jmsSender.onEvent(scenarioEventFactory.pass());                
         assertScenarioEvent(dequeue(), ScenarioEvent.PASS);     
     }
 
     private ScenarioEvent dequeue() throws JMSException {
-        List<TextMessage> messages = JmsHelper.browseMessages(connectionFactory, ScenarioEventJmsSender.DEFAULT_QUEUE_NAME);
+        List<TextMessage> messages = JmsHelper.browseMessages(connectionFactory, EventJmsSender.DEFAULT_QUEUE_NAME);
         return new Gson().fromJson(messages.get(0).getText(), ScenarioEvent.class);
     }     
     
