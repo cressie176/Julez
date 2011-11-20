@@ -1,13 +1,13 @@
 package uk.co.acuminous.julez.runner;
 
-import com.google.gson.Gson;
-
 import uk.co.acuminous.julez.event.Event;
+
+import com.google.gson.Gson;
 
 public class ScenarioRunnerEvent extends Event {
 
-    public static String BEGIN = "ScenarioRunnerEvent/BEGIN";
-    public static String END = "ScenarioRunnerEvent/END"; 
+    public static String BEGIN = qualify("BEGIN");
+    public static String END = qualify("END"); 
     
     public ScenarioRunnerEvent() {        
     }
@@ -24,4 +24,8 @@ public class ScenarioRunnerEvent extends Event {
     public ScenarioRunnerEvent fromJson(String json) {
         return new Gson().fromJson(json, ScenarioRunnerEvent.class);
     }
+    
+    protected static String qualify(String subType) {
+        return String.format("%s/%s", ScenarioRunnerEvent.class.getSimpleName(), subType);
+    }    
 }
