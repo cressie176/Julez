@@ -16,7 +16,11 @@ public class JmsEventSender implements EventHandler {
 
     public static final String EVENT_TYPE = "EventType";
     public static final String EVENT_CLASS = "EventClass";
+    public static final String EVENT_TIMESTAMP = "EventTimestamp";
+    public static final String EVENT_CORRELATION_ID = "EventCorrelationId";
+    
     public static final String DEFAULT_QUEUE_NAME = "julez";
+    
     private final QueueConnection connection;
     private final String queueName;
     
@@ -36,8 +40,12 @@ public class JmsEventSender implements EventHandler {
             session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
             QueueSender sender = session.createSender(session.createQueue(queueName));
             TextMessage msg = session.createTextMessage(event.toJson());
+            
             msg.setStringProperty(EVENT_CLASS, event.getClass().getName());
             msg.setStringProperty(EVENT_TYPE, event.getType());
+            msg.setLongProperty(EVENT_TIMESTAMP, event.getTimestamp());
+            msg.setStringProperty(EVENT_CORRELATION_ID, event.getCorrelationId());
+            
             sender.send(msg);
         } catch (JMSException e) {
             throw new RuntimeException(e);

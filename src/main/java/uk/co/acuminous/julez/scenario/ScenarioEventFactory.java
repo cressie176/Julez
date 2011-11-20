@@ -28,5 +28,4 @@ public class ScenarioEventFactory {
     public ScenarioEvent error() {
         return new ScenarioEvent(ScenarioEvent.ERROR, correlationId);
     }
-    
 }

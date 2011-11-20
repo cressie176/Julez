@@ -1,5 +1,7 @@
 package uk.co.acuminous.julez.event;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import com.google.gson.Gson;
@@ -9,7 +11,8 @@ public abstract class Event {
     private String id;
     private long timestamp;    
     private String type;
-    private String correlationId;        
+    private String correlationId;
+    private Map<String, Object> data = new HashMap<String, Object>();
 
     public Event() {        
     }
@@ -40,6 +43,14 @@ public abstract class Event {
     public long getTimestamp() {
         return timestamp;
     }    
+    
+    public Map<String, Object> getData() {
+        return data;
+    }
+    
+    public void setData(Map<String, Object> data) {
+        this.data = data;
+    }
     
     public String toString() {
         return toJson();

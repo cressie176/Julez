@@ -7,11 +7,13 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
+import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.Scenarios;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 
 import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebResponse;
 import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 public class ConcurrentWebTest extends WebTestCase {
@@ -42,16 +44,30 @@ public class ConcurrentWebTest extends WebTestCase {
                 webClient.setJavaScriptEnabled(false);                
                 
                 HtmlPage page = webClient.getPage("http://localhost:8080");
-                if (page.getWebResponse().getStatusCode() == 200) {
+                WebResponse webResponse = page.getWebResponse();
+                if (webResponse.getStatusCode() == 200) {
                     raise(eventFactory.pass());
                 } else {                                               
-                    raise(eventFactory.fail());
+                    raiseFailure(webResponse.getStatusCode(), webResponse.getStatusMessage());
                 }
             } catch (Exception e) {
-                raise(eventFactory.error());
+                raiseError(e.getMessage());
             } finally {                
                 webClient.closeAllWindows();
             }
+        }
+        
+        private void raiseFailure(Integer status, String message) {
+            ScenarioEvent event = eventFactory.fail();
+            event.getData().put("statusCode", status);
+            event.getData().put("statusMessage", message);
+            raise(event);
+        }
+        
+        private void raiseError(String message) {
+            ScenarioEvent event = eventFactory.error();
+            event.getData().put("message", message);
+            raise(event);       
         }
     }
 }

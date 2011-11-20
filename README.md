@@ -200,10 +200,8 @@ The project is in very early stages of development. There's guaranteed to be a l
 
 Road Map (In no particular order)
 ---------------------
-* Throttled ScenarioQueue
 * ScenarioQueue that can be asynchronously filled (maybe when the size reaches a threshold)
 * Mechanism to assign junit tests to profiles so that can be run / skipped
-* Create a proper event model for scenarios and scenario runner
 * Mechanism to configure a synchronised start from command line so the suites can be synchronised from multiple hosts
 * Create a web based admin ui for monitoring status of a test run in realtime
 * Separate out Examples, JBehave, JMS & JDBC classes into different projects so the core is ultra lightweight
