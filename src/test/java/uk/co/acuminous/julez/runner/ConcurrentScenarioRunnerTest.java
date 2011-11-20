@@ -9,8 +9,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 
-import junit.framework.Assert;
-
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
