@@ -1,9 +1,5 @@
 package uk.co.acuminous.julez.event;
 
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.Set;
-
 import javax.jms.Message;
 import javax.jms.MessageListener;
 import javax.jms.QueueConnection;
@@ -14,14 +10,13 @@ import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
-public class EventJmsListener implements MessageListener, Runnable, EventSource {
+public class EventJmsListener extends BaseEventSource implements MessageListener, Runnable {
 
     private final QueueConnection connection;
     private final String queueName;
     private QueueSession session;
     private long lastReceivedTimestamp = System.currentTimeMillis();
     private Thread listenerThread;
-    private Set<EventHandler> handlers = new HashSet<EventHandler>();
 
     public EventJmsListener(QueueConnectionFactory connectionFactory) {
         this(connectionFactory, EventJmsSender.DEFAULT_QUEUE_NAME);
@@ -30,12 +25,7 @@ public class EventJmsListener implements MessageListener, Runnable, EventSource 
     public EventJmsListener(QueueConnectionFactory connectionFactory, String queueName) {
         this.connection = JmsHelper.getConnection(connectionFactory);
         this.queueName = queueName;
-    }
-
-    @Override
-    public void registerEventHandler(EventHandler... handlers) {
-        this.handlers.addAll(Arrays.asList(handlers));     
-    }        
+    }    
     
     public EventJmsListener listen() {
         listenerThread = ConcurrencyUtils.start(this);
@@ -61,9 +51,7 @@ public class EventJmsListener implements MessageListener, Runnable, EventSource 
             lastReceivedTimestamp = System.currentTimeMillis();
             String json = JmsHelper.getText(message);
             ScenarioEvent event = ScenarioEvent.fromJson(json);
-            for (EventHandler handler : handlers) {
-                handler.onEvent(event);
-            }
+            raise(event);
         } catch (Throwable t) {
             System.err.println(t);
         }

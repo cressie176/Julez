@@ -6,7 +6,7 @@ import java.util.UUID;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.handlers.ThroughputMonitor;
+import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.BaseScenario;

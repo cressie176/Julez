@@ -5,6 +5,10 @@ public class ScenarioEventFactory {
     
     private String correlationId;
     
+    public ScenarioEventFactory() {
+        this(null);
+    }
+    
     public ScenarioEventFactory(String correlationId) {
         this.correlationId = correlationId;        
     }

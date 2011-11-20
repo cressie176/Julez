@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.handlers.ResultMonitor;
+import uk.co.acuminous.julez.event.handler.ResultMonitor;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 
 public class ResultMonitorTest {

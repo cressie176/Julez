@@ -6,6 +6,10 @@ public class ScenarioRunnerEventFactory {
 
     private final String correlationId;
     
+    public ScenarioRunnerEventFactory() {
+        this(null);
+    }
+    
     public ScenarioRunnerEventFactory(String correlationId) {
         this.correlationId = correlationId;        
     }

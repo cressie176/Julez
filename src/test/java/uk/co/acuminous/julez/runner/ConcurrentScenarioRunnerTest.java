@@ -4,8 +4,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.Executors;
 
@@ -13,11 +11,10 @@ import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.test.EventRecorder;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
@@ -154,15 +151,5 @@ public class ConcurrentScenarioRunnerTest {
         @Override public void run() {
             actualStartTime = new DateTime();
         }
-    }
-    
-    class EventRecorder implements EventHandler {
-
-        List<Event> events = new ArrayList<Event>();
-        
-        @Override
-        public void onEvent(Event event) {
-            events.add(event);            
-        }        
     }
 }

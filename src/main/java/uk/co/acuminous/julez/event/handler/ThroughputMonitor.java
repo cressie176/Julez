@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.event.handlers;
+package uk.co.acuminous.julez.event.handler;
 
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;

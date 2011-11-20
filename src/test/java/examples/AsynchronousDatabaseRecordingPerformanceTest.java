@@ -15,10 +15,12 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.event.EventJmsListener;
 import uk.co.acuminous.julez.event.EventJmsSender;
+import uk.co.acuminous.julez.event.filter.EventClassFilter;
 import uk.co.acuminous.julez.event.repository.ScenarioEventJdbcRepository;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.JBehaveScenario;
+import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.Scenarios;
 import uk.co.acuminous.julez.test.TestUtils;
@@ -55,10 +57,12 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
         URL scenarioLocation = codeLocationFromClass(this.getClass());
         JBehaveScenario scenario = new JBehaveScenario(scenarioEventFactory, scenarioLocation, "scenario2.txt", new Scenario2Steps());        
                 
-        ScenarioEventJdbcRepository repository = new ScenarioEventJdbcRepository(dataSource).ddl();
+        ScenarioEventJdbcRepository scenarioEventRepository = new ScenarioEventJdbcRepository(dataSource).ddl();
+        EventClassFilter<ScenarioEvent> scenarioEventFilter = new EventClassFilter<ScenarioEvent>(ScenarioEvent.class);
+        scenarioEventFilter.registerEventHandler(scenarioEventRepository);
         
         EventJmsListener asynchronousListener = new EventJmsListener(connectionFactory).listen();
-        asynchronousListener.registerEventHandler(repository);
+        asynchronousListener.registerEventHandler(scenarioEventFilter);
         
         EventJmsSender jmsSender = new EventJmsSender(connectionFactory);               
         scenario.registerEventHandler(jmsSender);
@@ -69,6 +73,6 @@ public class AsynchronousDatabaseRecordingPerformanceTest extends WebTestCase {
         
         asynchronousListener.shutdownGracefully();
         
-        assertEquals(200, repository.count());                        
+        assertEquals(200, scenarioEventRepository.count());                        
     }
 }
