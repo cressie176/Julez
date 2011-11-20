@@ -61,8 +61,8 @@ public class JmsEventListener extends BaseEventSource implements MessageListener
             lastReceivedTimestamp = System.currentTimeMillis();
             String json = JmsHelper.getText(message);
             String className = message.getStringProperty(JmsEventSender.EVENT_CLASS);
-            Class<Event<?>> eventClass = (Class<Event<?>>) Class.forName(className);
-            raise((Event<?>) eventClass.newInstance().fromJson(json));
+            Class<Event> eventClass = (Class<Event>) Class.forName(className);
+            raise(eventClass.newInstance().fromJson(json));
         } catch (Throwable t) {
             System.err.println(t);
         }

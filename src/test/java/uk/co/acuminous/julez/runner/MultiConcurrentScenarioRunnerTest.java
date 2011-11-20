@@ -58,8 +58,8 @@ public class MultiConcurrentScenarioRunnerTest {
         multiRunner.run();
         
         assertEquals(2, recorder.events.size());
-        assertEquals(ScenarioRunnerEvent.BEGIN, recorder.events.get(0));
-        assertEquals(ScenarioRunnerEvent.END, recorder.events.get(1));
+        assertEquals(ScenarioRunnerEvent.BEGIN, recorder.events.get(0).getType());
+        assertEquals(ScenarioRunnerEvent.END, recorder.events.get(1).getType());
     }    
     
 }

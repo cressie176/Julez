@@ -15,7 +15,7 @@ public class EventTypeFilter extends BaseEventSource implements EventHandler {
     }
     
     @Override
-    public void onEvent(Event<?> event) {
+    public void onEvent(Event event) {
         if (pattern.matcher(event.getType()).matches()) {
             raise(event);
         }

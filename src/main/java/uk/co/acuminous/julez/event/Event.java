@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import com.google.gson.Gson;
 
-public abstract class Event<T> {
+public abstract class Event {
     
     private String id;
     private long timestamp;    
@@ -49,5 +49,7 @@ public abstract class Event<T> {
         return new Gson().toJson(this);
     }    
     
-    public abstract T fromJson(String json);
+    public Event fromJson(String json) {
+        return new Gson().fromJson(json, this.getClass());        
+    }
 }

@@ -16,7 +16,7 @@ public class ThroughputMonitor implements EventHandler {
     private AtomicInteger completed = new AtomicInteger();
     
     @Override
-    public void onEvent(Event<?> event) {        
+    public void onEvent(Event event) {        
         if (ScenarioRunnerEvent.BEGIN.equals(event.getType())) {
             started = event.getTimestamp();
         } else if (ScenarioRunnerEvent.END.equals(event.getType())) {

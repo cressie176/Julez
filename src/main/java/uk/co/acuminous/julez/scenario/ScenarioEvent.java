@@ -2,9 +2,7 @@ package uk.co.acuminous.julez.scenario;
 
 import uk.co.acuminous.julez.event.Event;
 
-import com.google.gson.Gson;
-
-public class ScenarioEvent extends Event<ScenarioEvent> {
+public class ScenarioEvent extends Event {
 
     public static final String BEGIN = "ScenarioEvent/BEGIN";
     public static final String PASS = "ScenarioEvent/PASS";
@@ -20,10 +18,5 @@ public class ScenarioEvent extends Event<ScenarioEvent> {
     
     public ScenarioEvent(String id, long timestamp, String type, String correlationId) {
         super(id, timestamp, type, correlationId);
-    }
-
-    @Override
-    public ScenarioEvent fromJson(String json) {
-        return new Gson().fromJson(json, ScenarioEvent.class);
-    }    
+    }   
 }

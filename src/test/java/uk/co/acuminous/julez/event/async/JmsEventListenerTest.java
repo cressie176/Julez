@@ -1,9 +1,7 @@
 package uk.co.acuminous.julez.event.async;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
-
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.jms.QueueConnectionFactory;
 
@@ -11,14 +9,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
-
-import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
+import uk.co.acuminous.julez.test.EventRecorder;
 import uk.co.acuminous.julez.test.TestUtils;
 
 public class JmsEventListenerTest {
@@ -27,7 +22,7 @@ public class JmsEventListenerTest {
     private ScenarioEventFactory scenarioEventFactory;
     private ScenarioRunnerEventFactory scenarioRunnerEventFactory;
     private JmsEventListener listener;
-    private ScenarioEventRecorder recorder;
+    private EventRecorder recorder;
     private JmsEventSender scenarioEventJmsSender;
     
     @Before
@@ -36,7 +31,7 @@ public class JmsEventListenerTest {
         connectionFactory = TestUtils.getConnectionFactory();
         scenarioEventFactory = new ScenarioEventFactory();  
         scenarioRunnerEventFactory = new ScenarioRunnerEventFactory();
-        recorder = new ScenarioEventRecorder();                
+        recorder = new EventRecorder();                
         initilaiseJmsEventListener();
         
         scenarioEventJmsSender = new JmsEventSender(connectionFactory);        
@@ -73,15 +68,4 @@ public class JmsEventListenerTest {
         assertEquals(1, recorder.events.size());
         assertEquals(ScenarioRunnerEvent.BEGIN, recorder.events.get(0).getType());        
     }    
-
-    class ScenarioEventRecorder implements EventHandler {
-
-        List<Event<?>> events = new ArrayList<Event<?>>();
-        
-        @Override
-        public void onEvent(Event<?> event) {
-            events.add(event);
-        }
-        
-    }
 }

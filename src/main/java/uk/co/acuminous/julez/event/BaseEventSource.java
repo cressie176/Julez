@@ -13,7 +13,7 @@ public abstract class BaseEventSource implements EventSource {
         this.handlers.addAll(Arrays.asList(handlers));     
     }    
     
-    protected void raise(Event<?> event) {
+    protected void raise(Event event) {
         for (EventHandler handler : handlers) {
             handler.onEvent(event);
         }

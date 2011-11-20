@@ -13,7 +13,7 @@ public class EventClassFilter<T> extends BaseEventSource implements EventHandler
     }
     
     @Override
-    public void onEvent(Event<?> event) {
+    public void onEvent(Event event) {
         if (filter.isAssignableFrom(event.getClass())) {
             raise(event);        
         }

@@ -30,7 +30,7 @@ public class JmsEventSender implements EventHandler {
     }
 
     @Override
-    public void onEvent(Event<?> event) {
+    public void onEvent(Event event) {
         QueueSession session = null;
         try {
             session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);

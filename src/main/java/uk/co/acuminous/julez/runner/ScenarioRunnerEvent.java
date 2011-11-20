@@ -4,7 +4,7 @@ import com.google.gson.Gson;
 
 import uk.co.acuminous.julez.event.Event;
 
-public class ScenarioRunnerEvent extends Event<ScenarioRunnerEvent> {
+public class ScenarioRunnerEvent extends Event {
 
     public static String BEGIN = "ScenarioRunnerEvent/BEGIN";
     public static String END = "ScenarioRunnerEvent/END"; 

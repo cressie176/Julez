@@ -33,7 +33,7 @@ public class ScenarioEventJdbcRepository implements ScenarioEventRepository, Eve
     }
 
     @Override
-    public void onEvent(Event<?> event) {
+    public void onEvent(Event event) {
        add((ScenarioEvent) event);        
     }    
     
