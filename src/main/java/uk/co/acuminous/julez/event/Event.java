@@ -8,6 +8,8 @@ import com.google.gson.Gson;
 
 public abstract class Event {
     
+    public static final String EVENT_TYPE_FORMAT = "%s/%s";    
+    
     private String id;
     private long timestamp;    
     private String type;

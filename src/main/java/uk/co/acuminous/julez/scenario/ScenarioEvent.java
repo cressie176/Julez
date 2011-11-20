@@ -25,6 +25,6 @@ public class ScenarioEvent extends Event {
     }
     
     protected static String qualify(String subType) {
-        return String.format("%s/%s", ScenarioEvent.class.getSimpleName(), subType);
+        return String.format(EVENT_TYPE_FORMAT, ScenarioEvent.class.getSimpleName(), subType);
     }
 }

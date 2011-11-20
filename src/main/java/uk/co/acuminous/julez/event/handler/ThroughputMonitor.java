@@ -21,7 +21,7 @@ public class ThroughputMonitor implements EventHandler {
             started = event.getTimestamp();
         } else if (ScenarioRunnerEvent.END.equals(event.getType())) {
             finished = event.getTimestamp();
-        } else if (Arrays.asList(ScenarioEvent.PASS, ScenarioEvent.FAIL).contains(event.getType())) {
+        } else if (Arrays.asList(ScenarioEvent.PASS, ScenarioEvent.FAIL, ScenarioEvent.ERROR).contains(event.getType())) {
             completed.incrementAndGet();
         }
     }

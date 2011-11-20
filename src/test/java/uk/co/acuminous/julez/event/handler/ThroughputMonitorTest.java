@@ -7,7 +7,6 @@ import static org.junit.Assert.assertFalse;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
@@ -19,11 +18,10 @@ public class ThroughputMonitorTest {
     private ScenarioRunnerEventFactory scenarioRunnerEventFactory;
 
     @Before
-    public void init() {        
-        String correlationId = "foo";
-        scenarioRunnerEventFactory = new ScenarioRunnerEventFactory(correlationId);        
-        scenarioEventFactory = new ScenarioEventFactory(correlationId);        
-    }    
+    public void init() {
+        scenarioEventFactory = new ScenarioEventFactory();
+        scenarioRunnerEventFactory = new ScenarioRunnerEventFactory();
+    }
     
     @Test
     public void calculatesThroughputFromPasses() {
@@ -34,6 +32,11 @@ public class ThroughputMonitorTest {
     public void calculatesThroughputFromFailures() {
         assertThroughput(scenarioEventFactory.fail());
     }
+        
+    @Test
+    public void calculatesThroughputFromErrors() {
+        assertThroughput(scenarioEventFactory.error());
+    }    
     
     @Test
     public void calculatesThroughputForVeryQuickScenarios() {
