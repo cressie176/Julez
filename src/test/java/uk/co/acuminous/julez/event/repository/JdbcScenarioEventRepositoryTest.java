@@ -11,7 +11,7 @@ import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.test.TestUtils;
 
-public class JdbcEventRepositoryTest {
+public class JdbcScenarioEventRepositoryTest {
 
     private JdbcScenarioEventRepository repository;
     private ScenarioEventFactory scenarioEventFactory;
@@ -48,7 +48,9 @@ public class JdbcEventRepositoryTest {
 
         long timestamp = System.currentTimeMillis();
 
-        ScenarioEvent event = new ScenarioEvent("id", timestamp, ScenarioEvent.FAIL, "foo");
+        ScenarioEvent event = new ScenarioEvent("id", timestamp, ScenarioEvent.FAIL, "correlation");
+        event.getData().put("message", "page not found");
+        event.getData().put("statusCode", 404);
 
         repository.add(event);
 
@@ -57,6 +59,10 @@ public class JdbcEventRepositoryTest {
         assertEquals("id", dbEvent.getId());
         assertEquals(timestamp, dbEvent.getTimestamp());
         assertEquals(ScenarioEvent.FAIL, dbEvent.getType());
-        assertEquals("foo", dbEvent.getCorrelationId());
+        assertEquals("correlation", dbEvent.getCorrelationId());
+        
+        assertEquals(2, dbEvent.getData().size());
+        assertEquals("page not found", dbEvent.getData().get("message"));
+        assertEquals(404, dbEvent.getData().get("statusCode"));
     }    
 }

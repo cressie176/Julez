@@ -60,7 +60,7 @@ public class ConcurrentWebTest extends WebTestCase {
         private void raiseFailure(Integer status, String message) {
             ScenarioEvent event = eventFactory.fail();
             event.getData().put("statusCode", status);
-            event.getData().put("statusMessage", message);
+            event.getData().put("message", message);
             raise(event);
         }
         
