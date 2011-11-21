@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.scenario.source.Scenarios;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 public class ConcurrentScenarioRunner extends BaseScenarioRunner {

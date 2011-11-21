@@ -7,8 +7,8 @@ import org.apache.activemq.broker.BrokerService;
 import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.scenario.ScenarioQueue;
-import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.scenario.source.ScenarioQueue;
+import uk.co.acuminous.julez.scenario.source.Scenarios;
 
 public class TestUtils {
 

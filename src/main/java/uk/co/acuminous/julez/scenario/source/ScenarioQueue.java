@@ -1,6 +1,8 @@
-package uk.co.acuminous.julez.scenario;
+package uk.co.acuminous.julez.scenario.source;
 
 import java.util.LinkedList;
+
+import uk.co.acuminous.julez.scenario.Scenario;
 
 public class ScenarioQueue extends LinkedList<Scenario> implements Scenarios {
 

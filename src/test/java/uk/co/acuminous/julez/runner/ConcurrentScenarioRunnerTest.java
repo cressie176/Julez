@@ -10,7 +10,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.scenario.BaseScenario;
-import uk.co.acuminous.julez.scenario.Scenarios;
+import uk.co.acuminous.julez.scenario.source.Scenarios;
 import uk.co.acuminous.julez.test.EventRecorder;
 import uk.co.acuminous.julez.test.InvocationCountingScenario;
 import uk.co.acuminous.julez.test.SleepingScenario;
@@ -82,10 +82,12 @@ public class ConcurrentScenarioRunnerTest {
         Scenarios scenarios = TestUtils.getScenarios(scenario, 1);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
-        runner.queue(scenarios).waitUntil(desiredStartTime.getMillis());
-        runner.registerEventHandler(eventRecorder);                
-        runner.run();
+        runner.registerEventHandler(eventRecorder);
         
+        runner.queue(scenarios).waitUntil(desiredStartTime.getMillis()).run();
+        
+        System.err.println(eventRecorder.events.get(0).getTimestamp());
+        System.err.println(desiredStartTime.getMillis());
         assertTrue(eventRecorder.events.get(0).getTimestamp() >= desiredStartTime.getMillis());
     }       
     

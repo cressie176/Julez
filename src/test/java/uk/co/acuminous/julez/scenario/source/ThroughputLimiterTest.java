@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.runner;
+package uk.co.acuminous.julez.scenario.source;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.Assert.assertEquals;
@@ -7,8 +7,9 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
-import uk.co.acuminous.julez.scenario.Scenarios;
-import uk.co.acuminous.julez.scenario.ThroughputLimiter;
+import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.scenario.source.Scenarios;
+import uk.co.acuminous.julez.scenario.source.ThroughputLimiter;
 import uk.co.acuminous.julez.test.InvocationCountingScenario;
 import uk.co.acuminous.julez.test.SleepingScenario;
 import uk.co.acuminous.julez.test.TestUtils;
