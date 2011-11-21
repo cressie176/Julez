@@ -50,7 +50,7 @@ public class ConcurrentScenarioRunnerTest {
         Scenarios scenarios = TestUtils.getScenarios(scenario, 1);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
-        runner.queue(scenarios).waitUntil(desiredStartTime);
+        runner.queue(scenarios).waitUntil(desiredStartTime.getMillis());
         runner.run();
         
         assertTrue("Runner did not defer start", !scenario.actualStartTime.isBefore(desiredStartTime));
@@ -82,7 +82,7 @@ public class ConcurrentScenarioRunnerTest {
         Scenarios scenarios = TestUtils.getScenarios(scenario, 1);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
-        runner.queue(scenarios).waitUntil(desiredStartTime);
+        runner.queue(scenarios).waitUntil(desiredStartTime.getMillis());
         runner.registerEventHandler(eventRecorder);                
         runner.run();
         

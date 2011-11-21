@@ -6,8 +6,6 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import org.joda.time.DateTime;
-
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.Scenarios;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
@@ -18,7 +16,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     private Scenarios scenarios;    
     private int numberOfScenarios;        
     private long timeout = 365 * 24 * 60 * 60 * 1000;
-    private DateTime startTime = new DateTime();
+    private long startTime = System.currentTimeMillis();
     private ScenarioRunnerEventFactory eventFactory = new ScenarioRunnerEventFactory();    
     
     public ConcurrentScenarioRunner() {
@@ -45,7 +43,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
         this.eventFactory = eventFactory;
     }
     
-    public ConcurrentScenarioRunner waitUntil(DateTime startTime) {        
+    public ConcurrentScenarioRunner waitUntil(long startTime) {        
         this.startTime = startTime;
         return this;
     }    
@@ -53,7 +51,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     @Override
     public void run() {
                 
-        ConcurrencyUtils.sleep(startTime.getMillis() - new DateTime().getMillis(), MILLISECONDS);
+        ConcurrencyUtils.sleep(startTime - System.currentTimeMillis(), MILLISECONDS);
         
         raise(eventFactory.begin());
         
