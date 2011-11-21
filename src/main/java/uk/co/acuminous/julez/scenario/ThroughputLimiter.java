@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.runner;
+package uk.co.acuminous.julez.scenario;
 
 import java.util.concurrent.DelayQueue;
 import java.util.concurrent.Delayed;
@@ -7,8 +7,6 @@ import java.util.concurrent.TimeUnit;
 import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.scenario.Scenarios;
 
 public class ThroughputLimiter implements Scenarios {
 
