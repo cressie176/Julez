@@ -19,7 +19,7 @@ import uk.co.acuminous.julez.event.repository.JdbcScenarioEventRepository;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveScenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
-import uk.co.acuminous.julez.scenario.source.Scenarios;
+import uk.co.acuminous.julez.scenario.source.ScenarioSource;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.test.WebTestCase;
 import examples.jbehave.Scenario2Steps;
@@ -60,7 +60,7 @@ public class AsynchronousDatabaseRecordingTest extends WebTestCase {
         JmsEventSender jmsSender = new JmsEventSender(connectionFactory);               
         scenario.registerEventHandler(jmsSender);
         
-        Scenarios scenarios = TestUtils.getScenarios(scenario, 100);  
+        ScenarioSource scenarios = TestUtils.getScenarios(scenario, 100);  
         
         new ConcurrentScenarioRunner().queue(scenarios).run();
         

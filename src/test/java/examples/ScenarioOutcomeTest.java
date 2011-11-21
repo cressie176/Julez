@@ -9,7 +9,7 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.handler.ResultMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
-import uk.co.acuminous.julez.scenario.source.Scenarios;
+import uk.co.acuminous.julez.scenario.source.ScenarioSource;
 import uk.co.acuminous.julez.test.TestUtils;
 
 public class ScenarioOutcomeTest {
@@ -22,7 +22,7 @@ public class ScenarioOutcomeTest {
         final ResultMonitor resultMonitor = new ResultMonitor();
         scenario.registerEventHandler(resultMonitor);        
         
-        final Scenarios scenarios = TestUtils.getScenarios(scenario, 200);
+        final ScenarioSource scenarios = TestUtils.getScenarios(scenario, 200);
         
         final ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
         runner.run();

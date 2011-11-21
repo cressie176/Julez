@@ -8,7 +8,7 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.scenario.source.Scenarios;
+import uk.co.acuminous.julez.scenario.source.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.ThroughputLimiter;
 import uk.co.acuminous.julez.test.InvocationCountingScenario;
 import uk.co.acuminous.julez.test.SleepingScenario;
@@ -32,7 +32,7 @@ public class ThroughputLimiterTest {
         InvocationCountingScenario scenario = new InvocationCountingScenario();
         scenario.registerEventHandler(throughputMonitor);
         
-        Scenarios scenarios = TestUtils.getScenarios(scenario, 100);
+        ScenarioSource scenarios = TestUtils.getScenarios(scenario, 100);
         
         int fiftyPerSecond = 1000 / 50;
         ThroughputLimiter limiter = new ThroughputLimiter(scenarios, fiftyPerSecond, MILLISECONDS);        
@@ -46,7 +46,7 @@ public class ThroughputLimiterTest {
         SleepingScenario scenario = new SleepingScenario();
         scenario.registerEventHandler(throughputMonitor);
         
-        Scenarios scenarios = TestUtils.getScenarios(scenario, 5);
+        ScenarioSource scenarios = TestUtils.getScenarios(scenario, 5);
         
         int twoPerSecond = 1000 / 2;
         ThroughputLimiter limiter = new ThroughputLimiter(scenarios, twoPerSecond, MILLISECONDS);        

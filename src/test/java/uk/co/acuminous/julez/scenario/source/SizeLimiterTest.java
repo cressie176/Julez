@@ -22,7 +22,7 @@ public class SizeLimiterTest {
     
     @Test
     public void capsNumberOfScenariosToSpecifiedSize() {        
-        Scenarios scenarios = TestUtils.getScenarios(new NoOpScenario(), 100);
+        ScenarioSource scenarios = TestUtils.getScenarios(new NoOpScenario(), 100);
                 
         SizeLimiter limiter = new SizeLimiter(scenarios, 10);  
         
@@ -38,7 +38,7 @@ public class SizeLimiterTest {
     
     @Test
     public void availabilityNeverFallsBelowZero() {        
-        Scenarios scenarios = TestUtils.getScenarios(new NoOpScenario(), 100);
+        ScenarioSource scenarios = TestUtils.getScenarios(new NoOpScenario(), 100);
                 
         SizeLimiter limiter = new SizeLimiter(scenarios, 1);  
         
@@ -51,7 +51,7 @@ public class SizeLimiterTest {
     
     @Test
     public void tolleratesUnderlyingSourceSmallerThanSpecifiedSize() {        
-        Scenarios scenarios = TestUtils.getScenarios(new NoOpScenario(), 1);
+        ScenarioSource scenarios = TestUtils.getScenarios(new NoOpScenario(), 1);
         
         SizeLimiter limiter = new SizeLimiter(scenarios, 10);
         
@@ -65,7 +65,7 @@ public class SizeLimiterTest {
     public void supportsMultiThreading() {        
         InvocationCountingScenario scenario = new InvocationCountingScenario();
         
-        Scenarios scenarios = TestUtils.getScenarios(scenario, 1000);
+        ScenarioSource scenarios = TestUtils.getScenarios(scenario, 1000);
         
         SizeLimiter limiter = new SizeLimiter(scenarios, 100);  
         

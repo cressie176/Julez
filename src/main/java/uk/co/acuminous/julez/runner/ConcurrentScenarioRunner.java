@@ -7,13 +7,13 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.scenario.source.Scenarios;
+import uk.co.acuminous.julez.scenario.source.ScenarioSource;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     
     private ExecutorService executor = Executors.newFixedThreadPool(10);
-    private Scenarios scenarios;    
+    private ScenarioSource scenarios;    
     private int numberOfScenarios;        
     private long timeout = 365 * 24 * 60 * 60 * 1000;
     private long startTime = System.currentTimeMillis();
@@ -22,7 +22,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     public ConcurrentScenarioRunner() {
     }
     
-    public ConcurrentScenarioRunner queue(Scenarios scenarios) {
+    public ConcurrentScenarioRunner queue(ScenarioSource scenarios) {
         this.numberOfScenarios = scenarios.available();
         this.scenarios = scenarios;
         return this;        

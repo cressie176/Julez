@@ -8,11 +8,11 @@ import org.springframework.jdbc.datasource.SingleConnectionDataSource;
 
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.source.ScenarioQueue;
-import uk.co.acuminous.julez.scenario.source.Scenarios;
+import uk.co.acuminous.julez.scenario.source.ScenarioSource;
 
 public class TestUtils {
 
-    public static Scenarios getScenarios(Scenario scenario, int size) {
+    public static ScenarioSource getScenarios(Scenario scenario, int size) {
         ScenarioQueue scenarios = new ScenarioQueue();
         for (int i = 0; i < size; i++) {
             scenarios.add(scenario);

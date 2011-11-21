@@ -10,15 +10,15 @@ import java.util.concurrent.atomic.AtomicInteger;
 import uk.co.acuminous.julez.scenario.Scenario;
 
 
-public class ThroughputLimiter implements Scenarios {
+public class ThroughputLimiter implements ScenarioSource {
 
-    private final Scenarios scenarios;
+    private final ScenarioSource scenarios;
     private final DelayQueue<Delayed> limiter = new DelayQueue<Delayed>();
     private final long frequency;
     private long startTime;
     private AtomicInteger counter = new AtomicInteger();
 
-    public ThroughputLimiter(Scenarios scenarios, long frequency, TimeUnit unit) {
+    public ThroughputLimiter(ScenarioSource scenarios, long frequency, TimeUnit unit) {
         this.scenarios = scenarios;
         this.frequency = MILLISECONDS.convert(frequency, unit);
         this.limiter.add(new DelayToken(System.currentTimeMillis()));

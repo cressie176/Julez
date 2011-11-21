@@ -4,12 +4,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import uk.co.acuminous.julez.scenario.Scenario;
 
-public class SizeLimiter implements Scenarios {
+public class SizeLimiter implements ScenarioSource {
 
-    private final Scenarios scenarios;
+    private final ScenarioSource scenarios;
     private final AtomicInteger counter;
 
-    public SizeLimiter(Scenarios scenarios, int sizeLimit) {
+    public SizeLimiter(ScenarioSource scenarios, int sizeLimit) {
         this.scenarios = scenarios;        
         this.counter = new AtomicInteger(sizeLimit);
     }
