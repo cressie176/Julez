@@ -12,7 +12,6 @@ import uk.co.acuminous.julez.scenario.InvocationCountingScenario;
 import uk.co.acuminous.julez.scenario.SleepingScenario;
 import uk.co.acuminous.julez.scenario.source.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.ThroughputLimiter;
-import uk.co.acuminous.julez.util.ScenarioRepeater;
 
 public class ThroughputLimiterTest {
 
@@ -32,7 +31,7 @@ public class ThroughputLimiterTest {
         InvocationCountingScenario scenario = new InvocationCountingScenario();
         scenario.registerEventHandler(throughputMonitor);
         
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 100);
+        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 100);
         
         int fiftyPerSecond = 1000 / 50;
         ThroughputLimiter limiter = new ThroughputLimiter(scenarios, fiftyPerSecond, MILLISECONDS);        
@@ -46,7 +45,7 @@ public class ThroughputLimiterTest {
         SleepingScenario scenario = new SleepingScenario();
         scenario.registerEventHandler(throughputMonitor);
         
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 5);
+        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 5);
         
         int twoPerSecond = 1000 / 2;
         ThroughputLimiter limiter = new ThroughputLimiter(scenarios, twoPerSecond, MILLISECONDS);        

@@ -8,8 +8,8 @@ import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.MultiConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
+import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
 import uk.co.acuminous.julez.scenario.source.ScenarioSource;
-import uk.co.acuminous.julez.util.ScenarioRepeater;
 
 public class MultipleConcurrentScenariosTest {
 
@@ -23,14 +23,14 @@ public class MultipleConcurrentScenariosTest {
         HelloWorldScenario helloWorldScenario = new HelloWorldScenario();
         helloWorldScenario.registerEventHandler(monitor1, combinedMonitor);
         
-        ScenarioSource helloWorldScenarios = ScenarioRepeater.getScenarios(helloWorldScenario, 100);
+        ScenarioSource helloWorldScenarios = new CappedScenarioRepeater(helloWorldScenario, 100);
         ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner().queue(helloWorldScenarios);
         runner1.registerEventHandler(monitor1);
         
         GoodbyeWorldScenario goodbyeWorldScenario = new GoodbyeWorldScenario();
         goodbyeWorldScenario.registerEventHandler(monitor2, combinedMonitor);
         
-        ScenarioSource goodbyeWorldScenarios = ScenarioRepeater.getScenarios(goodbyeWorldScenario, 100);
+        ScenarioSource goodbyeWorldScenarios = new CappedScenarioRepeater(goodbyeWorldScenario, 100);
         ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner().queue(goodbyeWorldScenarios);
         runner2.registerEventHandler(monitor2);
 

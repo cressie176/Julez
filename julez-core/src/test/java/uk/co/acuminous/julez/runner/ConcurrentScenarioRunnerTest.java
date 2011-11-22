@@ -13,15 +13,15 @@ import uk.co.acuminous.julez.event.handler.EventRecorder;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.InvocationCountingScenario;
 import uk.co.acuminous.julez.scenario.SleepingScenario;
+import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
 import uk.co.acuminous.julez.scenario.source.ScenarioSource;
-import uk.co.acuminous.julez.util.ScenarioRepeater;
 
 public class ConcurrentScenarioRunnerTest {
     
     @Test
     public void runsScenarios() {
         InvocationCountingScenario scenario = new InvocationCountingScenario();
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 10); 
+        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 10); 
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));                
         runner.queue(scenarios).run();
@@ -31,7 +31,7 @@ public class ConcurrentScenarioRunnerTest {
     
     @Test    
     public void timesOutWhenScenariosTakeTooLong() {                       
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(new SleepingScenario(), 10);        
+        ScenarioSource scenarios = new CappedScenarioRepeater(new SleepingScenario(), 10);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
         runner.queue(scenarios).timeOutAfter(5, SECONDS).run();
@@ -45,7 +45,7 @@ public class ConcurrentScenarioRunnerTest {
         DateTime desiredStartTime = now.plusSeconds(5);       
 
         StartTimeCapturingScenario scenario = new StartTimeCapturingScenario();        
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 1);        
+        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 1);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
         runner.queue(scenarios).waitUntil(desiredStartTime.getMillis()).run();
@@ -58,7 +58,7 @@ public class ConcurrentScenarioRunnerTest {
         DateTime now = new DateTime();
         DateTime desiredStartTime = now.plusSeconds(5);       
 
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(new SleepingScenario(), 10);        
+        ScenarioSource scenarios = new CappedScenarioRepeater(new SleepingScenario(), 10);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
         runner.queue(scenarios).waitUntil(desiredStartTime.getMillis()).timeOutAfter(5, SECONDS).run();
@@ -69,7 +69,7 @@ public class ConcurrentScenarioRunnerTest {
     @Test
     public void raisesBeginEvent() {
         InvocationCountingScenario scenario = new InvocationCountingScenario();
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 10);        
+        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 10);        
 
         EventRecorder eventRecorder = new EventRecorder();        
         
@@ -88,7 +88,7 @@ public class ConcurrentScenarioRunnerTest {
         EventRecorder eventRecorder = new EventRecorder();        
         
         StartTimeCapturingScenario scenario = new StartTimeCapturingScenario();        
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 1);        
+        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 1);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
         runner.registerEventHandler(eventRecorder);
@@ -101,7 +101,7 @@ public class ConcurrentScenarioRunnerTest {
     @Test
     public void raisesEndEvent() {
         InvocationCountingScenario scenario = new InvocationCountingScenario();
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 10);        
+        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 10);        
 
         EventRecorder eventRecorder = new EventRecorder();        
         

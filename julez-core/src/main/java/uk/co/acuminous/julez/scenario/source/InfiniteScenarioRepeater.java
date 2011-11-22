@@ -2,11 +2,11 @@ package uk.co.acuminous.julez.scenario.source;
 
 import uk.co.acuminous.julez.scenario.Scenario;
 
-public class InfiniteScenarioSource implements ScenarioSource {
+public class InfiniteScenarioRepeater implements ScenarioSource {
 
     private final Scenario scenario;
     
-    public InfiniteScenarioSource(Scenario scenario) {
+    public InfiniteScenarioRepeater(Scenario scenario) {
         this.scenario = scenario;        
     }
     

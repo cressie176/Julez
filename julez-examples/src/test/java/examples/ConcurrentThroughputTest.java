@@ -7,8 +7,8 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
+import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
 import uk.co.acuminous.julez.scenario.source.ScenarioSource;
-import uk.co.acuminous.julez.util.ScenarioRepeater;
 
 public class ConcurrentThroughputTest {
 
@@ -20,7 +20,7 @@ public class ConcurrentThroughputTest {
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.registerEventHandler(throughputMonitor);                        
 
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 100);        
+        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 100);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
         runner.registerEventHandler(throughputMonitor);

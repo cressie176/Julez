@@ -11,9 +11,9 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveScenario;
+import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
 import uk.co.acuminous.julez.scenario.source.ScenarioSource;
 import uk.co.acuminous.julez.test.WebTestCase;
-import uk.co.acuminous.julez.util.ScenarioRepeater;
 import examples.jbehave.Scenario1Steps;
 
 public class ConcurrentJBehaveTest extends WebTestCase {
@@ -27,7 +27,7 @@ public class ConcurrentJBehaveTest extends WebTestCase {
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.registerEventHandler(throughputMonitor);        
         
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 100);
+        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 100);
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios).timeOutAfter(30, SECONDS);
         runner.registerEventHandler(throughputMonitor);

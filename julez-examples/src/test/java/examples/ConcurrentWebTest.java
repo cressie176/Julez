@@ -12,9 +12,9 @@ import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
+import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
 import uk.co.acuminous.julez.scenario.source.ScenarioSource;
 import uk.co.acuminous.julez.test.WebTestCase;
-import uk.co.acuminous.julez.util.ScenarioRepeater;
 
 public class ConcurrentWebTest extends WebTestCase {
 
@@ -22,7 +22,7 @@ public class ConcurrentWebTest extends WebTestCase {
     public void demonstrateAConcurrentWebTest() {
 
         SimpleWebScenario scenario = new SimpleWebScenario();
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 100);
+        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 100);
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.registerEventHandler(throughputMonitor);                                

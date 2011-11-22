@@ -9,7 +9,6 @@ import org.junit.Test;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.InvocationCountingScenario;
 import uk.co.acuminous.julez.scenario.NoOpScenario;
-import uk.co.acuminous.julez.util.ScenarioRepeater;
 
 public class SizeLimiterTest {
 
@@ -22,7 +21,7 @@ public class SizeLimiterTest {
     
     @Test
     public void capsNumberOfScenariosToSpecifiedSize() {        
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(new NoOpScenario(), 100);
+        ScenarioSource scenarios = new CappedScenarioRepeater(new NoOpScenario(), 100);
                 
         SizeLimiter limiter = new SizeLimiter(scenarios, 10);  
         
@@ -38,7 +37,7 @@ public class SizeLimiterTest {
     
     @Test
     public void availabilityNeverFallsBelowZero() {        
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(new NoOpScenario(), 100);
+        ScenarioSource scenarios = new CappedScenarioRepeater(new NoOpScenario(), 100);
                 
         SizeLimiter limiter = new SizeLimiter(scenarios, 1);  
         
@@ -51,7 +50,7 @@ public class SizeLimiterTest {
     
     @Test
     public void tolleratesUnderlyingSourceSmallerThanSpecifiedSize() {        
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(new NoOpScenario(), 1);
+        ScenarioSource scenarios = new CappedScenarioRepeater(new NoOpScenario(), 1);
         
         SizeLimiter limiter = new SizeLimiter(scenarios, 10);
         
@@ -65,7 +64,7 @@ public class SizeLimiterTest {
     public void supportsMultiThreading() {        
         InvocationCountingScenario scenario = new InvocationCountingScenario();
         
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 1000);
+        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 1000);
         
         SizeLimiter limiter = new SizeLimiter(scenarios, 100);  
         
