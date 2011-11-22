@@ -16,7 +16,7 @@ public class ScenarioRunnerEvent extends Event {
          super(type, correlationId);
     }
     
-    public ScenarioRunnerEvent(String id, long timestamp, String type, String correlationId) {
+    public ScenarioRunnerEvent(String id, Long timestamp, String type, String correlationId) {
          super(id, timestamp, type, correlationId);
     }
 
