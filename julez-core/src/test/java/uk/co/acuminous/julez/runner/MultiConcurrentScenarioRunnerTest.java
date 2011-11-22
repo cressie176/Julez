@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.event.filter.EventTypeFilter;
 import uk.co.acuminous.julez.event.handler.EventRecorder;
+import uk.co.acuminous.julez.scenario.NoOpScenario;
+import uk.co.acuminous.julez.util.ScenarioRepeater;
 
 public class MultiConcurrentScenarioRunnerTest {
 
@@ -19,8 +21,8 @@ public class MultiConcurrentScenarioRunnerTest {
     public void init() {
         recorder = new EventRecorder();
         
-        runner1 = new ConcurrentScenarioRunner();
-        runner2 = new ConcurrentScenarioRunner();        
+        runner1 = new ConcurrentScenarioRunner().queue(ScenarioRepeater.getScenarios(new NoOpScenario(), 0));
+        runner2 = new ConcurrentScenarioRunner().queue(ScenarioRepeater.getScenarios(new NoOpScenario(), 0));        
         multiRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
     }
     

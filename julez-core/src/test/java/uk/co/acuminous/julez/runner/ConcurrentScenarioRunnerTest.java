@@ -21,11 +21,10 @@ public class ConcurrentScenarioRunnerTest {
     @Test
     public void runsScenarios() {
         InvocationCountingScenario scenario = new InvocationCountingScenario();
-        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 10);        
+        ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 10); 
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));                
-        runner.queue(scenarios);        
-        runner.run();
+        runner.queue(scenarios).run();
         
         assertEquals(10, scenario.counter.get());        
     }
@@ -35,11 +34,10 @@ public class ConcurrentScenarioRunnerTest {
         ScenarioSource scenarios = ScenarioRepeater.getScenarios(new SleepingScenario(), 10);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
-        runner.queue(scenarios).timeOutAfter(5, SECONDS);
-        runner.run();
+        runner.queue(scenarios).timeOutAfter(5, SECONDS).run();
         
         assertTrue("Runner did not timeout", scenarios.available() == 0);
-    }  
+    }
     
     @Test    
     public void defersStartUntilAGivenTime() {
@@ -50,10 +48,22 @@ public class ConcurrentScenarioRunnerTest {
         ScenarioSource scenarios = ScenarioRepeater.getScenarios(scenario, 1);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
-        runner.queue(scenarios).waitUntil(desiredStartTime.getMillis());
-        runner.run();
+        runner.queue(scenarios).waitUntil(desiredStartTime.getMillis()).run();
         
         assertTrue("Runner did not defer start", !scenario.actualStartTime.isBefore(desiredStartTime));
+    } 
+    
+    @Test    
+    public void timesOutWhenScenariosTakeTooLongAfterGivenStartTime() {
+        DateTime now = new DateTime();
+        DateTime desiredStartTime = now.plusSeconds(5);       
+
+        ScenarioSource scenarios = ScenarioRepeater.getScenarios(new SleepingScenario(), 10);        
+        
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
+        runner.queue(scenarios).waitUntil(desiredStartTime.getMillis()).timeOutAfter(5, SECONDS).run();
+        
+        assertTrue("Runner did not timeout", scenarios.available() == 0);
     }    
     
     @Test
@@ -65,8 +75,7 @@ public class ConcurrentScenarioRunnerTest {
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
         runner.registerEventHandler(eventRecorder);
-        runner.queue(scenarios);        
-        runner.run();
+        runner.queue(scenarios).run();
         
         assertEquals(ScenarioRunnerEvent.BEGIN, eventRecorder.events.get(0).getType());
     }   
@@ -98,8 +107,7 @@ public class ConcurrentScenarioRunnerTest {
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().usingExecutor(Executors.newFixedThreadPool(1));
         runner.registerEventHandler(eventRecorder);
-        runner.queue(scenarios);        
-        runner.run();
+        runner.queue(scenarios).run();
         
         assertEquals(ScenarioRunnerEvent.END, eventRecorder.events.get(1).getType());
     }

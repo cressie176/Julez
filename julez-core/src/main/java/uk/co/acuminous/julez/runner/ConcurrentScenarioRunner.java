@@ -13,8 +13,7 @@ import uk.co.acuminous.julez.util.ConcurrencyUtils;
 public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     
     private ExecutorService executor = Executors.newFixedThreadPool(10);
-    private ScenarioSource scenarios;    
-    private int numberOfScenarios;        
+    private ScenarioSource scenarios;            
     private long timeout = 365 * 24 * 60 * 60 * 1000;
     private long startTime = System.currentTimeMillis();
     private ScenarioRunnerEventFactory eventFactory = new ScenarioRunnerEventFactory();    
@@ -23,7 +22,6 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     }
     
     public ConcurrentScenarioRunner queue(ScenarioSource scenarios) {
-        this.numberOfScenarios = scenarios.available();
         this.scenarios = scenarios;
         return this;        
     }    
@@ -52,21 +50,22 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     public void run() {
                 
         ConcurrencyUtils.sleep((startTime - System.currentTimeMillis()), MILLISECONDS);
+        long stopTime = System.currentTimeMillis() + timeout;
         
         raise(eventFactory.begin());
         
+        while ((scenarios.available() > 0) && (stopTime > System.currentTimeMillis())) {
+            Scenario scenario = scenarios.next();
+            executor.execute(scenario);
+        }
         try {
-            for (int i = 0; i < numberOfScenarios; i++) {
-                Scenario scenario = scenarios.next();
-                executor.execute(scenario);
-            }
-            executor.shutdown();            
-            if (!executor.awaitTermination(timeout, MILLISECONDS)) {
-                executor.shutdownNow();
-            }
+            executor.shutdown();
+            executor.awaitTermination(stopTime - System.currentTimeMillis(), MILLISECONDS);
         } catch (InterruptedException e) {
             // Meh
-        }    
+        } finally {
+            executor.shutdownNow();            
+        }
         
         raise(eventFactory.end());
     }
