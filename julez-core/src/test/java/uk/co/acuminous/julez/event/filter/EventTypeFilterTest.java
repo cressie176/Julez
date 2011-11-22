@@ -24,7 +24,7 @@ public class EventTypeFilterTest {
         EventTypeFilter filter = new EventTypeFilter("ScenarioEvent/PASS");
         filter.registerEventHandler(recorder);
         filter.onEvent(new ScenarioRunnerEventFactory().begin());
-        assertEquals(0, recorder.events.size());
+        assertEquals(0, recorder.getEvents().size());
     } 
     
     @Test
@@ -32,7 +32,7 @@ public class EventTypeFilterTest {
         EventTypeFilter filter = new EventTypeFilter("ScenarioEvent/END");
         filter.registerEventHandler(recorder);
         filter.onEvent(new ScenarioEventFactory().begin());
-        assertEquals(0, recorder.events.size());
+        assertEquals(0, recorder.getEvents().size());
     }    
 
     @Test
@@ -40,7 +40,7 @@ public class EventTypeFilterTest {
         EventTypeFilter filter = new EventTypeFilter("ScenarioEvent/.*");
         filter.registerEventHandler(recorder);        
         filter.onEvent(new ScenarioEventFactory().begin());
-        assertEquals(1, recorder.events.size());
+        assertEquals(1, recorder.getEvents().size());
     }    
     
     @Test
@@ -48,7 +48,7 @@ public class EventTypeFilterTest {
         EventTypeFilter filter = new EventTypeFilter("ScenarioEvent/BEGIN");
         filter.registerEventHandler(recorder);        
         filter.onEvent(new ScenarioEventFactory().begin());
-        assertEquals(1, recorder.events.size());
+        assertEquals(1, recorder.getEvents().size());
     }
         
     class ChildScenarioEvent extends ScenarioEvent {

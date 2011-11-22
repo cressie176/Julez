@@ -12,9 +12,9 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.handler.EventRecorder;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.InvocationCountingScenario;
+import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.SleepingScenario;
 import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
-import uk.co.acuminous.julez.scenario.source.ScenarioSource;
 
 public class ConcurrentScenarioRunnerTest {
     
@@ -77,7 +77,7 @@ public class ConcurrentScenarioRunnerTest {
         runner.registerEventHandler(eventRecorder);
         runner.queue(scenarios).run();
         
-        assertEquals(ScenarioRunnerEvent.BEGIN, eventRecorder.events.get(0).getType());
+        assertEquals(ScenarioRunnerEvent.BEGIN, eventRecorder.getEvents().get(0).getType());
     }   
 
     @Test
@@ -95,7 +95,7 @@ public class ConcurrentScenarioRunnerTest {
         
         runner.queue(scenarios).waitUntil(desiredStartTime.getMillis()).run();
         
-        assertTrue(eventRecorder.events.get(0).getTimestamp() >= desiredStartTime.getMillis());
+        assertTrue(eventRecorder.getEvents().get(0).getTimestamp() >= desiredStartTime.getMillis());
     }       
     
     @Test
@@ -109,7 +109,7 @@ public class ConcurrentScenarioRunnerTest {
         runner.registerEventHandler(eventRecorder);
         runner.queue(scenarios).run();
         
-        assertEquals(ScenarioRunnerEvent.END, eventRecorder.events.get(1).getType());
+        assertEquals(ScenarioRunnerEvent.END, eventRecorder.getEvents().get(1).getType());
     }
     
     class StartTimeCapturingScenario extends BaseScenario { 

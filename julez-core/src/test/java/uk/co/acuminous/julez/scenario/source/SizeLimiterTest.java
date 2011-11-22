@@ -9,6 +9,7 @@ import org.junit.Test;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.InvocationCountingScenario;
 import uk.co.acuminous.julez.scenario.NoOpScenario;
+import uk.co.acuminous.julez.scenario.ScenarioSource;
 
 public class SizeLimiterTest {
 

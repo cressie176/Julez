@@ -5,16 +5,17 @@ import java.util.Arrays;
 import java.util.List;
 
 import uk.co.acuminous.julez.scenario.Scenario;
+import uk.co.acuminous.julez.scenario.ScenarioSource;
 
-public class ReadyMadeScenarioSource implements ScenarioSource {
+public class PrePopulatedScenarioSource implements ScenarioSource {
 
     private List<Scenario> scenarios;
 
-    public ReadyMadeScenarioSource(Scenario... scenarios) {
+    public PrePopulatedScenarioSource(Scenario... scenarios) {
         this.scenarios = new ArrayList<Scenario>(Arrays.asList(scenarios));
     }
     
-    public ReadyMadeScenarioSource(List<Scenario> scenarios) {
+    public PrePopulatedScenarioSource(List<Scenario> scenarios) {
         this.scenarios = scenarios;
     }
 

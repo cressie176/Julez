@@ -12,8 +12,8 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
+import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
-import uk.co.acuminous.julez.scenario.source.ScenarioSource;
 
 public class CorrelatedScenarioTest {
     
@@ -37,7 +37,7 @@ public class CorrelatedScenarioTest {
         runner.registerEventHandler(recorder);
         runner.queue(scenarios).run();
 
-        for (Event event : recorder.events) {
+        for (Event event : recorder.getEvents()) {
             assertEquals(correlationId, event.getCorrelationId());
         }
     }

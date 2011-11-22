@@ -8,6 +8,7 @@ import static java.util.concurrent.TimeUnit.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import uk.co.acuminous.julez.scenario.Scenario;
+import uk.co.acuminous.julez.scenario.ScenarioSource;
 
 
 public class ThroughputLimiter implements ScenarioSource {

@@ -9,8 +9,8 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.handler.ResultMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
+import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
-import uk.co.acuminous.julez.scenario.source.ScenarioSource;
 
 public class ScenarioOutcomeTest {
 

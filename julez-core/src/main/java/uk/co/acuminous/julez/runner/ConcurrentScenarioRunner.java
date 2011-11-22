@@ -7,7 +7,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
 import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.scenario.source.ScenarioSource;
+import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 public class ConcurrentScenarioRunner extends BaseScenarioRunner {
@@ -64,7 +64,9 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
         } catch (InterruptedException e) {
             // Meh
         } finally {
-            executor.shutdownNow();            
+            if (!executor.isShutdown()) {
+                executor.shutdownNow();
+            }
         }
         
         raise(eventFactory.end());

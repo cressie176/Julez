@@ -14,7 +14,7 @@ public class ResultMonitorTest {
 
     @Before
     public void init() {        
-        scenarioEventFactory = new ScenarioEventFactory("");        
+        scenarioEventFactory = new ScenarioEventFactory();        
     }
     
     @Test

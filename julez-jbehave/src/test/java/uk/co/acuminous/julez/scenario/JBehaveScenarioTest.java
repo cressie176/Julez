@@ -48,9 +48,9 @@ public class JBehaveScenarioTest {
         
         scenario.run();
         
-        assertEquals(2, eventRecorder.events.size());                
-        assertEquals(ScenarioEvent.BEGIN, eventRecorder.events.get(0).getType());        
-        assertEquals(ScenarioEvent.PASS, eventRecorder.events.get(1).getType());
+        assertEquals(2, eventRecorder.getEvents().size());                
+        assertEquals(ScenarioEvent.BEGIN, eventRecorder.getEvents().get(0).getType());        
+        assertEquals(ScenarioEvent.PASS, eventRecorder.getEvents().get(1).getType());
     } 
     
     @Test
@@ -62,11 +62,11 @@ public class JBehaveScenarioTest {
         
         scenario.run();
 
-        assertEquals(2, eventRecorder.events.size());
+        assertEquals(2, eventRecorder.getEvents().size());
         
-        assertEquals(ScenarioEvent.BEGIN, eventRecorder.events.get(0).getType());        
+        assertEquals(ScenarioEvent.BEGIN, eventRecorder.getEvents().get(0).getType());        
         
-        Event event = eventRecorder.events.get(1);
+        Event event = eventRecorder.getEvents().get(1);
         assertEquals(ScenarioEvent.ERROR, event.getType());
         assertEquals("Cannot find story for does-not-exist.txt", event.getData().get("message"));
     } 
@@ -80,10 +80,10 @@ public class JBehaveScenarioTest {
         
         scenario.run();
         
-        assertEquals(2, eventRecorder.events.size());        
-        assertEquals(ScenarioEvent.BEGIN, eventRecorder.events.get(0).getType());
+        assertEquals(2, eventRecorder.getEvents().size());        
+        assertEquals(ScenarioEvent.BEGIN, eventRecorder.getEvents().get(0).getType());
         
-        Event event = eventRecorder.events.get(1);
+        Event event = eventRecorder.getEvents().get(1);
         assertEquals(ScenarioEvent.ERROR, event.getType());
         assertEquals("Given the step does not exist", event.getData().get("message"));
     }    
@@ -97,10 +97,10 @@ public class JBehaveScenarioTest {
         
         scenario.run();
         
-        assertEquals(2, eventRecorder.events.size());        
-        assertEquals(ScenarioEvent.BEGIN, eventRecorder.events.get(0).getType());
+        assertEquals(2, eventRecorder.getEvents().size());        
+        assertEquals(ScenarioEvent.BEGIN, eventRecorder.getEvents().get(0).getType());
         
-        Event event = eventRecorder.events.get(1);
+        Event event = eventRecorder.getEvents().get(1);
         assertEquals(ScenarioEvent.FAIL, event.getType());
         assertEquals("Assertion Failed", event.getData().get("message"));
     }
@@ -114,11 +114,11 @@ public class JBehaveScenarioTest {
         
         scenario.run();
         
-        assertEquals(2, eventRecorder.events.size());
+        assertEquals(2, eventRecorder.getEvents().size());
         
-        assertEquals(ScenarioEvent.BEGIN, eventRecorder.events.get(0).getType());        
+        assertEquals(ScenarioEvent.BEGIN, eventRecorder.getEvents().get(0).getType());        
         
-        Event event = eventRecorder.events.get(1);
+        Event event = eventRecorder.getEvents().get(1);
         assertEquals(ScenarioEvent.ERROR, event.getType());
         assertEquals("Test Exception", event.getData().get("message"));
     }    

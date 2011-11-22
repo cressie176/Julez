@@ -51,8 +51,8 @@ public class JmsEventSourceTest {
         
         listener.shutdownGracefully();
         
-        assertEquals(1, eventRecorder.events.size());
-        assertEquals(ScenarioEvent.PASS, eventRecorder.events.get(0).getType());
+        assertEquals(1, eventRecorder.getEvents().size());
+        assertEquals(ScenarioEvent.PASS, eventRecorder.getEvents().get(0).getType());
     }
     
     @Test
@@ -61,7 +61,7 @@ public class JmsEventSourceTest {
         
         listener.shutdownGracefully();
         
-        assertEquals(1, eventRecorder.events.size());
-        assertEquals(ScenarioRunnerEvent.BEGIN, eventRecorder.events.get(0).getType());        
+        assertEquals(1, eventRecorder.getEvents().size());
+        assertEquals(ScenarioRunnerEvent.BEGIN, eventRecorder.getEvents().get(0).getType());        
     }    
 }

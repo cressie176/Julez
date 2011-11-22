@@ -13,7 +13,7 @@ public class ReadyMadeScenarioSourceTest {
     @Test
     public void returnsScenariosFromTheUnderlyingList() {
        
-        ReadyMadeScenarioSource scenarios = new ReadyMadeScenarioSource(new NoOpScenario(), new NoOpScenario(), new NoOpScenario());
+        PrePopulatedScenarioSource scenarios = new PrePopulatedScenarioSource(new NoOpScenario(), new NoOpScenario(), new NoOpScenario());
         
         assertEquals(3, scenarios.available());
         assertNotNull(scenarios.next());

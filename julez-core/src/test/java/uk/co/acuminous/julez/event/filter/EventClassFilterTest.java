@@ -25,19 +25,19 @@ public class EventClassFilterTest {
     @Test
     public void excludesEventsWithWrongClass() {                        
         filter.onEvent(new ScenarioRunnerEventFactory().begin());
-        assertEquals(0, recorder.events.size());
+        assertEquals(0, recorder.getEvents().size());
     }        
 
     @Test
     public void includesEventsWithMatchingClass() {        
         filter.onEvent(new ScenarioEventFactory().begin());
-        assertEquals(1, recorder.events.size());
+        assertEquals(1, recorder.getEvents().size());
     }    
     
     @Test
     public void includesEventsWithChildClass() {        
         filter.onEvent(new ChildScenarioEvent());
-        assertEquals(1, recorder.events.size());
+        assertEquals(1, recorder.getEvents().size());
     }
         
     class ChildScenarioEvent extends ScenarioEvent {

@@ -9,8 +9,8 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.InvocationCountingScenario;
+import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.SleepingScenario;
-import uk.co.acuminous.julez.scenario.source.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.ThroughputLimiter;
 
 public class ThroughputLimiterTest {
