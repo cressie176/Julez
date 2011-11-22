@@ -20,10 +20,6 @@ public class ScenarioEvent extends Event {
         super(id, timestamp, type, correlationId);
     }   
     
-    public static String getScenarioName() {
-        return Scenario.class.getSimpleName();
-    }
-    
     protected static String qualify(String subType) {
         return String.format(EVENT_TYPE_FORMAT, ScenarioEvent.class.getSimpleName(), subType);
     }
