@@ -62,6 +62,6 @@ public class JdbcScenarioEventRepositoryTest {
         
         assertEquals(2, dbEvent.getData().size());
         assertEquals("page not found", dbEvent.getData().get("message"));
-        assertEquals(404, dbEvent.getData().get("statusCode"));
+        assertEquals("404", dbEvent.getData().get("statusCode"));
     }    
 }
