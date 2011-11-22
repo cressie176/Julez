@@ -1,0 +1,3 @@
+Scenario: JBehaveScenario handles missing steps
+
+Given the step does not exist

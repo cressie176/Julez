@@ -1,0 +1,5 @@
+Scenario: JBehaveScenario runs jbehave scenarios
+
+Given some precondition
+When I perform some action
+Then verify some side effect

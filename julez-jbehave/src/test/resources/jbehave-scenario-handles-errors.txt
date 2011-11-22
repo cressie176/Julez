@@ -1,0 +1,3 @@
+Scenario: JBehaveScenario handles errors
+
+Given a step that throws an exception
