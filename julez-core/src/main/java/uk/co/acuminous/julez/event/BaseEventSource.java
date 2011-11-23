@@ -9,7 +9,7 @@ public abstract class BaseEventSource implements EventSource {
     protected final Set<EventHandler> handlers = new HashSet<EventHandler>();
 
     @Override
-    public void registerEventHandler(EventHandler... handlers) {
+    public void register(EventHandler... handlers) {
         this.handlers.addAll(Arrays.asList(handlers));     
     }    
     

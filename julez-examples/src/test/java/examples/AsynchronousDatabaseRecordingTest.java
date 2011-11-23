@@ -1,6 +1,7 @@
 package examples;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
 import java.net.URL;
 
@@ -20,7 +21,7 @@ import uk.co.acuminous.julez.event.source.JmsEventSource;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveScenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
 import uk.co.acuminous.julez.test.WebTestCase;
 import uk.co.acuminous.julez.util.PerformanceAssert;
 import examples.jbehave.Scenario2Steps;
@@ -54,22 +55,22 @@ public class AsynchronousDatabaseRecordingTest extends WebTestCase {
         JdbcEventRepository eventRepository = new JdbcEventRepository(dataSource).ddl();
         
         JmsEventSource asynchronousListener = new JmsEventSource(connectionFactory).listen();
-        asynchronousListener.registerEventHandler(eventRepository);
+        asynchronousListener.register(eventRepository);
         
         JmsEventHandler jmsSender = new JmsEventHandler(connectionFactory);               
-        scenario.registerEventHandler(jmsSender);        
+        scenario.register(jmsSender);        
         
-        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 100);  
+        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);  
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
-        runner.registerEventHandler(jmsSender);
-        runner.queue(scenarios).run();
+        runner.register(jmsSender);
+        runner.queue(scenarios).allocate(10, THREADS).go();
         
         asynchronousListener.shutdownGracefully();
 
         
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
-        eventRepository.registerEventHandler(throughputMonitor);
+        eventRepository.register(throughputMonitor);
         eventRepository.raiseAllEvents();
                 
         PerformanceAssert.assertMinimumThroughput(10, throughputMonitor.getThroughput());

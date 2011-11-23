@@ -1,6 +1,7 @@
 package examples;
 
 import static org.junit.Assert.assertEquals;
+import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -10,7 +11,7 @@ import uk.co.acuminous.julez.event.handler.ResultMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
 
 public class ScenarioOutcomeTest {
 
@@ -20,12 +21,11 @@ public class ScenarioOutcomeTest {
         final ResultRecordingScenario scenario = new ResultRecordingScenario();
         
         final ResultMonitor resultMonitor = new ResultMonitor();
-        scenario.registerEventHandler(resultMonitor);        
+        scenario.register(resultMonitor);        
         
-        final ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 200);
+        final ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 200);
         
-        final ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
-        runner.run();
+        new ConcurrentScenarioRunner().queue(scenarios).allocate(10, THREADS).go();
 
         assertEquals(150, resultMonitor.getPassCount());
         assertEquals(50, resultMonitor.getFailureCount());

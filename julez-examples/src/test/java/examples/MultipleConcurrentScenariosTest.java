@@ -1,5 +1,6 @@
 package examples;
 
+import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import org.junit.Test;
@@ -9,7 +10,7 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.MultiConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
 
 public class MultipleConcurrentScenariosTest {
 
@@ -21,22 +22,22 @@ public class MultipleConcurrentScenariosTest {
         ThroughputMonitor monitor2 = new ThroughputMonitor();
         
         HelloWorldScenario helloWorldScenario = new HelloWorldScenario();
-        helloWorldScenario.registerEventHandler(monitor1, combinedMonitor);
+        helloWorldScenario.register(monitor1, combinedMonitor);
         
-        ScenarioSource helloWorldScenarios = new CappedScenarioRepeater(helloWorldScenario, 100);
-        ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner().queue(helloWorldScenarios);
-        runner1.registerEventHandler(monitor1);
+        ScenarioSource helloWorldScenarios = new SizedScenarioRepeater(helloWorldScenario, 100);
+        ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner().queue(helloWorldScenarios).allocate(10, THREADS);
+        runner1.register(monitor1);
         
         GoodbyeWorldScenario goodbyeWorldScenario = new GoodbyeWorldScenario();
-        goodbyeWorldScenario.registerEventHandler(monitor2, combinedMonitor);
+        goodbyeWorldScenario.register(monitor2, combinedMonitor);
         
-        ScenarioSource goodbyeWorldScenarios = new CappedScenarioRepeater(goodbyeWorldScenario, 100);
-        ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner().queue(goodbyeWorldScenarios);
-        runner2.registerEventHandler(monitor2);
+        ScenarioSource goodbyeWorldScenarios = new SizedScenarioRepeater(goodbyeWorldScenario, 100);
+        ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner().queue(goodbyeWorldScenarios).allocate(10, THREADS);
+        runner2.register(monitor2);
 
         MultiConcurrentScenarioRunner runner = new MultiConcurrentScenarioRunner(runner1, runner2);
-        runner.registerEventHandler(combinedMonitor);
-        runner.run();
+        runner.register(combinedMonitor);
+        runner.go();
 
         assertMinimumThroughput(500, monitor1.getThroughput());
         assertMinimumThroughput(250, monitor2.getThroughput());

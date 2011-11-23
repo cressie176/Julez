@@ -4,6 +4,7 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
 import org.junit.Test;
 
@@ -75,17 +76,17 @@ public class InflightLimiterTest {
         ScenarioSource scenarios = new OnDemandScenarioSource() {
             @Override public Scenario next() {
                 SleepingScenario scenario = new SleepingScenario();
-                scenario.registerEventHandler(relay);
+                scenario.register(relay);
                 return scenario;
             }
         };
         
         InflightLimiter limiter = new InflightLimiter(scenarios, 100);
-        relay.registerEventHandler(limiter);
+        relay.register(limiter);
                 
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
         
-        runner.queue(limiter).timeOutAfter(60, SECONDS).run();            
+        runner.queue(limiter).allocate(10, THREADS).runFor(60, SECONDS).go();            
 
     }
     

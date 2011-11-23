@@ -34,7 +34,7 @@ public class JmsEventSourceTest {
 
         listener = new JmsEventSource(connectionFactory);
         listener.setShutdownDelay(1, SECONDS);
-        listener.registerEventHandler(eventRecorder);
+        listener.register(eventRecorder);
         listener.listen();        
         
         jmsSender = new JmsEventHandler(connectionFactory);        

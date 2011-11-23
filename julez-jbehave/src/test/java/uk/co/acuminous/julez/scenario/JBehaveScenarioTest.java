@@ -44,7 +44,7 @@ public class JBehaveScenarioTest {
         
         JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "jbehave-scenario-performs-steps.txt", new ScenarioSteps(stepRecorder));        
         
-        scenario.registerEventHandler(eventRecorder);
+        scenario.register(eventRecorder);
         
         scenario.run();
         
@@ -58,7 +58,7 @@ public class JBehaveScenarioTest {
         
         JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "does-not-exist.txt", new ScenarioSteps(stepRecorder));        
         
-        scenario.registerEventHandler(eventRecorder);
+        scenario.register(eventRecorder);
         
         scenario.run();
 
@@ -76,7 +76,7 @@ public class JBehaveScenarioTest {
         
         JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "jbehave-scenario-handles-missing-steps.txt", new ScenarioSteps(stepRecorder));        
         
-        scenario.registerEventHandler(eventRecorder);
+        scenario.register(eventRecorder);
         
         scenario.run();
         
@@ -93,7 +93,7 @@ public class JBehaveScenarioTest {
         
         JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "jbehave-scenario-handles-failures.txt", new ScenarioSteps(stepRecorder));        
         
-        scenario.registerEventHandler(eventRecorder);
+        scenario.register(eventRecorder);
         
         scenario.run();
         
@@ -110,7 +110,7 @@ public class JBehaveScenarioTest {
         
         JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "jbehave-scenario-handles-errors.txt", new ScenarioSteps(stepRecorder));        
         
-        scenario.registerEventHandler(eventRecorder);
+        scenario.register(eventRecorder);
         
         scenario.run();
         

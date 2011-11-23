@@ -22,7 +22,7 @@ public class EventTypeFilterTest {
     @Test
     public void excludesEventsWithWrongBaseType() {
         EventTypeFilter filter = new EventTypeFilter("ScenarioEvent/PASS");
-        filter.registerEventHandler(recorder);
+        filter.register(recorder);
         filter.onEvent(new ScenarioRunnerEventFactory().begin());
         assertEquals(0, recorder.getEvents().size());
     } 
@@ -30,7 +30,7 @@ public class EventTypeFilterTest {
     @Test
     public void excludesEventsWithWrongSubType() {
         EventTypeFilter filter = new EventTypeFilter("ScenarioEvent/END");
-        filter.registerEventHandler(recorder);
+        filter.register(recorder);
         filter.onEvent(new ScenarioEventFactory().begin());
         assertEquals(0, recorder.getEvents().size());
     }    
@@ -38,7 +38,7 @@ public class EventTypeFilterTest {
     @Test
     public void includesEventsWithMatchingBaseTypeAndAnySubType() {     
         EventTypeFilter filter = new EventTypeFilter("ScenarioEvent/.*");
-        filter.registerEventHandler(recorder);        
+        filter.register(recorder);        
         filter.onEvent(new ScenarioEventFactory().begin());
         assertEquals(1, recorder.getEvents().size());
     }    
@@ -46,7 +46,7 @@ public class EventTypeFilterTest {
     @Test
     public void includesEventsWithMatchingBaseTypeAndSubType() {     
         EventTypeFilter filter = new EventTypeFilter("ScenarioEvent/BEGIN");
-        filter.registerEventHandler(recorder);        
+        filter.register(recorder);        
         filter.onEvent(new ScenarioEventFactory().begin());
         assertEquals(1, recorder.getEvents().size());
     }

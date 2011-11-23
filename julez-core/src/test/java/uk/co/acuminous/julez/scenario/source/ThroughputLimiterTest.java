@@ -2,6 +2,7 @@ package uk.co.acuminous.julez.scenario.source;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.Assert.assertEquals;
+import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -23,33 +24,33 @@ public class ThroughputLimiterTest {
         throughputMonitor = new ThroughputMonitor();
         
         runner = new ConcurrentScenarioRunner();
-        runner.registerEventHandler(throughputMonitor);        
+        runner.register(throughputMonitor);        
     }
     
     @Test
-    public void capsThroughputToSpecifiedFrequency() {        
+    public void limitsThroughputToSpecifiedFrequency() {        
         InvocationCountingScenario scenario = new InvocationCountingScenario();
-        scenario.registerEventHandler(throughputMonitor);
+        scenario.register(throughputMonitor);
         
-        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 100);
+        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);
         
         int fiftyPerSecond = 1000 / 50;
         ThroughputLimiter limiter = new ThroughputLimiter(scenarios, fiftyPerSecond, MILLISECONDS);        
-        runner.queue(limiter).run();
+        runner.queue(limiter).allocate(10, THREADS).go();
         
         assertEquals(50, throughputMonitor.getThroughput());
     }
     
     @Test
-    public void cappingThroughputForLongRunningScenariosDoesntCauseLag() {
+    public void limittingThroughputForLongRunningScenariosDoesntCauseLag() {
         SleepingScenario scenario = new SleepingScenario();
-        scenario.registerEventHandler(throughputMonitor);
+        scenario.register(throughputMonitor);
         
-        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 5);
+        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 5);
         
         int twoPerSecond = 1000 / 2;
         ThroughputLimiter limiter = new ThroughputLimiter(scenarios, twoPerSecond, MILLISECONDS);        
-        runner.queue(limiter).run();
+        runner.queue(limiter).allocate(10, THREADS).go();
         
         assertEquals(2, throughputMonitor.getThroughput());
     }    

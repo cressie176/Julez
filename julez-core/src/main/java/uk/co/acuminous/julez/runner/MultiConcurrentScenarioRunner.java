@@ -21,7 +21,7 @@ public class MultiConcurrentScenarioRunner extends BaseScenarioRunner {
         this.eventFactory = eventFactory;
     }
     
-    public void run() {
+    public void go() {
         
         raise(eventFactory.begin());
         
@@ -30,7 +30,7 @@ public class MultiConcurrentScenarioRunner extends BaseScenarioRunner {
             Runnable r = new Runnable() {
                 @Override public void run() {
                     try {
-                        runner.run();
+                        runner.go();
                     } finally {
                         latch.countDown();
                     }

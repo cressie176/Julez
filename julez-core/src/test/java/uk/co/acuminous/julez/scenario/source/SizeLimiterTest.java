@@ -2,6 +2,7 @@ package uk.co.acuminous.julez.scenario.source;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class SizeLimiterTest {
     
     @Test
     public void capsNumberOfScenariosToSpecifiedSize() {        
-        ScenarioSource scenarios = new CappedScenarioRepeater(new NoOpScenario(), 100);
+        ScenarioSource scenarios = new SizedScenarioRepeater(new NoOpScenario(), 100);
                 
         SizeLimiter limiter = new SizeLimiter(scenarios, 10);  
         
@@ -38,7 +39,7 @@ public class SizeLimiterTest {
     
     @Test
     public void availabilityNeverFallsBelowZero() {        
-        ScenarioSource scenarios = new CappedScenarioRepeater(new NoOpScenario(), 100);
+        ScenarioSource scenarios = new SizedScenarioRepeater(new NoOpScenario(), 100);
                 
         SizeLimiter limiter = new SizeLimiter(scenarios, 1);  
         
@@ -51,7 +52,7 @@ public class SizeLimiterTest {
     
     @Test
     public void tolleratesUnderlyingSourceSmallerThanSpecifiedSize() {        
-        ScenarioSource scenarios = new CappedScenarioRepeater(new NoOpScenario(), 1);
+        ScenarioSource scenarios = new SizedScenarioRepeater(new NoOpScenario(), 1);
         
         SizeLimiter limiter = new SizeLimiter(scenarios, 10);
         
@@ -65,11 +66,11 @@ public class SizeLimiterTest {
     public void supportsMultiThreading() {        
         InvocationCountingScenario scenario = new InvocationCountingScenario();
         
-        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 1000);
+        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 1000);
         
         SizeLimiter limiter = new SizeLimiter(scenarios, 100);  
         
-        runner.queue(limiter).run();
+        runner.queue(limiter).allocate(10, THREADS).go();
         
         assertEquals(100, scenario.counter.get());
         assertEquals(0, limiter.available());                

@@ -53,6 +53,8 @@ public class ThroughputMonitorTest {
     private void assertThroughput(ScenarioEvent event) {
         ThroughputMonitor monitor = new ThroughputMonitor();
         
+        assertEquals(0, monitor.getThroughput());
+        
         monitor.onEvent(scenarioRunnerEventFactory.begin());
         
         for (int i = 0; i < 10; i++) {

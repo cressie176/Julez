@@ -28,7 +28,7 @@ public class JdbcScenarioEventRepositoryTest {
         repository.ddl();
         
         eventRecorder = new EventRecorder(); 
-        repository.registerEventHandler(eventRecorder);        
+        repository.register(eventRecorder);        
     }
 
     @After

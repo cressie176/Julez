@@ -1,6 +1,7 @@
 package examples;
 
 import static org.junit.Assert.assertEquals;
+import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
 import java.util.UUID;
 
@@ -13,7 +14,7 @@ import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
 
 public class CorrelatedScenarioTest {
     
@@ -28,14 +29,14 @@ public class CorrelatedScenarioTest {
         
         HelloWorldScenario scenario = new HelloWorldScenario();
         scenario.useEventFactory(scenarioEventFactory);
-        scenario.registerEventHandler(recorder);                        
+        scenario.register(recorder);                        
 
-        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 100);        
+        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
         runner.useEventFactory(scenarioRunnerEventFactory);
-        runner.registerEventHandler(recorder);
-        runner.queue(scenarios).run();
+        runner.register(recorder);
+        runner.queue(scenarios).allocate(10, THREADS).go();
 
         for (Event event : recorder.getEvents()) {
             assertEquals(correlationId, event.getCorrelationId());

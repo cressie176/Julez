@@ -19,7 +19,7 @@ public class EventClassFilterTest {
     public void init() {
         recorder = new EventRecorder();        
         filter = new EventClassFilter<ScenarioEvent>(ScenarioEvent.class);                
-        filter.registerEventHandler(recorder);        
+        filter.register(recorder);        
     }
     
     @Test

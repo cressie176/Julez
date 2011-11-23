@@ -1,5 +1,6 @@
 package examples;
 
+import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import org.junit.Test;
@@ -13,7 +14,7 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.CappedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
 import uk.co.acuminous.julez.test.WebTestCase;
 
 public class ConcurrentWebTest extends WebTestCase {
@@ -22,14 +23,14 @@ public class ConcurrentWebTest extends WebTestCase {
     public void demonstrateAConcurrentWebTest() {
 
         SimpleWebScenario scenario = new SimpleWebScenario();
-        ScenarioSource scenarios = new CappedScenarioRepeater(scenario, 100);
+        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
-        scenario.registerEventHandler(throughputMonitor);                                
+        scenario.register(throughputMonitor);                                
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner().queue(scenarios);
-        runner.registerEventHandler(throughputMonitor);
-        runner.run();
+        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
+        runner.register(throughputMonitor);
+        runner.queue(scenarios).allocate(10, THREADS).go();
 
         assertMinimumThroughput(14, throughputMonitor.getThroughput());
     }
