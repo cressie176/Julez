@@ -1,9 +1,10 @@
 package examples;
 
-import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
+import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
+import static uk.co.acuminous.julez.util.PerformanceAssert.assertPassMark;
 
-import java.net.URL;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.sql.DataSource;
 
@@ -15,16 +16,16 @@ import org.junit.Test;
 import test.JdbcTestUtils;
 import test.JmsTestUtils;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
+import uk.co.acuminous.julez.event.handler.ResultMonitor;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.event.repository.JdbcEventRepository;
 import uk.co.acuminous.julez.event.source.JmsEventSource;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.scenario.JBehaveScenario;
+import uk.co.acuminous.julez.scenario.BaseScenario;
+import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
 import uk.co.acuminous.julez.test.WebTestCase;
-import uk.co.acuminous.julez.util.PerformanceAssert;
-import examples.jbehave.Scenario2Steps;
 
 
 public class AsynchronousDatabaseRecordingTest extends WebTestCase {
@@ -49,30 +50,46 @@ public class AsynchronousDatabaseRecordingTest extends WebTestCase {
     @Test
     public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {        
 
-        URL scenarioLocation = codeLocationFromClass(this.getClass());
-        JBehaveScenario scenario = new JBehaveScenario(scenarioLocation, "scenario2.txt", new Scenario2Steps());        
-                
+        Scenario scenario = new DemoScenario();
+        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);        
+        
+        
         JdbcEventRepository eventRepository = new JdbcEventRepository(dataSource).ddl();
+                
+        JmsEventSource jmsEventSource = new JmsEventSource(connectionFactory).listen();
+        jmsEventSource.register(eventRepository);
         
-        JmsEventSource asynchronousListener = new JmsEventSource(connectionFactory).listen();
-        asynchronousListener.register(eventRepository);
-        
-        JmsEventHandler jmsSender = new JmsEventHandler(connectionFactory);               
-        scenario.register(jmsSender);        
-        
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);  
-        
+        JmsEventHandler jmsEventHandler = new JmsEventHandler(connectionFactory);        
+        scenario.register(jmsEventHandler);        
+                  
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
-        runner.register(jmsSender);
+        runner.register(jmsEventHandler);
         runner.queue(scenarios).allocate(10, THREADS).go();
         
-        asynchronousListener.shutdownGracefully();
-
+        jmsEventSource.shutdownGracefully();
         
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
-        eventRepository.register(throughputMonitor);
+        ResultMonitor resultMonitor = new ResultMonitor();
+        eventRepository.register(throughputMonitor, resultMonitor);
         eventRepository.raiseAllEvents();
                 
-        PerformanceAssert.assertMinimumThroughput(10, throughputMonitor.getThroughput());
+        assertMinimumThroughput(100, throughputMonitor.getThroughput());
+        assertPassMark(75, resultMonitor.getPercentage());
+    }
+    
+    class DemoScenario extends BaseScenario {
+        
+        private AtomicInteger counter = new AtomicInteger();
+        
+        @Override public void run() {
+            raise(eventFactory.begin());
+            
+            if (counter.getAndIncrement() % 4 == 0) {
+                raise(eventFactory.fail());
+            } else {
+                raise(eventFactory.pass());
+            }
+        }
+        
     }
 }

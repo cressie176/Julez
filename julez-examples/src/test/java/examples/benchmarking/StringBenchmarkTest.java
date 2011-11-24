@@ -1,5 +1,9 @@
 package examples.benchmarking;
 
+import java.util.concurrent.TimeUnit;
+
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.handler.DurationMonitor;
@@ -7,15 +11,15 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.scenario.source.InflightLimiter;
 import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
+import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 @SuppressWarnings("unused")
-public class StringBenchmarkTest {
+public class StringBenchmarkTest extends BenchmarkTestCase {
 
-    private int repetitions = 100000;
-    private DurationMonitor durationMonitor = new DurationMonitor();;
-
-
+    private int repetitions = 1000000;      
+    
     @Test
     public void benchmarkConcatenationUsingPlus() {
         
@@ -84,14 +88,9 @@ public class StringBenchmarkTest {
         benchmark(scenario);
         
         System.out.println(String.format("%d x String.format(\"%%s%%s\", \"5foo\", \"5bar\") took %dms", repetitions, durationMonitor.getDuration()));
-    }
-
-    private void benchmark(Scenario scenario) {
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, repetitions);
-        
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
-        runner.register(durationMonitor);
-        runner.queue(scenarios).go();
-    }     
+    } 
     
+    private void benchmark(Scenario scenario) {
+        benchmark(scenario, repetitions);
+    }
 }

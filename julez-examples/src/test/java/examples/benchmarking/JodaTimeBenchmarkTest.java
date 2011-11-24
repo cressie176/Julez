@@ -4,17 +4,12 @@ import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.handler.DurationMonitor;
-import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
 
-public class JodaTimeBenchmarkTest {
+public class JodaTimeBenchmarkTest extends BenchmarkTestCase {
 
-    private final int repetitions = 100000;
-    private final DurationMonitor durationMonitor = new DurationMonitor();
+    private final int repetitions = 1000000;
 
     @Test
     public void benchmarkConstruction() {
@@ -48,10 +43,6 @@ public class JodaTimeBenchmarkTest {
     
 
     private void benchmark(Scenario scenario) {
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, repetitions);
-        
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
-        runner.register(durationMonitor);
-        runner.queue(scenarios).go();
+        benchmark(scenario, repetitions);
     }    
 }

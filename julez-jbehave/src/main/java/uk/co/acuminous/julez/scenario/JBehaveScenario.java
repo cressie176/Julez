@@ -55,8 +55,8 @@ public class JBehaveScenario extends BaseScenario {
         Configuration embedderConfiguration = new MostUsefulConfiguration().usePendingStepStrategy(new FailingUponPendingStep());
         embedder.useConfiguration(embedderConfiguration);
 
-        List<CandidateSteps> createCandidateSteps = new InstanceStepsFactory(embedderConfiguration, steps).createCandidateSteps();
-        embedder.useCandidateSteps(createCandidateSteps);
+        List<CandidateSteps> candidateSteps = new InstanceStepsFactory(embedderConfiguration, steps).createCandidateSteps();
+        embedder.useCandidateSteps(candidateSteps);
 
         return embedder;
     }
