@@ -9,6 +9,8 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSession;
 
+import com.google.gson.Gson;
+
 import uk.co.acuminous.julez.event.BaseEventSource;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
@@ -63,7 +65,7 @@ public class JmsEventSource extends BaseEventSource implements MessageListener, 
             String json = JmsHelper.getText(message);
             String className = message.getStringProperty(JmsEventHandler.EVENT_CLASS);
             Class<Event> eventClass = (Class<Event>) Class.forName(className);
-            raise(eventClass.newInstance().fromJson(json));
+            raise(new Gson().fromJson(json, eventClass));
         } catch (Throwable t) {
             System.err.println(t);
         }

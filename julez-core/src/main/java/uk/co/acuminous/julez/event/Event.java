@@ -4,8 +4,6 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-import com.google.gson.Gson;
-
 public abstract class Event {
     
     public static final String EVENT_TYPE_FORMAT = "%s/%s";    
@@ -55,14 +53,8 @@ public abstract class Event {
     }
     
     public String toString() {
-        return toJson();
-    }
-    
-    public String toJson() {
-        return new Gson().toJson(this);
-    }    
-    
-    public Event fromJson(String json) {
-        return new Gson().fromJson(json, this.getClass());        
+        StringBuilder sb = new StringBuilder();
+        sb.append(id).append(",").append(type).append(",").append(timestamp);
+        return(sb.toString());
     }
 }
