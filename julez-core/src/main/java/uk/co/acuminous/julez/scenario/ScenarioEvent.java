@@ -9,7 +9,7 @@ public class ScenarioEvent extends Event {
     public static final String FAIL = qualify("FAIL");
     public static final String ERROR = qualify("ERROR");
        
-    public ScenarioEvent() {        
+    protected ScenarioEvent() {        
     }
     
     public ScenarioEvent(String type, String correlationId) {

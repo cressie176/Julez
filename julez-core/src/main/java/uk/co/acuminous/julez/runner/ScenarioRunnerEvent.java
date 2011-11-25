@@ -7,7 +7,7 @@ public class ScenarioRunnerEvent extends Event {
     public static String BEGIN = qualify("BEGIN");
     public static String END = qualify("END"); 
     
-    public ScenarioRunnerEvent() {        
+    protected ScenarioRunnerEvent() {        
     }
     
     public ScenarioRunnerEvent(String type, String correlationId) {

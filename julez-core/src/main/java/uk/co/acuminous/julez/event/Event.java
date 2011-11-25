@@ -14,7 +14,7 @@ public abstract class Event {
     private String correlationId;
     private Map<String, String> data = new HashMap<String, String>();
 
-    public Event() {        
+    protected Event() {        
     }
     
     public Event(String type, String correlationId) {
