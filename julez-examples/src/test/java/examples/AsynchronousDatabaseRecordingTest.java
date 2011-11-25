@@ -18,6 +18,7 @@ import test.JmsTestUtils;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
 import uk.co.acuminous.julez.event.handler.ResultMonitor;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
+import uk.co.acuminous.julez.event.marshaller.JsonEventMarshaller;
 import uk.co.acuminous.julez.event.repository.JdbcEventRepository;
 import uk.co.acuminous.julez.event.source.JmsEventSource;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
@@ -59,7 +60,7 @@ public class AsynchronousDatabaseRecordingTest extends WebTestCase {
         JmsEventSource jmsEventSource = new JmsEventSource(connectionFactory).listen();
         jmsEventSource.register(eventRepository);
         
-        JmsEventHandler jmsEventHandler = new JmsEventHandler(connectionFactory);        
+        JmsEventHandler jmsEventHandler = new JmsEventHandler(connectionFactory, new JsonEventMarshaller());        
         scenario.register(jmsEventHandler);        
                   
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();

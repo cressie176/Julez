@@ -14,6 +14,7 @@ import org.junit.Test;
 
 import test.JmsTestUtils;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
+import uk.co.acuminous.julez.event.marshaller.JsonEventMarshaller;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
@@ -39,14 +40,14 @@ public class JmsEventHandlerTest {
     
     @Test
     public void scenarioEventsAreWrittenToTheQueue() throws JMSException, InterruptedException {      
-        JmsEventHandler jmsSender = new JmsEventHandler(connectionFactory);        
+        JmsEventHandler jmsSender = new JmsEventHandler(connectionFactory, new JsonEventMarshaller());        
         jmsSender.onEvent(new ScenarioEventFactory().fail());                
         assertScenarioEvent(dequeue(), ScenarioEvent.FAIL);
     }
         
     @Test
     public void scenarioRunnerEventsAreWrittenToTheQueue() throws Exception { 
-        JmsEventHandler jmsSender = new JmsEventHandler(connectionFactory);        
+        JmsEventHandler jmsSender = new JmsEventHandler(connectionFactory, new JsonEventMarshaller());        
         jmsSender.onEvent(new ScenarioRunnerEventFactory().begin());                
         assertScenarioEvent(dequeue(), ScenarioRunnerEvent.BEGIN);     
     }

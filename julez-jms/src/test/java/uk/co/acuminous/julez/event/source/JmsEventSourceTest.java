@@ -12,6 +12,7 @@ import org.junit.Test;
 import test.JmsTestUtils;
 import uk.co.acuminous.julez.event.handler.EventRecorder;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
+import uk.co.acuminous.julez.event.marshaller.JsonEventMarshaller;
 import uk.co.acuminous.julez.event.source.JmsEventSource;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
@@ -37,7 +38,7 @@ public class JmsEventSourceTest {
         listener.register(eventRecorder);
         listener.listen();        
         
-        jmsSender = new JmsEventHandler(connectionFactory);        
+        jmsSender = new JmsEventHandler(connectionFactory, new JsonEventMarshaller());        
     }
     
     @After

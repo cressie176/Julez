@@ -10,9 +10,8 @@ import javax.jms.TextMessage;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
+import uk.co.acuminous.julez.event.EventMarshaller;
 import uk.co.acuminous.julez.util.JmsHelper;
-
-import com.google.gson.Gson;
 
 public class JmsEventHandler implements EventHandler {
 
@@ -25,14 +24,16 @@ public class JmsEventHandler implements EventHandler {
     
     private final QueueConnection connection;
     private final String queueName;
+    private final EventMarshaller marshaller;
     
-    public JmsEventHandler(QueueConnectionFactory connectionFactory) {  
-        this(connectionFactory, DEFAULT_QUEUE_NAME);
+    public JmsEventHandler(QueueConnectionFactory connectionFactory, EventMarshaller marshaller) {  
+        this(connectionFactory, DEFAULT_QUEUE_NAME, marshaller);
     }
         
-    public JmsEventHandler(QueueConnectionFactory connectionFactory, String queueName) {        
+    public JmsEventHandler(QueueConnectionFactory connectionFactory, String queueName, EventMarshaller marshaller) {        
         this.connection = JmsHelper.getConnection(connectionFactory);
-        this.queueName = queueName;        
+        this.queueName = queueName;
+        this.marshaller = marshaller;        
     }
 
     @Override
@@ -42,9 +43,9 @@ public class JmsEventHandler implements EventHandler {
             session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
             QueueSender sender = session.createSender(session.createQueue(queueName));
             
-            String json = new Gson().toJson(event);
+            String text = marshaller.marshal(event);
             
-            TextMessage msg = session.createTextMessage(json);
+            TextMessage msg = session.createTextMessage(text);
             
             msg.setStringProperty(EVENT_CLASS, event.getClass().getName());
             msg.setStringProperty(EVENT_TYPE, event.getType());
