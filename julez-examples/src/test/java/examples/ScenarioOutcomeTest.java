@@ -37,11 +37,11 @@ public class ScenarioOutcomeTest {
         private final AtomicInteger counter = new AtomicInteger();
 
         public void run() {
-            raise(eventFactory.begin());
+        	onEvent(eventFactory.begin());
             if (counter.incrementAndGet() % 4 == 0) {
-                raise(eventFactory.fail());
+            	onEvent(eventFactory.fail());
             } else {
-                raise(eventFactory.pass());
+            	onEvent(eventFactory.pass());
             }
         }
     }

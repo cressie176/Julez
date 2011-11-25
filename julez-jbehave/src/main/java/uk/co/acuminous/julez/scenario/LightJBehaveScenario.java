@@ -30,7 +30,7 @@ public class LightJBehaveScenario extends BaseScenario {
     @Override
     public void run() {
 
-        raise(eventFactory.begin());            
+    	onEvent(eventFactory.begin());            
         
         try {
             Configuration configuration = new MostUsefulConfiguration().usePendingStepStrategy(new FailingUponPendingStep());
@@ -50,9 +50,9 @@ public class LightJBehaveScenario extends BaseScenario {
             if ( storyRunner.failed(afterStories) ){
                 throw new RuntimeException("Error after stories");
             }            
-            raise(eventFactory.pass());            
+            onEvent(eventFactory.pass());            
         } catch (Throwable e) {
-            raise(eventFactory.error());            
+        	onEvent(eventFactory.error());            
         }
         
     }

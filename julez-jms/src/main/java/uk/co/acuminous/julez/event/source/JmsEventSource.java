@@ -9,13 +9,13 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSession;
 
-import uk.co.acuminous.julez.event.BaseEventSource;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
+import uk.co.acuminous.julez.plumbing.BaseEventPipe;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
-public class JmsEventSource extends BaseEventSource implements MessageListener, Runnable {
+public class JmsEventSource extends BaseEventPipe implements MessageListener, Runnable {
 
     private final QueueConnection connection;
     private final String queueName;
@@ -63,7 +63,7 @@ public class JmsEventSource extends BaseEventSource implements MessageListener, 
             String json = JmsHelper.getText(message);
             String className = message.getStringProperty(JmsEventHandler.EVENT_CLASS);
             Class<Event> eventClass = (Class<Event>) Class.forName(className);
-            raise(eventClass.newInstance().fromJson(json));
+            onEvent(eventClass.newInstance().fromJson(json));
         } catch (Throwable t) {
             System.err.println(t);
         }

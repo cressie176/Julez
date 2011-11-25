@@ -23,7 +23,7 @@ public class MultiConcurrentScenarioRunner extends BaseScenarioRunner {
     
     public void go() {
         
-        raise(eventFactory.begin());
+    	onEvent(eventFactory.begin());
         
         for (final ScenarioRunner runner : runners) {
             
@@ -42,6 +42,6 @@ public class MultiConcurrentScenarioRunner extends BaseScenarioRunner {
         
         ConcurrencyUtils.await(latch);   
         
-        raise(eventFactory.end());
+        onEvent(eventFactory.end());
     }
 }

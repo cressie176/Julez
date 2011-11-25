@@ -10,9 +10,9 @@ public class ThreadCountingScenario extends BaseScenario {
     
     @Override
     public void run() {
-        raise(eventFactory.begin());
+    	onEvent(eventFactory.begin());
         threads.add(Thread.currentThread());
-        raise(eventFactory.pass());        
+        onEvent(eventFactory.pass());        
     }
     
     public int count() {

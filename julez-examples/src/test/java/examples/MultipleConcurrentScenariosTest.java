@@ -22,14 +22,14 @@ public class MultipleConcurrentScenariosTest {
         ThroughputMonitor monitor2 = new ThroughputMonitor();
         
         HelloWorldScenario helloWorldScenario = new HelloWorldScenario();
-        helloWorldScenario.register(monitor1, combinedMonitor);
+        helloWorldScenario.register(monitor1).register(combinedMonitor);
         
         ScenarioSource helloWorldScenarios = new SizedScenarioRepeater(helloWorldScenario, 100);
         ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner().queue(helloWorldScenarios).allocate(10, THREADS);
         runner1.register(monitor1);
         
         GoodbyeWorldScenario goodbyeWorldScenario = new GoodbyeWorldScenario();
-        goodbyeWorldScenario.register(monitor2, combinedMonitor);
+        goodbyeWorldScenario.register(monitor2).register(combinedMonitor);
         
         ScenarioSource goodbyeWorldScenarios = new SizedScenarioRepeater(goodbyeWorldScenario, 100);
         ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner().queue(goodbyeWorldScenarios).allocate(10, THREADS);
@@ -47,18 +47,18 @@ public class MultipleConcurrentScenariosTest {
     class HelloWorldScenario extends BaseScenario {
         
         public void run() {
-            raise(eventFactory.begin());
+        	onEvent(eventFactory.begin());
             System.out.print("Hello World ");
-            raise(eventFactory.pass());
+            onEvent(eventFactory.pass());
         }
     }
 
     class GoodbyeWorldScenario extends BaseScenario {
         
         public void run() {
-            raise(eventFactory.begin());
+        	onEvent(eventFactory.begin());
             System.out.print("Goodbye World ");
-            raise(eventFactory.pass());
+            onEvent(eventFactory.pass());
         }
     }
 }

@@ -1,8 +1,8 @@
 package uk.co.acuminous.julez.scenario;
 
-import uk.co.acuminous.julez.event.BaseEventSource;
+import uk.co.acuminous.julez.plumbing.FanOutPipe;
 
-public abstract class BaseScenario extends BaseEventSource implements Scenario {
+public abstract class BaseScenario extends FanOutPipe implements Scenario {
     
     protected ScenarioEventFactory eventFactory = new ScenarioEventFactory();   
     

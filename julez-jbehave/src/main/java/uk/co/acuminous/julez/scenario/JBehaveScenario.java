@@ -31,19 +31,19 @@ public class JBehaveScenario extends BaseScenario {
             EventRaisingEmbedderMonitor monitor = new EventRaisingEmbedderMonitor(eventFactory);
             embedder.useEmbedderMonitor(monitor);
 
-            raise(eventFactory.begin());
+            onEvent(eventFactory.begin());
 
             embedder.runStoriesAsPaths(getStoryPaths());
             
             if (monitor.receivedEvent()) {
-                raise(monitor.getEvent());
+            	onEvent(monitor.getEvent());
             } else {
-                raise(eventFactory.pass());
+            	onEvent(eventFactory.pass());
             }
         } catch (Throwable t) {
             ScenarioEvent event = eventFactory.error();
             event.getData().put("message", t.getMessage());
-            raise(event);
+            onEvent(event);
         }
     }
 

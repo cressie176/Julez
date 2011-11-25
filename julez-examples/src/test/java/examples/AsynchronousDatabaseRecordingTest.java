@@ -70,7 +70,7 @@ public class AsynchronousDatabaseRecordingTest extends WebTestCase {
         
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         ResultMonitor resultMonitor = new ResultMonitor();
-        eventRepository.register(throughputMonitor, resultMonitor);
+        eventRepository.register(throughputMonitor).register(resultMonitor);
         eventRepository.raiseAllEvents();
                 
         assertMinimumThroughput(100, throughputMonitor.getThroughput());
@@ -82,12 +82,12 @@ public class AsynchronousDatabaseRecordingTest extends WebTestCase {
         private AtomicInteger counter = new AtomicInteger();
         
         @Override public void run() {
-            raise(eventFactory.begin());
+        	onEvent(eventFactory.begin());
             
             if (counter.getAndIncrement() % 4 == 0) {
-                raise(eventFactory.fail());
+            	onEvent(eventFactory.fail());
             } else {
-                raise(eventFactory.pass());
+            	onEvent(eventFactory.pass());
             }
         }
         
