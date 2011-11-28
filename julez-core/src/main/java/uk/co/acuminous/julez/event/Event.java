@@ -66,11 +66,6 @@ public abstract class Event {
 	public void setData(Map<String, String> data) {
 		this.data = data;
 	}
-	
-	public void changeMapImplementation(Map<String, String> map) {
-		map.putAll(data);
-		this.data = map;
-	}
 
 	@Override public String toString() {
         StringBuilder sb = new StringBuilder();

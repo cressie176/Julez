@@ -1,0 +1,1 @@
+Should we put mandatory field validation in Event?
