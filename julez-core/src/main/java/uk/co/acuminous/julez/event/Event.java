@@ -14,16 +14,16 @@ public abstract class Event {
 
     protected Map<String, String> data;
 
-    public Event(Map<String, String> data, String id, long timestamp, String type, String correlationId) {
+    public Event(Map<String, String> data) {
     	this.data = data;
-    	put(ID, id);
-    	put(TYPE, type);
-    	put(TIMESTAMP, String.valueOf(timestamp));
-    	put(CORRELATION_ID, correlationId);
     }
     
     public Event(String id, long timestamp, String type, String correlationId) {
-    	this(new HashMap<String, String>(), id, timestamp, type, correlationId);
+        this.data = new HashMap<String, String>();
+        put(ID, id);
+        put(TYPE, type);
+        put(TIMESTAMP, String.valueOf(timestamp));
+        put(CORRELATION_ID, correlationId);
     }
     
     public Event(String type, String correlationId) {
