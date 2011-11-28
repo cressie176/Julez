@@ -4,7 +4,6 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -48,7 +47,7 @@ public class JdbcScenarioEventRepositoryTest {
         
         assertEquals(1, eventRecorder.getEvents().size());
         
-        assertEvent(event, eventRecorder.getEvents().get(0));  
+        assertEquals(event, eventRecorder.getEvents().get(0));  
     }
     
     @Test
@@ -60,7 +59,7 @@ public class JdbcScenarioEventRepositoryTest {
         
         assertEquals(8, eventRecorder.getEvents().size());
         for (int i = 0; i < 8; i++) {
-            assertEvent(events.get(i), eventRecorder.getEvents().get(i));            
+            assertEquals(events.get(i), eventRecorder.getEvents().get(i));            
         }      
     }
     
@@ -136,20 +135,6 @@ public class JdbcScenarioEventRepositoryTest {
         
         assertEquals(1, eventRecorder.getEvents().size());          
     }    
-
-    private void assertEvent(Event expected, Event actual) {
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getTimestamp(), actual.getTimestamp());
-        assertEquals(expected.getType(), actual.getType());
-        assertEquals(expected.getCorrelationId(), actual.getCorrelationId());
-        
-        Map<String, String> expectedData = expected.getData();
-        Map<String, String> actualData = actual.getData();
-        assertEquals(expectedData.size(), actualData.size());
-        for (String name : expectedData.keySet()) {
-            assertEquals(expectedData.get(name), actualData.get(name));
-        }
-    }
     
     private List<Event> initTestData() {
         return initTestData(new DateTime());
