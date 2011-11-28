@@ -16,10 +16,10 @@ public abstract class Event {
 
     public Event(Map<String, String> data, String id, long timestamp, String type, String correlationId) {
     	this.data = data;
-    	setId(id);
-    	setType(type);
-    	setTimestamp(timestamp);
-    	setCorrelationId(correlationId);
+    	put(ID, id);
+    	put(TYPE, type);
+    	put(TIMESTAMP, String.valueOf(timestamp));
+    	put(CORRELEATION_ID, correlationId);
     }
     
     public Event(String id, long timestamp, String type, String correlationId) {
@@ -47,29 +47,13 @@ public abstract class Event {
 		return get(ID);
 	}
 
-	public void setId(String id) {
-		put(ID, id);
-	}
-
 	public long getTimestamp() {
 		return Long.parseLong(get(TIMESTAMP));
-	}
-
-	public void setTimestamp(long timestamp) {
-		put(TIMESTAMP, Long.toString(timestamp));
 	}
 
 	public String getType() {
 		return get(TYPE);
 	}
-
-	public void setType(String type) {
-		put(TYPE,type);
-	}
-    
-    public void setCorrelationId(String correlationId) {
-    	put(CORRELEATION_ID, correlationId);
-    }
     
     public String getCorrelationId() {
         return get(CORRELEATION_ID);
