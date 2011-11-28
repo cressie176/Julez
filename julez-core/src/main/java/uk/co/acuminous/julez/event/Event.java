@@ -10,7 +10,7 @@ public abstract class Event {
     public static final String ID = "~ID";
 	public static final String TYPE = "~TYPE";
 	public static final String TIMESTAMP = "~TIMESTAMP";
-    public static final String CORRELEATION_ID = "~CORRELATION_ID";
+    public static final String CORRELATION_ID = "~CORRELATION_ID";
 
     protected Map<String, String> data;
 
@@ -19,7 +19,7 @@ public abstract class Event {
     	put(ID, id);
     	put(TYPE, type);
     	put(TIMESTAMP, String.valueOf(timestamp));
-    	put(CORRELEATION_ID, correlationId);
+    	put(CORRELATION_ID, correlationId);
     }
     
     public Event(String id, long timestamp, String type, String correlationId) {
@@ -56,7 +56,7 @@ public abstract class Event {
 	}
     
     public String getCorrelationId() {
-        return get(CORRELEATION_ID);
+        return get(CORRELATION_ID);
     }
 
 	public Map<String, String> getData() {
