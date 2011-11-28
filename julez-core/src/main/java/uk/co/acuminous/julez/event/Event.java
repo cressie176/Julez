@@ -5,56 +5,102 @@ import java.util.Map;
 import java.util.UUID;
 
 public abstract class Event {
-    
-    public static final String EVENT_TYPE_FORMAT = "%s/%s";    
-    
-    private String id;
-    private long timestamp;    
-    private String type;
-    private String correlationId;
-    private Map<String, String> data = new HashMap<String, String>();
+    public static final String EVENT_TYPE_FORMAT = "%s/%s";
 
-    protected Event() {        
+    public static final String ID = "~ID";
+	public static final String TYPE = "~TYPE";
+	public static final String TIMESTAMP = "~TIMESTAMP";
+    public static final String CID = "~CID";
+
+    protected Map<String, String> data;
+
+    public Event(Map<String, String> data, String eid, long stamp, String type, String correlationId) {
+    	this.data = data;
+    	setId(eid);
+    	setType(type);
+    	setTimestamp(stamp);
+    }
+    
+    public Event(String eid, long stamp, String type, String correlationId) {
+    	this(new HashMap<String, String>(), eid, stamp, type, correlationId);
     }
     
     public Event(String type, String correlationId) {
         this(UUID.randomUUID().toString(), System.currentTimeMillis(), type, correlationId);
     }
     
-    public Event(String id, long timestamp, String type, String correlationId) {
-        this.id = id;
-        this.timestamp = timestamp;        
-        this.type = type;
-        this.correlationId = correlationId;
-    }
-
-    public String getId() {
-        return id;
+    // FIXME hack for some horrible JSON marshaller
+    protected Event() {
+    	data = new HashMap<String, String>();
     }
     
-    public String getType() {
-        return type;
+    public void put(String key, String value) {
+    	data.put(key, value);
+    }
+    
+    public String get(String key) {
+    	return data.get(key);
+    }
+    
+    public String getId() {
+		return get(ID);
+	}
+
+	public void setId(String id) {
+		put(ID, id);
+	}
+
+	public long getTimestamp() {
+		return Long.parseLong(get(TIMESTAMP));
+	}
+
+	public void setTimestamp(long timestamp) {
+		put(TIMESTAMP, Long.toString(timestamp));
+	}
+
+	public String getType() {
+		return get(TYPE);
+	}
+
+	public void setType(String type) {
+		put(TYPE,type);
+	}
+    
+    public void setCorrelationId(String correlationId) {
+    	put(CID, correlationId);
     }
     
     public String getCorrelationId() {
-        return correlationId;
+        return get(CID);
     }
 
-    public long getTimestamp() {
-        return timestamp;
-    }    
-    
-    public Map<String, String> getData() {
-        return data;
-    }
-    
-    public void setData(Map<String, String> data) {
-        this.data = data;
-    }
-    
-    public String toString() {
+	public Map<String, String> getData() {
+		return data;
+	}
+
+	public void setData(Map<String, String> data) {
+		this.data = data;
+	}
+	
+	public void changeMapImplementation(Map<String, String> map) {
+		map.putAll(data);
+		this.data = map;
+	}
+
+	@Override public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append(id).append(",").append(type).append(",").append(timestamp);
+        sb.append(this.getClass().getSimpleName()).append(data);
         return(sb.toString());
     }
+	
+	@Override public int hashCode() {
+		return 24761 ^ data.hashCode();
+	}
+	
+	@Override public boolean equals(Object obj) {
+		if (this == obj) return true;
+		if (null == obj || !(obj instanceof Event)) return false;
+		Event other = (Event)obj;
+		return this.data.equals(other.data);
+	}
 }
