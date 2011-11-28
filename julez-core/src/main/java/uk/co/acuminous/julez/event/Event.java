@@ -67,17 +67,20 @@ public abstract class Event {
 		this.data = data;
 	}
 
-	@Override public String toString() {
+	@Override
+	public String toString() {
         StringBuilder sb = new StringBuilder();
         sb.append(this.getClass().getSimpleName()).append(data);
         return(sb.toString());
     }
 	
-	@Override public int hashCode() {
+	@Override
+	public int hashCode() {
 		return 24761 ^ data.hashCode();
 	}
 	
-	@Override public boolean equals(Object obj) {
+	@Override
+	public boolean equals(Object obj) {
 		if (this == obj) return true;
 		if (null == obj || !(obj instanceof Event)) return false;
 		Event other = (Event)obj;
