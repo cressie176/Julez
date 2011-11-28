@@ -81,10 +81,8 @@ public abstract class Event {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (null == obj || !(obj instanceof Event))
-            return false;
+        if (this == obj) return true;
+        if (null == obj || !(obj instanceof Event)) return false;
         Event other = (Event) obj;
         return this.data.equals(other.data);
     }
