@@ -30,7 +30,7 @@ public abstract class Event {
         this(UUID.randomUUID().toString(), System.currentTimeMillis(), type, correlationId);
     }
     
-    // FIXME hack for some horrible JSON marshaller
+    // FIXME hack for some gson marshaller
     protected Event() {
     	data = new HashMap<String, String>();
     }
