@@ -43,6 +43,7 @@ public class ScenarioOutcomeTest {
             } else {
                 raise(eventFactory.pass());
             }
+            raise(eventFactory.end());
         }
     }
 

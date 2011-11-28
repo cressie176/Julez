@@ -6,9 +6,9 @@ import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 
-
 public class ResultMonitor implements EventHandler {
 
+    // TODO add error count
     private AtomicInteger passCount = new AtomicInteger();
     private AtomicInteger failureCount = new AtomicInteger();
     

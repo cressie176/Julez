@@ -56,6 +56,7 @@ public class ConcurrentWebTest extends WebTestCase {
             } finally {                
                 webClient.closeAllWindows();
             }
+            raise(eventFactory.end());
         }
         
         private void raiseFailure(Integer status, String message) {

@@ -1,6 +1,5 @@
 package uk.co.acuminous.julez.event.handler;
 
-import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import uk.co.acuminous.julez.event.Event;
@@ -21,7 +20,7 @@ public class ThroughputMonitor implements EventHandler {
             started = event.getTimestamp();
         } else if (ScenarioRunnerEvent.END.equals(event.getType())) {
             finished = event.getTimestamp();
-        } else if (Arrays.asList(ScenarioEvent.PASS, ScenarioEvent.FAIL, ScenarioEvent.ERROR).contains(event.getType())) {
+        } else if (ScenarioEvent.END.equals(event.getType())) {
             completed.incrementAndGet();
         }
     }

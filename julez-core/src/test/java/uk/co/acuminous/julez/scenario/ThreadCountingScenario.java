@@ -12,7 +12,7 @@ public class ThreadCountingScenario extends BaseScenario {
     public void run() {
         raise(eventFactory.begin());
         threads.add(Thread.currentThread());
-        raise(eventFactory.pass());        
+        raise(eventFactory.end());        
     }
     
     public int count() {

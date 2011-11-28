@@ -18,7 +18,6 @@ public class JBehaveScenario extends BaseScenario {
     private final Object[] steps;
 
     public JBehaveScenario(URL codeLocation, String scenario, Object... steps) {
-        ;
         this.codeLocation = codeLocation;
         this.scenario = scenario;
         this.steps = steps;
@@ -44,6 +43,8 @@ public class JBehaveScenario extends BaseScenario {
             ScenarioEvent event = eventFactory.error();
             event.getData().put("message", t.getMessage());
             raise(event);
+        } finally {
+            raise(eventFactory.end());
         }
     }
 

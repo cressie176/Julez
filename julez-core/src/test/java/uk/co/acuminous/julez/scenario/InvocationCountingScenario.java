@@ -10,6 +10,6 @@ public class InvocationCountingScenario extends BaseScenario {
     public void run() {
         raise(eventFactory.begin());
         counter.incrementAndGet();
-        raise(eventFactory.pass());
+        raise(eventFactory.end());
     }
 }

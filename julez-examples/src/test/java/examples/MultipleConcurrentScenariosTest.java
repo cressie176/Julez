@@ -49,7 +49,7 @@ public class MultipleConcurrentScenariosTest {
         public void run() {
             raise(eventFactory.begin());
             System.out.print("Hello World ");
-            raise(eventFactory.pass());
+            raise(eventFactory.end());
         }
     }
 
@@ -58,7 +58,7 @@ public class MultipleConcurrentScenariosTest {
         public void run() {
             raise(eventFactory.begin());
             System.out.print("Goodbye World ");
-            raise(eventFactory.pass());
+            raise(eventFactory.end());
         }
     }
 }

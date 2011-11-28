@@ -24,6 +24,6 @@ public class SleepingScenario extends BaseScenario {
     public void run() {
         raise(eventFactory.begin());        
         ConcurrencyUtils.sleep(duration, MILLISECONDS);
-        raise(eventFactory.pass());        
+        raise(eventFactory.end());        
     }
 }

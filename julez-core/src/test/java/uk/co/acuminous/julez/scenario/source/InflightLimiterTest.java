@@ -52,12 +52,10 @@ public class InflightLimiterTest {
         limiter.next();        
 
         Thread t = new Thread(new Runnable() {
-
             @Override public void run() {
                 ConcurrencyUtils.sleep(1, SECONDS);
-                limiter.onEvent(new ScenarioEventFactory().pass());
-            }
-            
+                limiter.onEvent(new ScenarioEventFactory().end());
+            }            
         });
         t.start();
         

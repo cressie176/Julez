@@ -53,6 +53,8 @@ public class LightJBehaveScenario extends BaseScenario {
             raise(eventFactory.pass());            
         } catch (Throwable e) {
             raise(eventFactory.error());            
+        } finally {
+            raise(eventFactory.end());
         }
         
     }

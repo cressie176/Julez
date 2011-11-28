@@ -90,6 +90,8 @@ public class AsynchronousDatabaseRecordingTest extends WebTestCase {
             } else {
                 raise(eventFactory.pass());
             }
+            
+            raise(eventFactory.end());
         }
         
     }

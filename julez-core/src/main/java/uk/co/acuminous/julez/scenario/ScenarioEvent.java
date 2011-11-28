@@ -8,6 +8,7 @@ public class ScenarioEvent extends Event {
     public static final String PASS = qualify("PASS");
     public static final String FAIL = qualify("FAIL");
     public static final String ERROR = qualify("ERROR");
+    public static final String END = qualify("END");
        
     protected ScenarioEvent() {        
     }

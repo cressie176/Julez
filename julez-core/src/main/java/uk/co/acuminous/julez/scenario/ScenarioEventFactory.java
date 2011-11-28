@@ -1,5 +1,7 @@
 package uk.co.acuminous.julez.scenario;
 
+import uk.co.acuminous.julez.event.Event;
+
 
 public class ScenarioEventFactory {
     
@@ -27,5 +29,9 @@ public class ScenarioEventFactory {
     
     public ScenarioEvent error() {
         return new ScenarioEvent(ScenarioEvent.ERROR, correlationId);
+    }
+
+    public Event end() {
+        return new ScenarioEvent(ScenarioEvent.END, correlationId);
     }
 }

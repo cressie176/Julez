@@ -1,7 +1,7 @@
 package uk.co.acuminous.julez.scenario.source;
 
-import java.util.Arrays;
-import static java.util.concurrent.TimeUnit.*;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 import java.util.concurrent.atomic.AtomicInteger;
 
 import uk.co.acuminous.julez.event.Event;
@@ -38,7 +38,7 @@ public class InflightLimiter implements ScenarioSource, EventHandler {
 
     @Override
     public void onEvent(Event event) {
-        if (Arrays.asList(ScenarioEvent.PASS, ScenarioEvent.FAIL, ScenarioEvent.ERROR).contains(event.getType())) {
+        if (ScenarioEvent.END.equals(event.getType())) {
             counter.decrementAndGet();
         }        
     }
