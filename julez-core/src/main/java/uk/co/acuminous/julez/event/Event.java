@@ -19,6 +19,7 @@ public abstract class Event {
     	setId(eid);
     	setType(type);
     	setTimestamp(stamp);
+    	setCorrelationId(correlationId);
     }
     
     public Event(String eid, long stamp, String type, String correlationId) {
