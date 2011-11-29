@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public abstract class Event {
+public class Event {
     public static final String EVENT_TYPE_FORMAT = "%s/%s";
 
     public static final String ID = "~ID";

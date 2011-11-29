@@ -4,7 +4,7 @@ import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.event.EventPipe;
 
-public abstract class BaseEventPipe implements EventPipe {
+public class BaseEventPipe implements EventPipe {
 
     protected EventHandler handler;
 
