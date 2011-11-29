@@ -15,10 +15,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.EventHandler;
-import uk.co.acuminous.julez.event.pipe.FanOutPipe;
+import uk.co.acuminous.julez.event.EventRepository;
+import uk.co.acuminous.julez.event.pipe.BaseEventPipe;
 
-public class JdbcEventRepository extends FanOutPipe {
+public class JdbcEventRepository extends BaseEventPipe implements EventRepository {
 
     private JdbcTemplate jdbcTemplate;
 
@@ -66,7 +66,7 @@ public class JdbcEventRepository extends FanOutPipe {
     }
 
     private static final String SELECT_ALL = "SELECT e.* FROM event e ORDER BY timestamp ASC";    
-    public void raiseAllEvents() {
+    public void replay() {
         jdbcTemplate.query(SELECT_ALL, new EventRowMapper());
     }
           
@@ -143,9 +143,7 @@ public class JdbcEventRepository extends FanOutPipe {
                 
                 jdbcTemplate.query("SELECT * FROM event_data WHERE id = ?", new EventDataRowMapper(event), event.getId());
                 
-                for (EventHandler handler : handlers) {
-                    handler.onEvent(event);
-                }
+                handler.onEvent(event);
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

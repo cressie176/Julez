@@ -43,7 +43,7 @@ public class JdbcScenarioEventRepositoryTest {
         event.getData().put("statusCode", "404");                
         repository.onEvent(event);
                 
-        repository.raiseAllEvents();
+        repository.replay();
         
         assertEquals(1, eventMonitor.getEvents().size());
         
@@ -55,7 +55,7 @@ public class JdbcScenarioEventRepositoryTest {
         
         List<Event> events = initTestData();        
                 
-        repository.raiseAllEvents();
+        repository.replay();
         
         assertEquals(8, eventMonitor.getEvents().size());
         for (int i = 0; i < 8; i++) {

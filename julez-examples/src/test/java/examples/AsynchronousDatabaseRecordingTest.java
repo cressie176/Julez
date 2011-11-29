@@ -15,10 +15,13 @@ import org.junit.Test;
 
 import test.JdbcTestUtils;
 import test.JmsTestUtils;
+import uk.co.acuminous.julez.event.EventHandler;
+import uk.co.acuminous.julez.event.EventSource;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
 import uk.co.acuminous.julez.event.handler.ResultMonitor;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.event.marshaller.JsonEventMarshaller;
+import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.event.repository.JdbcEventRepository;
 import uk.co.acuminous.julez.event.source.JmsEventSource;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
@@ -71,11 +74,17 @@ public class AsynchronousDatabaseRecordingTest extends WebTestCase {
         
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         ResultMonitor resultMonitor = new ResultMonitor();
-        eventRepository.registerAll(throughputMonitor, resultMonitor);
-        eventRepository.raiseAllEvents();
+        registerMultiple(eventRepository, throughputMonitor, resultMonitor);
+        eventRepository.replay();
                 
         assertMinimumThroughput(100, throughputMonitor.getThroughput());
         assertPassMark(75, resultMonitor.getPercentage());
+    }
+
+    public void registerMultiple(EventSource source, EventHandler... handlers) {
+        FanOutPipe fan = new FanOutPipe();
+        source.register(fan);
+        fan.registerAll(handlers);
     }
     
     class DemoScenario extends BaseScenario {
