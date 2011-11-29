@@ -11,18 +11,18 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.handler.EventRecorder;
+import uk.co.acuminous.julez.event.handler.EventMonitor;
 
 public class JBehaveScenarioTest {
 
     private List<String> stepRecorder;
     private URL scenarioLocation;
-    private EventRecorder eventRecorder;
+    private EventMonitor eventRecorder;
 
     @Before
     public void init() {
         stepRecorder = new ArrayList<String>();
-        eventRecorder = new EventRecorder();        
+        eventRecorder = new EventMonitor();        
         scenarioLocation = codeLocationFromClass(this.getClass());        
     }
     

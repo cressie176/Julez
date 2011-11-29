@@ -6,20 +6,20 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.filter.EventTypeFilter;
-import uk.co.acuminous.julez.event.handler.EventRecorder;
+import uk.co.acuminous.julez.event.handler.EventMonitor;
 import uk.co.acuminous.julez.scenario.NoOpScenario;
 import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
 
 public class MultiConcurrentScenarioRunnerTest {
 
-    private EventRecorder recorder;
+    private EventMonitor eventMonitor;
     private ConcurrentScenarioRunner runner1;
     private ConcurrentScenarioRunner runner2;
     private MultiConcurrentScenarioRunner multiRunner;
 
     @Before
     public void init() {
-        recorder = new EventRecorder();
+        eventMonitor = new EventMonitor();
         
         runner1 = new ConcurrentScenarioRunner().queue(new SizedScenarioRepeater(new NoOpScenario(), 0));
         runner2 = new ConcurrentScenarioRunner().queue(new SizedScenarioRepeater(new NoOpScenario(), 0));        
@@ -29,37 +29,37 @@ public class MultiConcurrentScenarioRunnerTest {
     @Test
     public void startsAllRunners() {
         EventTypeFilter filter = new EventTypeFilter(ScenarioRunnerEvent.BEGIN);
-        filter.register(recorder);
+        filter.register(eventMonitor);
         
         runner1.register(filter);
         runner2.register(filter);
         
         multiRunner.go();
         
-        assertEquals(2, recorder.getEvents().size());
+        assertEquals(2, eventMonitor.getEvents().size());
     }
         
     @Test
     public void waitsForAllRunnersToFinish() {
         EventTypeFilter filter = new EventTypeFilter(ScenarioRunnerEvent.END);
-        filter.register(recorder);
+        filter.register(eventMonitor);
         
         runner1.register(filter);
         runner2.register(filter);
         
         multiRunner.go();
         
-        assertEquals(2, recorder.getEvents().size());
+        assertEquals(2, eventMonitor.getEvents().size());
     } 
     
     @Test
     public void raisesBeginAndEndEvents() {
-        multiRunner.register(recorder);
+        multiRunner.register(eventMonitor);
         multiRunner.go();
         
-        assertEquals(2, recorder.getEvents().size());
-        assertEquals(ScenarioRunnerEvent.BEGIN, recorder.getEvents().get(0).getType());
-        assertEquals(ScenarioRunnerEvent.END, recorder.getEvents().get(1).getType());
+        assertEquals(2, eventMonitor.getEvents().size());
+        assertEquals(ScenarioRunnerEvent.BEGIN, eventMonitor.getEvents().get(0).getType());
+        assertEquals(ScenarioRunnerEvent.END, eventMonitor.getEvents().get(1).getType());
     }    
     
 }

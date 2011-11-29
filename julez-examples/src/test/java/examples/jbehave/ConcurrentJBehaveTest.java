@@ -32,7 +32,7 @@ public class ConcurrentJBehaveTest {
         List<Scenario> list = new ArrayList<Scenario>();
         for (int i = 0; i < 1000; i++) {
             LightJBehaveScenario scenario = new LightJBehaveScenario(scenarioLocation, "jbehave/calculator.txt", new CalculatorSteps());
-            scenario.register(throughputMonitor, resultMonitor);
+            scenario.registerAll(throughputMonitor, resultMonitor);
             list.add(scenario);
         }
         

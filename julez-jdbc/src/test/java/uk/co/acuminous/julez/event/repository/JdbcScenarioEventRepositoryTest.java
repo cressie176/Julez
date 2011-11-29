@@ -12,22 +12,22 @@ import org.junit.Test;
 
 import test.JdbcTestUtils;
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.handler.EventRecorder;
+import uk.co.acuminous.julez.event.handler.EventMonitor;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 
 public class JdbcScenarioEventRepositoryTest {
 
     private JdbcEventRepository repository;
-    private EventRecorder eventRecorder;
+    private EventMonitor eventMonitor;
 
     @Before
     public void init() throws Exception {
         repository = new JdbcEventRepository(JdbcTestUtils.getDataSource());
         repository.ddl();
         
-        eventRecorder = new EventRecorder(); 
-        repository.register(eventRecorder);        
+        eventMonitor = new EventMonitor(); 
+        repository.register(eventMonitor);        
     }
 
     @After
@@ -45,9 +45,9 @@ public class JdbcScenarioEventRepositoryTest {
                 
         repository.raiseAllEvents();
         
-        assertEquals(1, eventRecorder.getEvents().size());
+        assertEquals(1, eventMonitor.getEvents().size());
         
-        assertEquals(event, eventRecorder.getEvents().get(0));  
+        assertEquals(event, eventMonitor.getEvents().get(0));  
     }
     
     @Test
@@ -57,9 +57,9 @@ public class JdbcScenarioEventRepositoryTest {
                 
         repository.raiseAllEvents();
         
-        assertEquals(8, eventRecorder.getEvents().size());
+        assertEquals(8, eventMonitor.getEvents().size());
         for (int i = 0; i < 8; i++) {
-            assertEquals(events.get(i), eventRecorder.getEvents().get(i));            
+            assertEquals(events.get(i), eventMonitor.getEvents().get(i));            
         }      
     }
     
@@ -70,10 +70,10 @@ public class JdbcScenarioEventRepositoryTest {
         
         repository.raiseCorrelatedEvents("A");
         
-        List<Event> events = eventRecorder.getEvents();
+        List<Event> events = eventMonitor.getEvents();
         
         assertEquals(4, events.size());
-        for (Event event : eventRecorder.getEvents()) {
+        for (Event event : eventMonitor.getEvents()) {
             assertEquals("A", event.getCorrelationId());           
         }
     }
@@ -86,7 +86,7 @@ public class JdbcScenarioEventRepositoryTest {
         
         repository.raiseAllEventsAfter(now.minusSeconds(5).getMillis());
         
-        assertEquals(4, eventRecorder.getEvents().size());        
+        assertEquals(4, eventMonitor.getEvents().size());        
     }
     
     @Test
@@ -97,21 +97,21 @@ public class JdbcScenarioEventRepositoryTest {
         
         repository.raiseCorrelatedEventsAfter("A", now.minusSeconds(5).getMillis());
         
-        assertEquals(2, eventRecorder.getEvents().size());   
+        assertEquals(2, eventMonitor.getEvents().size());   
     } 
     
     @Test
     public void raisesAllEventsWithSpecifiedType() {
         initTestData();                
         repository.raiseAllEventsOfType(ScenarioEvent.BEGIN, ScenarioRunnerEvent.BEGIN);        
-        assertEquals(4, eventRecorder.getEvents().size());          
+        assertEquals(4, eventMonitor.getEvents().size());          
     }
     
     @Test
     public void raisesCorrelatedEventsWithSpecifiedType() {        
         initTestData();                
         repository.raiseAllCorrelatedEventsOfType("A", ScenarioEvent.BEGIN, ScenarioRunnerEvent.BEGIN);        
-        assertEquals(2, eventRecorder.getEvents().size());          
+        assertEquals(2, eventMonitor.getEvents().size());          
     }  
     
     @Test
@@ -122,7 +122,7 @@ public class JdbcScenarioEventRepositoryTest {
         
         repository.raiseAllEventsAfterTimestampOfType(now.minusSeconds(8).getMillis(), ScenarioEvent.BEGIN, ScenarioRunnerEvent.BEGIN);
         
-        assertEquals(3, eventRecorder.getEvents().size());          
+        assertEquals(3, eventMonitor.getEvents().size());          
     }
     
     @Test
@@ -133,7 +133,7 @@ public class JdbcScenarioEventRepositoryTest {
         
         repository.raiseCorrelatedEventsAfterTimestampOfType("A", now.minusSeconds(8).getMillis(), ScenarioEvent.BEGIN, ScenarioRunnerEvent.BEGIN);
         
-        assertEquals(1, eventRecorder.getEvents().size());          
+        assertEquals(1, eventMonitor.getEvents().size());          
     }    
     
     private List<Event> initTestData() {

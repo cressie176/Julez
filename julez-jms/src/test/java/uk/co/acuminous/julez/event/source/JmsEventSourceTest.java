@@ -10,7 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import test.JmsTestUtils;
-import uk.co.acuminous.julez.event.handler.EventRecorder;
+import uk.co.acuminous.julez.event.handler.EventMonitor;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
 import uk.co.acuminous.julez.event.marshaller.JsonEventMarshaller;
 import uk.co.acuminous.julez.event.source.JmsEventSource;
@@ -23,7 +23,7 @@ public class JmsEventSourceTest {
 
     private QueueConnectionFactory connectionFactory;
     private JmsEventSource listener;
-    private EventRecorder eventRecorder;
+    private EventMonitor eventMonitor;
     private JmsEventHandler jmsSender;
     
     @Before
@@ -31,11 +31,11 @@ public class JmsEventSourceTest {
         JmsTestUtils.createBroker(); 
         
         connectionFactory = JmsTestUtils.getConnectionFactory();
-        eventRecorder = new EventRecorder();                
+        eventMonitor = new EventMonitor();                
 
         listener = new JmsEventSource(connectionFactory);
         listener.setShutdownDelay(1, SECONDS);
-        listener.register(eventRecorder);
+        listener.register(eventMonitor);
         listener.listen();        
         
         jmsSender = new JmsEventHandler(connectionFactory, new JsonEventMarshaller());        
@@ -52,8 +52,8 @@ public class JmsEventSourceTest {
         
         listener.shutdownGracefully();
         
-        assertEquals(1, eventRecorder.getEvents().size());
-        assertEquals(ScenarioEvent.PASS, eventRecorder.getEvents().get(0).getType());
+        assertEquals(1, eventMonitor.getEvents().size());
+        assertEquals(ScenarioEvent.PASS, eventMonitor.getEvents().get(0).getType());
     }
     
     @Test
@@ -62,7 +62,7 @@ public class JmsEventSourceTest {
         
         listener.shutdownGracefully();
         
-        assertEquals(1, eventRecorder.getEvents().size());
-        assertEquals(ScenarioRunnerEvent.BEGIN, eventRecorder.getEvents().get(0).getType());        
+        assertEquals(1, eventMonitor.getEvents().size());
+        assertEquals(ScenarioRunnerEvent.BEGIN, eventMonitor.getEvents().get(0).getType());        
     }    
 }

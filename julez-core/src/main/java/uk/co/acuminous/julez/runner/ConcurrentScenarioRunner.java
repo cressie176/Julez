@@ -55,7 +55,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
         ConcurrencyUtils.sleep((startTime - System.currentTimeMillis()), MILLISECONDS);
         long stopTime = System.currentTimeMillis() + timeout;
         
-        raise(eventFactory.begin());
+        onEvent(eventFactory.begin());
         
         while ((scenarios.available() > 0) && (stopTime > System.currentTimeMillis())) {
             Scenario scenario = scenarios.next();
@@ -72,6 +72,6 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
             }
         }
         
-        raise(eventFactory.end());
+        onEvent(eventFactory.end());
     }
 }

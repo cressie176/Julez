@@ -33,9 +33,9 @@ public class ConcurrentThroughputTest {
     class HelloWorldScenario extends BaseScenario {        
         
         public void run() {
-            raise(eventFactory.begin());
+            onEvent(eventFactory.begin());
             System.out.print("Hello World ");
-            raise(eventFactory.end());
+            onEvent(eventFactory.end());
         }
     }
 }

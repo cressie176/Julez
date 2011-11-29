@@ -38,7 +38,7 @@ public class ConcurrentWebTest extends WebTestCase {
     class SimpleWebScenario extends BaseScenario {
 
         public void run() {
-            raise(eventFactory.begin());
+            onEvent(eventFactory.begin());
             WebClient webClient = new WebClient();
             try {                
                 webClient.setCssEnabled(false);
@@ -47,7 +47,7 @@ public class ConcurrentWebTest extends WebTestCase {
                 HtmlPage page = webClient.getPage("http://localhost:8080");
                 WebResponse webResponse = page.getWebResponse();
                 if (webResponse.getStatusCode() == 200) {
-                    raise(eventFactory.pass());
+                    onEvent(eventFactory.pass());
                 } else {                                               
                     raiseFailure(webResponse.getStatusCode(), webResponse.getStatusMessage());
                 }
@@ -56,20 +56,20 @@ public class ConcurrentWebTest extends WebTestCase {
             } finally {                
                 webClient.closeAllWindows();
             }
-            raise(eventFactory.end());
+            onEvent(eventFactory.end());
         }
         
         private void raiseFailure(Integer status, String message) {
             ScenarioEvent event = eventFactory.fail();
             event.getData().put("statusCode", String.valueOf(status));
             event.getData().put("message", message);
-            raise(event);
+            onEvent(event);
         }
         
         private void raiseError(String message) {
             ScenarioEvent event = eventFactory.error();
             event.getData().put("message", message);
-            raise(event);       
+            onEvent(event);       
         }
     }
 }

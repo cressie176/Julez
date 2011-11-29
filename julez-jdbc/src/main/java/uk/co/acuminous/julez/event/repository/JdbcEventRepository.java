@@ -14,11 +14,11 @@ import javax.sql.DataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
-import uk.co.acuminous.julez.event.BaseEventSource;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
+import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 
-public class JdbcEventRepository extends BaseEventSource implements EventHandler {
+public class JdbcEventRepository extends FanOutPipe {
 
     private JdbcTemplate jdbcTemplate;
 
@@ -143,7 +143,9 @@ public class JdbcEventRepository extends BaseEventSource implements EventHandler
                 
                 jdbcTemplate.query("SELECT * FROM event_data WHERE id = ?", new EventDataRowMapper(event), event.getId());
                 
-                raise(event);
+                for (EventHandler handler : handlers) {
+                    handler.onEvent(event);
+                }
             } catch (Exception e) {
                 throw new RuntimeException(e);
             }

@@ -8,7 +8,7 @@ import org.joda.time.DateTime;
 import org.junit.Test;
 
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
-import uk.co.acuminous.julez.event.handler.EventRecorder;
+import uk.co.acuminous.julez.event.handler.EventMonitor;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.InvocationCountingScenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
@@ -67,7 +67,7 @@ public class ConcurrentScenarioRunnerTest {
         InvocationCountingScenario scenario = new InvocationCountingScenario();
         ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 10);        
 
-        EventRecorder eventRecorder = new EventRecorder();        
+        EventMonitor eventRecorder = new EventMonitor();        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
         runner.register(eventRecorder);
@@ -81,7 +81,7 @@ public class ConcurrentScenarioRunnerTest {
         DateTime now = new DateTime();
         DateTime desiredStartTime = now.plusSeconds(5);       
 
-        EventRecorder eventRecorder = new EventRecorder();        
+        EventMonitor eventRecorder = new EventMonitor();        
         
         StartTimeCapturingScenario scenario = new StartTimeCapturingScenario();        
         ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 1);        
@@ -98,7 +98,7 @@ public class ConcurrentScenarioRunnerTest {
         InvocationCountingScenario scenario = new InvocationCountingScenario();
         ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 10);        
 
-        EventRecorder eventRecorder = new EventRecorder();        
+        EventMonitor eventRecorder = new EventMonitor();        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
         runner.register(eventRecorder);

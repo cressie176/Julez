@@ -1,7 +1,9 @@
 package uk.co.acuminous.julez.event.source;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+import static java.util.concurrent.TimeUnit.SECONDS;
+
 import java.util.concurrent.TimeUnit;
-import static java.util.concurrent.TimeUnit.*;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -9,15 +11,15 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSession;
 
-import com.google.gson.Gson;
-
-import uk.co.acuminous.julez.event.BaseEventSource;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
+import uk.co.acuminous.julez.event.pipe.EmptyPipe;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
-public class JmsEventSource extends BaseEventSource implements MessageListener, Runnable {
+import com.google.gson.Gson;
+
+public class JmsEventSource extends EmptyPipe implements MessageListener, Runnable {
 
     private final QueueConnection connection;
     private final String queueName;
@@ -65,7 +67,7 @@ public class JmsEventSource extends BaseEventSource implements MessageListener, 
             String json = JmsHelper.getText(message);
             String className = message.getStringProperty(JmsEventHandler.EVENT_CLASS);
             Class<Event> eventClass = (Class<Event>) Class.forName(className);
-            raise(new Gson().fromJson(json, eventClass));
+            onEvent(new Gson().fromJson(json, eventClass));
         } catch (Throwable t) {
             System.err.println(t);
         }

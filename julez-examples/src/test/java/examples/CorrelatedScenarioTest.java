@@ -8,7 +8,7 @@ import java.util.UUID;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.handler.EventRecorder;
+import uk.co.acuminous.julez.event.handler.EventMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.BaseScenario;
@@ -25,20 +25,20 @@ public class CorrelatedScenarioTest {
         ScenarioEventFactory scenarioEventFactory = new ScenarioEventFactory(correlationId);
         ScenarioRunnerEventFactory scenarioRunnerEventFactory = new ScenarioRunnerEventFactory(correlationId);
 
-        EventRecorder recorder = new EventRecorder();        
+        EventMonitor eventMonitor = new EventMonitor();        
         
         HelloWorldScenario scenario = new HelloWorldScenario();
         scenario.useEventFactory(scenarioEventFactory);
-        scenario.register(recorder);                        
+        scenario.register(eventMonitor);                        
 
         ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
         runner.useEventFactory(scenarioRunnerEventFactory);
-        runner.register(recorder);
+        runner.register(eventMonitor);
         runner.queue(scenarios).allocate(10, THREADS).go();
 
-        for (Event event : recorder.getEvents()) {
+        for (Event event : eventMonitor.getEvents()) {
             assertEquals(correlationId, event.getCorrelationId());
         }
     }
@@ -46,9 +46,9 @@ public class CorrelatedScenarioTest {
     class HelloWorldScenario extends BaseScenario {        
         
         public void run() {
-            raise(eventFactory.begin());
+            onEvent(eventFactory.begin());
             System.out.print("Hello World ");
-            raise(eventFactory.end());
+            onEvent(eventFactory.end());
         }
     }
 }

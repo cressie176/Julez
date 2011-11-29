@@ -7,7 +7,6 @@ import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 
-
 public class ThroughputMonitor implements EventHandler {
 
     private long started;
