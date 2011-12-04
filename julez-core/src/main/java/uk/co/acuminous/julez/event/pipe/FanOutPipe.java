@@ -11,12 +11,12 @@ public class FanOutPipe implements EventPipe {
 
     protected final Collection<EventHandler> handlers;
 
-    public FanOutPipe(Collection<EventHandler> handlers) {
-        this.handlers = handlers;
-    }
-
     public FanOutPipe() {
         this(new HashSet<EventHandler>());
+    }    
+    
+    public FanOutPipe(Collection<EventHandler> handlers) {
+        this.handlers = handlers;
     }
 
     @Override
