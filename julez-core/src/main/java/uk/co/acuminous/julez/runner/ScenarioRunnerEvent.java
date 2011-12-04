@@ -10,12 +10,12 @@ public class ScenarioRunnerEvent extends Event {
     protected ScenarioRunnerEvent() {        
     }
     
-    public ScenarioRunnerEvent(String type, String correlationId) {
-         super(type, correlationId);
+    public ScenarioRunnerEvent(String type) {
+         super(type);
     }
     
-    public ScenarioRunnerEvent(String id, Long timestamp, String type, String correlationId) {
-         super(id, timestamp, type, correlationId);
+    public ScenarioRunnerEvent(String id, Long timestamp, String type) {
+         super(id, timestamp, type);
     }
 
     protected static String qualify(String subType) {

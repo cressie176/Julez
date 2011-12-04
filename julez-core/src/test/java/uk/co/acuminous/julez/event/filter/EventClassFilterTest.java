@@ -42,7 +42,7 @@ public class EventClassFilterTest {
         
     class ChildScenarioEvent extends ScenarioEvent {
         public ChildScenarioEvent() {
-            super("a", System.currentTimeMillis(), "Foo", null);
+            super("a", System.currentTimeMillis(), "Foo");
         }
 
     }

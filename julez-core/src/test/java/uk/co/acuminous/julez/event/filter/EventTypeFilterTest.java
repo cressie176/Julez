@@ -53,7 +53,7 @@ public class EventTypeFilterTest {
         
     class ChildScenarioEvent extends ScenarioEvent {
         public ChildScenarioEvent() {
-            super("a", System.currentTimeMillis(), "Foo", null);
+            super("id", System.currentTimeMillis(), "type");
         }
 
     }

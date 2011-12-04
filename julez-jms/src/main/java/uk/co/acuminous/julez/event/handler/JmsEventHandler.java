@@ -50,7 +50,6 @@ public class JmsEventHandler implements EventHandler {
             msg.setStringProperty(EVENT_CLASS, event.getClass().getName());
             msg.setStringProperty(EVENT_TYPE, event.getType());
             msg.setLongProperty(EVENT_TIMESTAMP, event.getTimestamp());
-            msg.setStringProperty(EVENT_CORRELATION_ID, event.getCorrelationId());
             
             sender.send(msg);
         } catch (JMSException e) {

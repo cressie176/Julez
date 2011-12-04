@@ -10,7 +10,6 @@ public abstract class Event {
     public static final String ID = "~ID";
     public static final String TYPE = "~TYPE";
     public static final String TIMESTAMP = "~TIMESTAMP";
-    public static final String CORRELATION_ID = "~CORRELATION_ID";
 
     protected Map<String, String> data;
 
@@ -18,16 +17,15 @@ public abstract class Event {
         this.data = data;
     }
 
-    public Event(String id, long timestamp, String type, String correlationId) {
+    public Event(String id, long timestamp, String type) {
         this.data = new HashMap<String, String>();
         put(ID, id);
         put(TYPE, type);
         put(TIMESTAMP, String.valueOf(timestamp));
-        put(CORRELATION_ID, correlationId);
     }
 
-    public Event(String type, String correlationId) {
-        this(UUID.randomUUID().toString(), System.currentTimeMillis(), type, correlationId);
+    public Event(String type) {
+        this(UUID.randomUUID().toString(), System.currentTimeMillis(), type);
     }
 
     // FIXME hack for some gson marshaller
@@ -53,10 +51,6 @@ public abstract class Event {
 
     public String getType() {
         return get(TYPE);
-    }
-
-    public String getCorrelationId() {
-        return get(CORRELATION_ID);
     }
 
     public Map<String, String> getData() {

@@ -3,6 +3,10 @@ package examples;
 import static org.junit.Assert.assertEquals;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 
 import org.junit.Test;
@@ -19,11 +23,16 @@ import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
 public class CorrelatedScenarioTest {
     
     @Test
-    public void demonstrateHowToCorrelateEventsTest() {
+    public void demonstrateHowToCorrelateEventsTest() throws UnknownHostException {
 
         String correlationId = UUID.randomUUID().toString();
-        ScenarioEventFactory scenarioEventFactory = new ScenarioEventFactory(correlationId);
-        ScenarioRunnerEventFactory scenarioRunnerEventFactory = new ScenarioRunnerEventFactory(correlationId);
+        String hostname = InetAddress.getLocalHost().getHostName();
+        Map<String, String> data = new HashMap<String, String>();
+        data.put("CORRELATION_ID", correlationId);
+        data.put("HOSTNAME", hostname);
+        
+        ScenarioEventFactory scenarioEventFactory = new ScenarioEventFactory(data);
+        ScenarioRunnerEventFactory scenarioRunnerEventFactory = new ScenarioRunnerEventFactory(data);
 
         EventMonitor eventMonitor = new EventMonitor();        
         
@@ -39,7 +48,8 @@ public class CorrelatedScenarioTest {
         runner.queue(scenarios).allocate(10, THREADS).go();
 
         for (Event event : eventMonitor.getEvents()) {
-            assertEquals(correlationId, event.getCorrelationId());
+            assertEquals(correlationId, event.get("CORRELATION_ID"));
+            assertEquals(hostname, event.get("HOSTNAME"));
         }
     }
 

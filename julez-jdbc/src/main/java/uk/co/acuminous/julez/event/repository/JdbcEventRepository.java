@@ -32,7 +32,6 @@ public class JdbcEventRepository extends BaseEventPipe implements EventRepositor
             "id VARCHAR(36) NOT NULL, " +
             "timestamp DOUBLE NOT NULL, " +
             "type VARCHAR(255) NOT NULL, " +
-            "correlation_id VARCHAR(255) NULL, " + 
             "discriminator VARCHAR(255) NOT NULL, " +
             "PRIMARY KEY (id)" +
         ")");
@@ -49,11 +48,10 @@ public class JdbcEventRepository extends BaseEventPipe implements EventRepositor
 
     @Override
     public void onEvent(Event event) {
-        jdbcTemplate.update("INSERT INTO event (id, timestamp, type, correlation_id, discriminator) VALUES (?, ?, ?, ?, ?)", 
+        jdbcTemplate.update("INSERT INTO event (id, timestamp, type, discriminator) VALUES (?, ?, ?, ?)", 
             event.getId(), 
             event.getTimestamp(), 
             event.getType(),
-            event.getCorrelationId(),
             event.getClass().getName());
         
         Map<String, String> data = event.getData();
@@ -69,38 +67,17 @@ public class JdbcEventRepository extends BaseEventPipe implements EventRepositor
     public void replay() {
         jdbcTemplate.query(SELECT_ALL, new EventRowMapper());
     }
-          
-    private static final String SELECT_CORRELEATED = "SELECT e.* FROM event e WHERE correlation_id = ? ORDER BY timestamp ASC";        
-    public void raiseCorrelatedEvents(String correlationId) {
-        jdbcTemplate.query(SELECT_CORRELEATED, new EventRowMapper(), correlationId);       
-    }
-    
+              
     private static final String SELECT_ALL_AFTER = "SELECT e.* FROM event e WHERE timestamp > ? ORDER BY timestamp ASC";    
     public void raiseAllEventsAfter(long timestamp) {
         jdbcTemplate.query(SELECT_ALL_AFTER, new EventRowMapper(), timestamp);
     }
-    
-    private static final String SELECT_CORRELATED_AFTER = "SELECT e.* FROM event e WHERE correlation_id = ? and timestamp > ? ORDER BY timestamp ASC";        
-    public void raiseCorrelatedEventsAfter(String correlationId, long timestamp) {
-        jdbcTemplate.query(SELECT_CORRELATED_AFTER, new EventRowMapper(), correlationId, timestamp);       
-    } 
     
     private static final String SELECT_ALL_OF_TYPE = "SELECT e.* FROM event e WHERE type IN (?) ORDER BY timestamp ASC";    
     public void raiseAllEventsOfType(String... types) {        
         String sql = SELECT_ALL_OF_TYPE.replace("(?)", "(" + questionMarks(types) + ")");        
         jdbcTemplate.query(sql, new EventRowMapper(), (Object[]) types);
     }
-          
-    private static final String SELECT_CORRELATED_OF_TYPE = "SELECT e.* FROM event e WHERE correlation_id = ? AND type IN (?, ?) ORDER BY timestamp ASC";    
-    public void raiseAllCorrelatedEventsOfType(String correlationId, String... types) {
-        String sql = SELECT_CORRELATED_OF_TYPE.replace("(?)", "(" + questionMarks(types) + ")");    
-        
-        List<Object> args = new ArrayList<Object>();
-        args.add(correlationId);
-        args.addAll(Arrays.asList(types));        
-        
-        jdbcTemplate.query(sql, new EventRowMapper(), (Object[]) args.toArray());
-    } 
     
     private static final String SELECT_ALL_AFTER_TIMESTAMP_OF_TYPE = "SELECT e.* FROM event e WHERE timestamp > ? AND type IN (?) ORDER BY timestamp ASC";    
     public void raiseAllEventsAfterTimestampOfType(Long timestamp, String... types) {        
@@ -109,18 +86,6 @@ public class JdbcEventRepository extends BaseEventPipe implements EventRepositor
         List<Object> args = new ArrayList<Object>();
         args.add(timestamp);
         args.addAll(Arrays.asList(types));         
-        
-        jdbcTemplate.query(sql, new EventRowMapper(), (Object[]) args.toArray());
-    } 
-        
-    private static final String SELECT_CORRELATED_AFTER_TIMESTAMP_OF_TYPE = "SELECT e.* FROM event e WHERE correlation_id = ? AND timestamp > ? AND type IN (?) ORDER BY timestamp ASC";    
-    public void raiseCorrelatedEventsAfterTimestampOfType(String correlationId, Long timestamp, String... types) {        
-        String sql = SELECT_CORRELATED_AFTER_TIMESTAMP_OF_TYPE.replace("(?)", "(" + questionMarks(types) + ")");
-        
-        List<Object> args = new ArrayList<Object>();
-        args.add(correlationId);
-        args.add(timestamp);
-        args.addAll(Arrays.asList(types));  
         
         jdbcTemplate.query(sql, new EventRowMapper(), (Object[]) args.toArray());
     }    
@@ -138,8 +103,8 @@ public class JdbcEventRepository extends BaseEventPipe implements EventRepositor
         public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
             String discriminator = rs.getString("discriminator");
             try {
-                Constructor<?> constructor = Class.forName(discriminator).getConstructor(String.class, Long.class, String.class, String.class);
-                Event event = (Event) constructor.newInstance(rs.getString("id"), rs.getLong("timestamp"), rs.getString("type"), rs.getString("correlation_id")); 
+                Constructor<?> constructor = Class.forName(discriminator).getConstructor(String.class, Long.class, String.class);
+                Event event = (Event) constructor.newInstance(rs.getString("id"), rs.getLong("timestamp"), rs.getString("type")); 
                 
                 jdbcTemplate.query("SELECT * FROM event_data WHERE id = ?", new EventDataRowMapper(event), event.getId());
                 

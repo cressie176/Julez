@@ -1,37 +1,46 @@
 package uk.co.acuminous.julez.scenario;
 
+import java.util.Collections;
+import java.util.Map;
+
 import uk.co.acuminous.julez.event.Event;
 
 
 public class ScenarioEventFactory {
     
-    private String correlationId;
+    private Map<String, String> data;
     
     public ScenarioEventFactory() {
-        this(null);
+        data = Collections.emptyMap();
     }
     
-    public ScenarioEventFactory(String correlationId) {
-        this.correlationId = correlationId;        
+    public ScenarioEventFactory(Map<String, String> data) {
+        this.data = data;
+    }
+
+    protected ScenarioEvent newInstance(String type) {
+       ScenarioEvent event = new ScenarioEvent(type);
+       event.getData().putAll(data);
+       return event;
     }
     
     public ScenarioEvent begin() {
-        return new ScenarioEvent(ScenarioEvent.BEGIN, correlationId);
+        return newInstance(ScenarioEvent.BEGIN);
     }    
     
     public ScenarioEvent pass() {
-        return new ScenarioEvent(ScenarioEvent.PASS, correlationId);
+        return newInstance(ScenarioEvent.PASS);
     }
     
     public ScenarioEvent fail() {
-        return new ScenarioEvent(ScenarioEvent.FAIL, correlationId);
+        return newInstance(ScenarioEvent.FAIL);
     } 
     
     public ScenarioEvent error() {
-        return new ScenarioEvent(ScenarioEvent.ERROR, correlationId);
+        return newInstance(ScenarioEvent.ERROR);
     }
 
     public Event end() {
-        return new ScenarioEvent(ScenarioEvent.END, correlationId);
+        return newInstance(ScenarioEvent.END);
     }
 }

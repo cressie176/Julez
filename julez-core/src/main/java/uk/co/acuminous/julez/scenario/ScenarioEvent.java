@@ -13,12 +13,12 @@ public class ScenarioEvent extends Event {
     protected ScenarioEvent() {        
     }
     
-    public ScenarioEvent(String type, String correlationId) {
-        super(type, correlationId);
+    public ScenarioEvent(String type) {
+        super(type);
     }
     
-    public ScenarioEvent(String id, Long timestamp, String type, String correlationId) {
-        super(id, timestamp, type, correlationId);
+    public ScenarioEvent(String id, Long timestamp, String type) {
+        super(id, timestamp, type);
     }   
     
     protected static String qualify(String subType) {

@@ -38,7 +38,7 @@ public class JdbcScenarioEventRepositoryTest {
     @Test
     public void eventIsAddedToRepository() {
         
-        ScenarioEvent event = new ScenarioEvent("id", System.currentTimeMillis(), ScenarioEvent.FAIL, "correlation");
+        ScenarioEvent event = new ScenarioEvent("id", System.currentTimeMillis(), ScenarioEvent.FAIL);
         event.getData().put("message", "page not found");
         event.getData().put("statusCode", "404");                
         repository.onEvent(event);
@@ -64,21 +64,6 @@ public class JdbcScenarioEventRepositoryTest {
     }
     
     @Test
-    public void raisesAllCorrelectedEvents() {
-                
-        initTestData();        
-        
-        repository.raiseCorrelatedEvents("A");
-        
-        List<Event> events = eventMonitor.getEvents();
-        
-        assertEquals(4, events.size());
-        for (Event event : eventMonitor.getEvents()) {
-            assertEquals("A", event.getCorrelationId());           
-        }
-    }
-    
-    @Test
     public void raisesAllEventsAfterASpecifiedTime() {
         
         DateTime now = new DateTime();        
@@ -90,29 +75,11 @@ public class JdbcScenarioEventRepositoryTest {
     }
     
     @Test
-    public void raisesCorrelatedEventsAfterASpecifiedTime() {
-        
-        DateTime now = new DateTime();        
-        initTestData(now);        
-        
-        repository.raiseCorrelatedEventsAfter("A", now.minusSeconds(5).getMillis());
-        
-        assertEquals(2, eventMonitor.getEvents().size());   
-    } 
-    
-    @Test
     public void raisesAllEventsWithSpecifiedType() {
         initTestData();                
         repository.raiseAllEventsOfType(ScenarioEvent.BEGIN, ScenarioRunnerEvent.BEGIN);        
         assertEquals(4, eventMonitor.getEvents().size());          
-    }
-    
-    @Test
-    public void raisesCorrelatedEventsWithSpecifiedType() {        
-        initTestData();                
-        repository.raiseAllCorrelatedEventsOfType("A", ScenarioEvent.BEGIN, ScenarioRunnerEvent.BEGIN);        
-        assertEquals(2, eventMonitor.getEvents().size());          
-    }  
+    } 
     
     @Test
     public void raisesAllEventsAfterSpecifiedTimeWithSpecifiedType() {
@@ -123,18 +90,7 @@ public class JdbcScenarioEventRepositoryTest {
         repository.raiseAllEventsAfterTimestampOfType(now.minusSeconds(8).getMillis(), ScenarioEvent.BEGIN, ScenarioRunnerEvent.BEGIN);
         
         assertEquals(3, eventMonitor.getEvents().size());          
-    }
-    
-    @Test
-    public void raisesCorreatedEventsAfterSpecifiedTimeWithSpecifiedType() {
-        DateTime now = new DateTime();
-        
-        initTestData(now);        
-        
-        repository.raiseCorrelatedEventsAfterTimestampOfType("A", now.minusSeconds(8).getMillis(), ScenarioEvent.BEGIN, ScenarioRunnerEvent.BEGIN);
-        
-        assertEquals(1, eventMonitor.getEvents().size());          
-    }    
+    }   
     
     private List<Event> initTestData() {
         return initTestData(new DateTime());
@@ -142,14 +98,14 @@ public class JdbcScenarioEventRepositoryTest {
     
     private List<Event> initTestData(DateTime now) {
                 
-        ScenarioRunnerEvent eventA1 = new ScenarioRunnerEvent("A1", now.minusSeconds(8).getMillis(), ScenarioRunnerEvent.BEGIN, "A");        
-        ScenarioEvent eventA2 = new ScenarioEvent("A2", now.minusSeconds(7).getMillis(), ScenarioEvent.BEGIN, "A");
-        ScenarioRunnerEvent eventB1 = new ScenarioRunnerEvent("B1", now.minusSeconds(6).getMillis(), ScenarioRunnerEvent.BEGIN, "B");        
-        ScenarioEvent eventB2 = new ScenarioEvent("B2", now.minusSeconds(5).getMillis(), ScenarioEvent.BEGIN, "B");        
-        ScenarioEvent eventA3 = new ScenarioEvent("A3", now.minusSeconds(4).getMillis(), ScenarioEvent.PASS, "A");
-        ScenarioEvent eventB3 = new ScenarioEvent("B3", now.minusSeconds(3).getMillis(), ScenarioEvent.FAIL, "B");        
-        ScenarioRunnerEvent eventA4 = new ScenarioRunnerEvent("A4", now.minusSeconds(2).getMillis(), ScenarioRunnerEvent.END, "A");        
-        ScenarioRunnerEvent eventB4 = new ScenarioRunnerEvent("B4", now.minusSeconds(1).getMillis(), ScenarioRunnerEvent.END, "B");
+        ScenarioRunnerEvent eventA1 = new ScenarioRunnerEvent("A1", now.minusSeconds(8).getMillis(), ScenarioRunnerEvent.BEGIN);        
+        ScenarioEvent eventA2 = new ScenarioEvent("A2", now.minusSeconds(7).getMillis(), ScenarioEvent.BEGIN);
+        ScenarioRunnerEvent eventB1 = new ScenarioRunnerEvent("B1", now.minusSeconds(6).getMillis(), ScenarioRunnerEvent.BEGIN);        
+        ScenarioEvent eventB2 = new ScenarioEvent("B2", now.minusSeconds(5).getMillis(), ScenarioEvent.BEGIN);        
+        ScenarioEvent eventA3 = new ScenarioEvent("A3", now.minusSeconds(4).getMillis(), ScenarioEvent.PASS);
+        ScenarioEvent eventB3 = new ScenarioEvent("B3", now.minusSeconds(3).getMillis(), ScenarioEvent.FAIL);        
+        ScenarioRunnerEvent eventA4 = new ScenarioRunnerEvent("A4", now.minusSeconds(2).getMillis(), ScenarioRunnerEvent.END);        
+        ScenarioRunnerEvent eventB4 = new ScenarioRunnerEvent("B4", now.minusSeconds(1).getMillis(), ScenarioRunnerEvent.END);
 
         List<Event> events = Arrays.asList(eventA1, eventA2, eventB1, eventB2, eventA3, eventB3, eventA4, eventB4);
         for (Event event : events) {
