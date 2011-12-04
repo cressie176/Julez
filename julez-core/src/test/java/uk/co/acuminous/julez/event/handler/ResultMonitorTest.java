@@ -26,6 +26,7 @@ public class ResultMonitorTest {
         assertEquals(1, resultMonitor.getPassCount());
         
         resultMonitor.onEvent(scenarioEventFactory.fail());
+        resultMonitor.onEvent(scenarioEventFactory.error());        
         assertEquals(1, resultMonitor.getPassCount());        
     }
     
@@ -38,9 +39,22 @@ public class ResultMonitorTest {
         assertEquals(1, resultMonitor.getFailureCount());
         
         resultMonitor.onEvent(scenarioEventFactory.pass());
+        resultMonitor.onEvent(scenarioEventFactory.error());                
         assertEquals(1, resultMonitor.getFailureCount());        
     }    
     
+    @Test
+    public void countsErrors() {       
+        ResultMonitor resultMonitor = new ResultMonitor();
+        assertEquals(0, resultMonitor.getErrorCount());
+        
+        resultMonitor.onEvent(scenarioEventFactory.error());
+        assertEquals(1, resultMonitor.getErrorCount());
+        
+        resultMonitor.onEvent(scenarioEventFactory.pass());
+        resultMonitor.onEvent(scenarioEventFactory.fail());                
+        assertEquals(1, resultMonitor.getErrorCount());        
+    }     
     
     @Test
     public void calculatesPercentage() {       
@@ -56,5 +70,8 @@ public class ResultMonitorTest {
         resultMonitor.onEvent(scenarioEventFactory.fail());
         resultMonitor.onEvent(scenarioEventFactory.fail());        
         assertEquals(25, resultMonitor.getPercentage());
+        
+        resultMonitor.onEvent(scenarioEventFactory.error());
+        assertEquals(20, resultMonitor.getPercentage());
     }       
 }

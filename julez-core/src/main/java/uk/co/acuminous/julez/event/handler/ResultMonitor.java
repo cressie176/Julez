@@ -8,9 +8,9 @@ import uk.co.acuminous.julez.scenario.ScenarioEvent;
 
 public class ResultMonitor implements EventHandler {
 
-    // TODO add error count
     private AtomicInteger passCount = new AtomicInteger();
     private AtomicInteger failureCount = new AtomicInteger();
+    private AtomicInteger errorCount = new AtomicInteger();
     
     @Override
     public void onEvent(Event event) {
@@ -18,6 +18,8 @@ public class ResultMonitor implements EventHandler {
             passCount.incrementAndGet();
         } else if (ScenarioEvent.FAIL.equals(event.getType())) {
             failureCount.incrementAndGet();
+        } else if (ScenarioEvent.ERROR.equals(event.getType())) {
+            errorCount.incrementAndGet();
         }
     }
     
@@ -29,11 +31,15 @@ public class ResultMonitor implements EventHandler {
         return failureCount.get();
     }
     
+    public int getErrorCount() {
+        return errorCount.get();
+    }
+    
     public int getPercentage() {
-        int passes = getPassCount();
-        int failures = getFailureCount();
-        int totalCount = passes + failures;
-        return totalCount > 0 ? (passes * 100) / totalCount : 0;
+        int successful = getPassCount();
+        int unsuccessful = getFailureCount() + getErrorCount();
+        int total = successful + unsuccessful;
+        return total > 0 ? (successful * 100) / total : 0;
     }
 
 }
