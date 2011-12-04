@@ -13,13 +13,13 @@ import javax.jms.QueueSession;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
-import uk.co.acuminous.julez.event.pipe.EmptyPipe;
+import uk.co.acuminous.julez.event.pipe.PassThroughPipe;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
 import com.google.gson.Gson;
 
-public class JmsEventSource extends EmptyPipe implements MessageListener, Runnable {
+public class JmsEventSource extends PassThroughPipe implements MessageListener, Runnable {
 
     private final QueueConnection connection;
     private final String queueName;

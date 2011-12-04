@@ -9,7 +9,7 @@ import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREAD
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.EventPipe;
-import uk.co.acuminous.julez.event.pipe.EmptyPipe;
+import uk.co.acuminous.julez.event.pipe.PassThroughPipe;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.NoOpScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
@@ -70,7 +70,7 @@ public class InflightLimiterTest {
     @Test
     public void inflightLimiterPreventsOutOfMemoryErrors() {
                 
-        final EventPipe relay = new EmptyPipe();
+        final EventPipe relay = new PassThroughPipe();
         
         ScenarioSource scenarios = new OnDemandScenarioSource() {
             @Override public Scenario next() {

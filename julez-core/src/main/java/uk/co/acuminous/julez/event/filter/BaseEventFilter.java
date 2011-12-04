@@ -1,9 +1,9 @@
 package uk.co.acuminous.julez.event.filter;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.pipe.EmptyPipe;
+import uk.co.acuminous.julez.event.pipe.PassThroughPipe;
 
-public abstract class BaseEventFilter extends EmptyPipe {
+public abstract class BaseEventFilter extends PassThroughPipe {
 
     @Override
     public void onEvent(Event event) {
