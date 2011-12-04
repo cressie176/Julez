@@ -20,15 +20,16 @@ public class MultiConcurrentScenarioRunner extends BaseScenarioRunner {
     public void usingEventFactory(ScenarioRunnerEventFactory eventFactory) {
         this.eventFactory = eventFactory;
     }
-    
+
     public void go() {
-        
+
         onEvent(eventFactory.begin());
-        
+
         for (final ScenarioRunner runner : runners) {
-            
+
             Runnable r = new Runnable() {
-                @Override public void run() {
+                @Override
+                public void run() {
                     try {
                         runner.go();
                     } finally {
@@ -36,12 +37,12 @@ public class MultiConcurrentScenarioRunner extends BaseScenarioRunner {
                     }
                 }
             };
-            
+
             ConcurrencyUtils.start(r);
         }
-        
-        ConcurrencyUtils.await(latch);   
-        
+
+        ConcurrencyUtils.await(latch);
+
         onEvent(eventFactory.end());
     }
 }
