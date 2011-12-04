@@ -12,9 +12,9 @@ public class ThroughputMonitor implements EventHandler {
     private long started;
     private long finished;
     private AtomicInteger completed = new AtomicInteger();
-    
+
     @Override
-    public void onEvent(Event event) {     
+    public void onEvent(Event event) {
         if (ScenarioRunnerEvent.BEGIN.equals(event.getType())) {
             started = event.getTimestamp();
         } else if (ScenarioRunnerEvent.END.equals(event.getType())) {
@@ -23,10 +23,10 @@ public class ThroughputMonitor implements EventHandler {
             completed.incrementAndGet();
         }
     }
-    
+
     public int getThroughput() {
         long effectiveEnd = finished != 0 ? finished : System.currentTimeMillis();
-        double duration = Math.max(effectiveEnd - started, 1);        
+        double duration = Math.max(effectiveEnd - started, 1);
         return (int) Math.round(completed.get() * 1000 / duration);
     }
 }
