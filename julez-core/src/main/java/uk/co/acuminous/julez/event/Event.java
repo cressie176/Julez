@@ -19,8 +19,8 @@ public abstract class Event {
     // FIXME hack for some gson marshaller
     protected Event() {
         data = new HashMap<String, String>();
-    }    
-    
+    }
+
     public Event(Map<String, String> data) {
         this.data = data;
     }
@@ -66,12 +66,12 @@ public abstract class Event {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();     
+        StringBuilder sb = new StringBuilder();
         Set<String> keys = new TreeSet<String>(data.keySet());
         Map<String, String> sortedData = new LinkedHashMap<String, String>();
         for (String key : keys) {
             sortedData.put(key, data.get(key));
-        }        
+        }
         sb.append(this.getClass().getName()).append(sortedData);
         return sb.toString();
     }
