@@ -1,18 +1,26 @@
 package uk.co.acuminous.julez.event;
 
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 import java.util.UUID;
 
 public abstract class Event {
     public static final String EVENT_TYPE_FORMAT = "%s/%s";
 
-    public static final String ID = "~ID";
-    public static final String TYPE = "~TYPE";
-    public static final String TIMESTAMP = "~TIMESTAMP";
+    public static final String ID = "#ID";
+    public static final String TYPE = "#TYPE";
+    public static final String TIMESTAMP = "#TIMESTAMP";
 
     protected Map<String, String> data;
 
+    // FIXME hack for some gson marshaller
+    protected Event() {
+        data = new HashMap<String, String>();
+    }    
+    
     public Event(Map<String, String> data) {
         this.data = data;
     }
@@ -26,11 +34,6 @@ public abstract class Event {
 
     public Event(String type) {
         this(UUID.randomUUID().toString(), System.currentTimeMillis(), type);
-    }
-
-    // FIXME hack for some gson marshaller
-    protected Event() {
-        data = new HashMap<String, String>();
     }
 
     public void put(String key, String value) {
@@ -63,9 +66,14 @@ public abstract class Event {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getClass().getSimpleName()).append(data);
-        return (sb.toString());
+        StringBuilder sb = new StringBuilder();     
+        Set<String> keys = new TreeSet<String>(data.keySet());
+        Map<String, String> sortedData = new LinkedHashMap<String, String>();
+        for (String key : keys) {
+            sortedData.put(key, data.get(key));
+        }        
+        sb.append(this.getClass().getName()).append(sortedData);
+        return sb.toString();
     }
 
     @Override
