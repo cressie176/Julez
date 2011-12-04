@@ -11,7 +11,7 @@ public class ResultMonitor implements EventHandler {
     private AtomicInteger passCount = new AtomicInteger();
     private AtomicInteger failureCount = new AtomicInteger();
     private AtomicInteger errorCount = new AtomicInteger();
-    
+
     @Override
     public void onEvent(Event event) {
         if (ScenarioEvent.PASS.equals(event.getType())) {
@@ -22,19 +22,19 @@ public class ResultMonitor implements EventHandler {
             errorCount.incrementAndGet();
         }
     }
-    
+
     public int getPassCount() {
         return passCount.get();
     }
-    
+
     public int getFailureCount() {
         return failureCount.get();
     }
-    
+
     public int getErrorCount() {
         return errorCount.get();
     }
-    
+
     public int getPercentage() {
         int successful = getPassCount();
         int unsuccessful = getFailureCount() + getErrorCount();
