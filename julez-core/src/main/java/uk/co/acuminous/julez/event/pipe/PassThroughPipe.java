@@ -6,6 +6,6 @@ public class PassThroughPipe extends BaseEventPipe {
 
     @Override
     public void onEvent(Event event) {
-        if (null != handler) handler.onEvent(event);
+        handler.onEvent(event);
     }        
 }

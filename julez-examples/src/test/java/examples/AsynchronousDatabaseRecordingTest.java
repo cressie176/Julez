@@ -1,8 +1,7 @@
 package examples;
 
+import static org.junit.Assert.assertEquals;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
-import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
-import static uk.co.acuminous.julez.util.PerformanceAssert.assertPassMark;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -15,14 +14,10 @@ import org.junit.Test;
 
 import test.JdbcTestUtils;
 import test.JmsTestUtils;
-import uk.co.acuminous.julez.event.EventHandler;
-import uk.co.acuminous.julez.event.EventSource;
+import uk.co.acuminous.julez.event.handler.JdbcEventHandler;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
-import uk.co.acuminous.julez.event.handler.ResultMonitor;
-import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.event.marshaller.JsonEventMarshaller;
-import uk.co.acuminous.julez.event.pipe.FanOutPipe;
-import uk.co.acuminous.julez.event.repository.JdbcEventRepository;
+import uk.co.acuminous.julez.event.source.JdbcEventRepository;
 import uk.co.acuminous.julez.event.source.JmsEventSource;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
@@ -42,7 +37,8 @@ public class AsynchronousDatabaseRecordingTest extends WebTestCase {
         JmsTestUtils.createBroker();
 
         connectionFactory = JmsTestUtils.getConnectionFactory();        
-        dataSource = JdbcTestUtils.getDataSource();        
+        dataSource = JdbcTestUtils.getDataSource();    
+        JdbcTestUtils.ddl();
     }
     
     @After
@@ -54,37 +50,26 @@ public class AsynchronousDatabaseRecordingTest extends WebTestCase {
     @Test
     public void demonstrateRecordingScenarioResultsAsynchronouslyToADatabase() {        
 
+        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(dataSource);                
+        JdbcEventHandler jdbcEventHandler = new JdbcEventHandler(dataSource);   
+        
+        JmsEventSource jmsEventSource = new JmsEventSource(connectionFactory);
+        jmsEventSource.register(jdbcEventHandler);        
+        jmsEventSource.listen();
+        
+        JmsEventHandler jmsEventHandler = new JmsEventHandler(connectionFactory, new JsonEventMarshaller());
+        
         Scenario scenario = new DemoScenario();
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);        
+        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);              
+        scenario.register(jmsEventHandler);                                       
         
-        
-        JdbcEventRepository eventRepository = new JdbcEventRepository(dataSource).ddl();
-                
-        JmsEventSource jmsEventSource = new JmsEventSource(connectionFactory).listen();
-        jmsEventSource.register(eventRepository);
-        
-        JmsEventHandler jmsEventHandler = new JmsEventHandler(connectionFactory, new JsonEventMarshaller());        
-        scenario.register(jmsEventHandler);        
-                  
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
         runner.register(jmsEventHandler);
         runner.queue(scenarios).allocate(10, THREADS).go();
         
         jmsEventSource.shutdownGracefully();
-        
-        ThroughputMonitor throughputMonitor = new ThroughputMonitor();
-        ResultMonitor resultMonitor = new ResultMonitor();
-        registerMultiple(eventRepository, throughputMonitor, resultMonitor);
-        eventRepository.replay();
-                
-        assertMinimumThroughput(100, throughputMonitor.getThroughput());
-        assertPassMark(75, resultMonitor.getPercentage());
-    }
 
-    public void registerMultiple(EventSource source, EventHandler... handlers) {
-        FanOutPipe fan = new FanOutPipe();
-        source.register(fan);
-        fan.registerAll(handlers);
+        assertEquals(302, jdbcEventSource.count());
     }
     
     class DemoScenario extends BaseScenario {

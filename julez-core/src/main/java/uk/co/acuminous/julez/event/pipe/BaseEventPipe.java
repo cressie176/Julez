@@ -3,10 +3,11 @@ package uk.co.acuminous.julez.event.pipe;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.event.EventPipe;
+import uk.co.acuminous.julez.event.handler.NullHandler;
 
 public abstract class BaseEventPipe implements EventPipe {
 
-    protected EventHandler handler;
+    protected EventHandler handler = new NullHandler();
 
     @Override
     public void register(EventHandler handler) {
