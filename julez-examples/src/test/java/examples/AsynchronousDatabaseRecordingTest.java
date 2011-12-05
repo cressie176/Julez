@@ -18,12 +18,12 @@ import test.JmsTestUtils;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JdbcEventHandler;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
-import uk.co.acuminous.julez.event.marshaller.JsonEventMarshaller;
 import uk.co.acuminous.julez.event.source.JdbcEventRepository;
 import uk.co.acuminous.julez.event.source.JmsEventSource;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
 import uk.co.acuminous.julez.mapper.TwoWayMapper;
 import uk.co.acuminous.julez.marshalling.NamespaceBasedEventClassResolver;
+import uk.co.acuminous.julez.marshalling.json.JsonEventMarshaller;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
@@ -78,11 +78,13 @@ public class AsynchronousDatabaseRecordingTest extends WebTestCase {
         JdbcEventRepository jdbcEventSource = new JdbcEventRepository(dataSource, columnMapper, new NamespaceBasedEventClassResolver());                
         JdbcEventHandler jdbcEventHandler = new JdbcEventHandler(dataSource, columnMapper);   
         
-        JmsEventSource jmsEventSource = new JmsEventSource(connectionFactory);
+        JsonEventMarshaller marshaller = new JsonEventMarshaller(new NamespaceBasedEventClassResolver());        
+        
+        JmsEventSource jmsEventSource = new JmsEventSource(connectionFactory, marshaller);
         jmsEventSource.register(jdbcEventHandler);        
         jmsEventSource.listen();
         
-        JmsEventHandler jmsEventHandler = new JmsEventHandler(connectionFactory, new JsonEventMarshaller());
+        JmsEventHandler jmsEventHandler = new JmsEventHandler(connectionFactory, marshaller);
         
         Scenario scenario = new DemoScenario();
         ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);              

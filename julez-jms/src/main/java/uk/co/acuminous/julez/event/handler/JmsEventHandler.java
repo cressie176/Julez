@@ -10,7 +10,7 @@ import javax.jms.TextMessage;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
-import uk.co.acuminous.julez.event.EventMarshaller;
+import uk.co.acuminous.julez.marshalling.EventMarshaller;
 import uk.co.acuminous.julez.util.JmsHelper;
 
 public class JmsEventHandler implements EventHandler {
@@ -43,7 +43,7 @@ public class JmsEventHandler implements EventHandler {
             session = connection.createQueueSession(false, Session.AUTO_ACKNOWLEDGE);
             QueueSender sender = session.createSender(session.createQueue(queueName));
             
-            String text = marshaller.marshal(event);
+            String text = marshaller.marshall(event);
             
             TextMessage msg = session.createTextMessage(text);
             

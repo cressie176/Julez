@@ -13,9 +13,6 @@ public class ScenarioEvent extends Event {
     public static final String ERROR = qualify("error");
     public static final String END = qualify("end");
        
-    protected ScenarioEvent() {        
-    }
-        
     public ScenarioEvent(Map<String, String> eventData) {
         super(eventData);
     }    

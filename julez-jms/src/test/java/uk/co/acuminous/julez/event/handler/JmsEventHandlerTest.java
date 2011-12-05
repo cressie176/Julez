@@ -13,24 +13,25 @@ import org.junit.Before;
 import org.junit.Test;
 
 import test.JmsTestUtils;
-import uk.co.acuminous.julez.event.handler.JmsEventHandler;
-import uk.co.acuminous.julez.event.marshaller.JsonEventMarshaller;
+import uk.co.acuminous.julez.event.Event;
+import uk.co.acuminous.julez.marshalling.NamespaceBasedEventClassResolver;
+import uk.co.acuminous.julez.marshalling.json.JsonEventMarshaller;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.util.JmsHelper;
 
-import com.google.gson.Gson;
-
 public class JmsEventHandlerTest {
 
     private QueueConnectionFactory connectionFactory;
+    private JsonEventMarshaller marshaller;
 
     @Before
     public void init() throws Exception {                
         JmsTestUtils.createBroker();
-        connectionFactory = JmsTestUtils.getConnectionFactory();        
+        connectionFactory = JmsTestUtils.getConnectionFactory(); 
+        marshaller = new JsonEventMarshaller(new NamespaceBasedEventClassResolver());        
     }
     
     @After
@@ -39,25 +40,23 @@ public class JmsEventHandlerTest {
     }
     
     @Test
-    public void scenarioEventsAreWrittenToTheQueue() throws JMSException, InterruptedException {      
-        JmsEventHandler jmsSender = new JmsEventHandler(connectionFactory, new JsonEventMarshaller());        
-        jmsSender.onEvent(new ScenarioEventFactory().fail());                
-        assertScenarioEvent(dequeue(), ScenarioEvent.FAIL);
+    public void scenarioEventsAreWrittenToTheQueue() throws JMSException, InterruptedException {             
+        JmsEventHandler jmsSender = new JmsEventHandler(connectionFactory, marshaller);        
+        ScenarioEvent expected = new ScenarioEventFactory().fail();
+        jmsSender.onEvent(expected);                
+        assertEquals(expected, dequeue());
     }
         
     @Test
     public void scenarioRunnerEventsAreWrittenToTheQueue() throws Exception { 
-        JmsEventHandler jmsSender = new JmsEventHandler(connectionFactory, new JsonEventMarshaller());        
-        jmsSender.onEvent(new ScenarioRunnerEventFactory().begin());                
-        assertScenarioEvent(dequeue(), ScenarioRunnerEvent.BEGIN);     
+        JmsEventHandler jmsSender = new JmsEventHandler(connectionFactory, marshaller);        
+        ScenarioRunnerEvent expected = new ScenarioRunnerEventFactory().begin();
+        jmsSender.onEvent(expected);                
+        assertEquals(expected, dequeue());     
     }
 
-    private ScenarioEvent dequeue() throws JMSException {
+    private Event dequeue() throws JMSException {
         List<TextMessage> messages = JmsHelper.browseMessages(connectionFactory, JmsEventHandler.DEFAULT_QUEUE_NAME);
-        return new Gson().fromJson(messages.get(0).getText(), ScenarioEvent.class);
-    }     
-    
-    private void assertScenarioEvent(ScenarioEvent event, String eventType) {
-        assertEquals(eventType, event.getType());
-    }      
+        return marshaller.unmarshall(messages.get(0).getText());
+    }        
 }

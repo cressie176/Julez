@@ -18,6 +18,7 @@
 	<modules>
 		<module>../julez-core</module>
 		<module>../julez-marshalling</module>
+		<module>../julez-json-marshalling</module>
 		<module>../julez-jms</module>
 		<module>../julez-jdbc</module>
 		<module>../julez-jbehave</module>

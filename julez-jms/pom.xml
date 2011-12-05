@@ -21,18 +21,13 @@
 		</dependency>
         <dependency>
             <groupId>uk.co.acuminous.julez</groupId>
-            <artifactId>julez-marshalling</artifactId>
+            <artifactId>julez-json-marshalling</artifactId>
             <version>${parent.version}</version>
         </dependency>		
 		<dependency>
 			<groupId>javax.jms</groupId>
 			<artifactId>jms</artifactId>
 			<version>1.1</version>
-		</dependency>
-		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>1.7.2</version>
 		</dependency>		
 
 		<dependency>

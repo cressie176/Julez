@@ -16,11 +16,6 @@ public abstract class Event {
 
     protected Map<String, String> data;
 
-    // FIXME hack for gson marshaller
-    protected Event() {
-        data = new HashMap<String, String>();
-    }
-
     public Event(Map<String, String> data) {
         this.data = data;
     }

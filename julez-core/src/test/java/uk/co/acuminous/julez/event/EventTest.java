@@ -60,7 +60,7 @@ public class EventTest {
     
     @Test
     public void toStringEvenIncludesClassNameForAnonymousEvents() {
-        Event event = new Event() {};        
+        Event event = new Event("type") {};        
         String text = event.toString();
         assertTrue("Class name not found in Event.toString()", text.startsWith(event.getClass().getName()));
     }    
@@ -112,7 +112,9 @@ public class EventTest {
     }
     
     class MinimalImplementationOfEvent extends Event {
-        public MinimalImplementationOfEvent() {}
+        public MinimalImplementationOfEvent() {
+            super("id", 1L, "type");
+        }
         public MinimalImplementationOfEvent(Map<String, String> data) {
             super(data);
         }

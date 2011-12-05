@@ -11,13 +11,11 @@ import javax.jms.QueueConnection;
 import javax.jms.QueueConnectionFactory;
 import javax.jms.QueueSession;
 
-import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
 import uk.co.acuminous.julez.event.pipe.PassThroughPipe;
+import uk.co.acuminous.julez.marshalling.EventUnmarshaller;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
-
-import com.google.gson.Gson;
 
 public class JmsEventSource extends PassThroughPipe implements MessageListener, Runnable {
 
@@ -27,14 +25,16 @@ public class JmsEventSource extends PassThroughPipe implements MessageListener, 
     private Thread listenerThread;
     private long lastReceivedTimestamp = System.currentTimeMillis();    
     private long shutdownDelay = 10000;
+    private final EventUnmarshaller unmarshaller;
 
-    public JmsEventSource(QueueConnectionFactory connectionFactory) {
-        this(connectionFactory, JmsEventHandler.DEFAULT_QUEUE_NAME);
+    public JmsEventSource(QueueConnectionFactory connectionFactory, EventUnmarshaller unmarshaller) {
+        this(connectionFactory, JmsEventHandler.DEFAULT_QUEUE_NAME, unmarshaller);
     }
 
-    public JmsEventSource(QueueConnectionFactory connectionFactory, String queueName) {
+    public JmsEventSource(QueueConnectionFactory connectionFactory, String queueName, EventUnmarshaller unmarshaller) {
         this.connection = JmsHelper.getConnection(connectionFactory);
         this.queueName = queueName;
+        this.unmarshaller = unmarshaller;        
     }    
     
     public JmsEventSource listen() {
@@ -60,14 +60,11 @@ public class JmsEventSource extends PassThroughPipe implements MessageListener, 
     }
 
     @Override
-    @SuppressWarnings({ "unchecked" })    
     public void onMessage(Message message) {
         try {
             lastReceivedTimestamp = System.currentTimeMillis();
-            String json = JmsHelper.getText(message);
-            String className = message.getStringProperty(JmsEventHandler.EVENT_CLASS);
-            Class<Event> eventClass = (Class<Event>) Class.forName(className);
-            onEvent(new Gson().fromJson(json, eventClass));
+            String text = JmsHelper.getText(message);
+            onEvent(unmarshaller.unmarshall(text));
         } catch (Throwable t) {
             System.err.println(t);
         }

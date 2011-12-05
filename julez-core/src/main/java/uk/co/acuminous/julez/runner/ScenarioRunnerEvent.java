@@ -10,9 +10,6 @@ public class ScenarioRunnerEvent extends Event {
     public static String BEGIN = qualify("begin");
     public static String END = qualify("end");
 
-    protected ScenarioRunnerEvent() {
-    }
-    
     public ScenarioRunnerEvent(Map<String, String> eventData) {
         super(eventData);
     }
