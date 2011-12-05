@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>uk.co.acuminous.julez</groupId>
 	<artifactId>julez-core</artifactId>
-	<version>${parent.version}</version>
+	<version>${project.parent.version}</version>
 	<name>Julez Core</name>
 
 	<parent>

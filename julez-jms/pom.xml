@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>uk.co.acuminous.julez</groupId>
 	<artifactId>julez-jms</artifactId>
-	<version>${parent.version}</version>
+	<version>${project.parent.version}</version>
 	<name>Julez JMS</name>
 
 	<parent>
@@ -17,12 +17,12 @@
 		<dependency>
 			<groupId>uk.co.acuminous.julez</groupId>
 			<artifactId>julez-core</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>
         <dependency>
             <groupId>uk.co.acuminous.julez</groupId>
             <artifactId>julez-json-marshalling</artifactId>
-            <version>${parent.version}</version>
+            <version>${project.parent.version}</version>
         </dependency>		
 		<dependency>
 			<groupId>javax.jms</groupId>
@@ -33,7 +33,7 @@
 		<dependency>
 			<groupId>uk.co.acuminous.julez</groupId>
 			<artifactId>julez-test</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 			<scope>test</scope>
 		</dependency>
 		<dependency>

@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>uk.co.acuminous.julez</groupId>
 	<artifactId>julez-jbehave</artifactId>
-	<version>${parent.version}</version>
+	<version>${project.parent.version}</version>
 	<name>Julez JBehave</name>
 	
 	<parent>
@@ -17,7 +17,7 @@
 		<dependency>
 			<groupId>uk.co.acuminous.julez</groupId>
 			<artifactId>julez-core</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>	
 		<dependency>
 			<groupId>org.jbehave</groupId>
@@ -28,7 +28,7 @@
 		<dependency>
 			<groupId>uk.co.acuminous.julez</groupId>
 			<artifactId>julez-test</artifactId>
-			<version>${parent.version}</version>
+			<version>${project.parent.version}</version>
 		</dependency>		
 	</dependencies>
 
