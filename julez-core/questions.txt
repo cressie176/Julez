@@ -1,2 +1,0 @@
-Should we put mandatory field validation in Event?
-Should we demote correlationId?

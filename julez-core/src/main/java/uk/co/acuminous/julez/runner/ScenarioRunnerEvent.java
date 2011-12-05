@@ -1,13 +1,20 @@
 package uk.co.acuminous.julez.runner;
 
+import java.util.Map;
+
 import uk.co.acuminous.julez.event.Event;
 
 public class ScenarioRunnerEvent extends Event {
 
-    public static String BEGIN = qualify("BEGIN");
-    public static String END = qualify("END");
+    public static String NAMESPACE = "ScenarioRunner";
+    public static String BEGIN = qualify("begin");
+    public static String END = qualify("end");
 
     protected ScenarioRunnerEvent() {
+    }
+    
+    public ScenarioRunnerEvent(Map<String, String> eventData) {
+        super(eventData);
     }
 
     public ScenarioRunnerEvent(String type) {
@@ -18,7 +25,7 @@ public class ScenarioRunnerEvent extends Event {
         super(id, timestamp, type);
     }
 
-    protected static String qualify(String subType) {
-        return String.format(EVENT_TYPE_FORMAT, "ScenarioRunnerEvent", subType);
+    protected static String qualify(String localName) {
+        return String.format(EVENT_TYPE_FORMAT, NAMESPACE, localName);
     }
 }

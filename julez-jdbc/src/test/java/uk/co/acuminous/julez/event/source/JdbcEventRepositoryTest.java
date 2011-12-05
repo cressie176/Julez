@@ -5,6 +5,8 @@ import static org.junit.Assert.assertEquals;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.sql.DataSource;
+
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -13,16 +15,27 @@ import org.junit.Test;
 import test.JdbcTestUtils;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JdbcEventHandler;
+import uk.co.acuminous.julez.mapper.TransformingMapper;
+import uk.co.acuminous.julez.marshalling.NamespaceBasedEventClassResolver;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
+import uk.co.acuminous.julez.test.TestEventSchema;
+import uk.co.acuminous.julez.transformer.DefaultColumnNameTransformer;
 
 public class JdbcEventRepositoryTest {
 
+    private DataSource dataSource;
+    private TransformingMapper columnMapper;
 
     @Before
     public void init() {
-        JdbcTestUtils.ddl();
-    }
+        TestEventSchema.ddl();
+        
+        dataSource = JdbcTestUtils.getDataSource();
+        
+        String[] persistentProperties = { Event.ID, Event.TIMESTAMP, Event.TYPE };
+        columnMapper = new TransformingMapper(new DefaultColumnNameTransformer(), persistentProperties);
+    }   
     
     @After
     public void nuke() throws Exception {
@@ -30,8 +43,8 @@ public class JdbcEventRepositoryTest {
     }
 
     @Test
-    public void retriesEventsFromRepositoryInOrder() {
-        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(JdbcTestUtils.getDataSource());               
+    public void listsretriesEventsFromRepositoryInOrder() {
+        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(dataSource, columnMapper, new NamespaceBasedEventClassResolver());               
         
         List<Event> expectedEvents = initTestData();
 
@@ -41,7 +54,7 @@ public class JdbcEventRepositoryTest {
     
     @Test
     public void countsEventsInTheRepository() {
-        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(JdbcTestUtils.getDataSource());                
+        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(dataSource, columnMapper, new NamespaceBasedEventClassResolver());               
         
         List<Event> events = initTestData();
                 
@@ -50,7 +63,8 @@ public class JdbcEventRepositoryTest {
     
     @Test
     public void canOverideSelectQuery() { 
-        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(JdbcTestUtils.getDataSource(), "SELECT * FROM EVENT WHERE TYPE='ScenarioEvent/BEGIN'", "");
+        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(
+                dataSource, columnMapper, new NamespaceBasedEventClassResolver(), "SELECT * FROM EVENT WHERE TYPE='Scenario/begin'", "");
         
         initTestData();
         
@@ -59,7 +73,8 @@ public class JdbcEventRepositoryTest {
     
     @Test
     public void canOverideCountQuery() {        
-        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(JdbcTestUtils.getDataSource(), "", "SELECT COUNT(*) FROM EVENT WHERE TYPE='ScenarioEvent/BEGIN'");
+        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(
+                dataSource, columnMapper, new NamespaceBasedEventClassResolver(), "", "SELECT COUNT(*) FROM EVENT WHERE TYPE='Scenario/begin'");
         
         initTestData();
         
@@ -72,7 +87,7 @@ public class JdbcEventRepositoryTest {
     
     private List<Event> initTestData(DateTime now) {
                         
-        JdbcEventHandler jdbcEventHandler = new JdbcEventHandler(JdbcTestUtils.getDataSource());                
+        JdbcEventHandler jdbcEventHandler = new JdbcEventHandler(dataSource, columnMapper);                
         
         ScenarioRunnerEvent eventA1 = new ScenarioRunnerEvent("A1", now.minusSeconds(8).getMillis(), ScenarioRunnerEvent.BEGIN);        
         ScenarioEvent eventA2 = new ScenarioEvent("A2", now.minusSeconds(7).getMillis(), ScenarioEvent.BEGIN);

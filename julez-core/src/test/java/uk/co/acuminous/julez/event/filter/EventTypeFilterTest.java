@@ -20,24 +20,24 @@ public class EventTypeFilterTest {
     }
     
     @Test
-    public void excludesEventsWithWrongBaseType() {
-        EventTypeFilter filter = new EventTypeFilter("ScenarioEvent/PASS");
+    public void excludesEventsWithWrongNamespace() {
+        EventTypeFilter filter = new EventTypeFilter("Scenario/pass");
         filter.register(eventMonitor);
         filter.onEvent(new ScenarioRunnerEventFactory().begin());
         assertEquals(0, eventMonitor.getEvents().size());
     } 
     
     @Test
-    public void excludesEventsWithWrongSubType() {
-        EventTypeFilter filter = new EventTypeFilter("ScenarioEvent/END");
+    public void excludesEventsWithWrongLocalName() {
+        EventTypeFilter filter = new EventTypeFilter("Scenario/end");
         filter.register(eventMonitor);
         filter.onEvent(new ScenarioEventFactory().begin());
         assertEquals(0, eventMonitor.getEvents().size());
     }    
 
     @Test
-    public void includesEventsWithMatchingBaseTypeAndAnySubType() {     
-        EventTypeFilter filter = new EventTypeFilter("ScenarioEvent/.*");
+    public void includesEventsWithMatchingNamespace() {     
+        EventTypeFilter filter = new EventTypeFilter("Scenario/.*");
         filter.register(eventMonitor);        
         filter.onEvent(new ScenarioEventFactory().begin());
         assertEquals(1, eventMonitor.getEvents().size());
@@ -45,7 +45,7 @@ public class EventTypeFilterTest {
     
     @Test
     public void includesEventsWithMatchingBaseTypeAndSubType() {     
-        EventTypeFilter filter = new EventTypeFilter("ScenarioEvent/BEGIN");
+        EventTypeFilter filter = new EventTypeFilter("Scenario/begin");
         filter.register(eventMonitor);        
         filter.onEvent(new ScenarioEventFactory().begin());
         assertEquals(1, eventMonitor.getEvents().size());
