@@ -4,7 +4,7 @@
 	<groupId>uk.co.acuminous.julez</groupId>
 	<artifactId>julez-test-support</artifactId>
 	<version>${project.parent.version}</version>
-	<name>Julez Test Common</name>
+	<name>Julez Test Support</name>
 
 	<parent>
 		<groupId>uk.co.acuminous.julez</groupId>
