@@ -1,51 +1,82 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>uk.co.acuminous.julez</groupId>
-	<artifactId>julez-core</artifactId>
-	<version>${project.parent.version}</version>
-	<name>Julez Core</name>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>uk.co.acuminous.julez</groupId>
+    <artifactId>julez-core</artifactId>
+    <version>${project.parent.version}</version>
+    <name>Julez Core</name>
+    <description>Provides tools for performance and concurrency testing in Java</description>
+    <url>http://www.github.com/cressie176/julez/wiki</url>
 
-	<parent>
-		<groupId>uk.co.acuminous.julez</groupId>
-		<artifactId>julez-parent</artifactId>
-		<version>0.1-SNAPSHOT</version>
-		<relativePath>../julez-parent/pom.xml</relativePath>
-	</parent>
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-	<dependencies>
+    <scm>
+        <url>scm:git:git://github.com/cressie176/Julez.git</url>
+    </scm>
 
-		<dependency>
-			<groupId>uk.co.acuminous.julez</groupId>
-			<artifactId>julez-events</artifactId>
-			<version>0.1-SNAPSHOT</version>
-		</dependency>
+    <developers>
+        <developer>
+            <id>scresswell</id>
+            <name>Stephen Cresswell</name>
+            <email />
+            <roles>
+                <role>Prisoner #6</role>
+            </roles>
+        </developer>
+    </developers>
 
-		<dependency>
-			<groupId>junit</groupId>
-			<artifactId>junit</artifactId>
-			<version>${junit.version}</version>
-			<scope>test</scope>
-		</dependency>
-		<dependency>
-			<groupId>joda-time</groupId>
-			<artifactId>joda-time</artifactId>
-			<version>${joda-time.version}</version>
-			<scope>test</scope>
-		</dependency>
-	</dependencies>
+    <parent>
+        <groupId>uk.co.acuminous.julez</groupId>
+        <artifactId>julez-parent</artifactId>
+        <version>0.1-SNAPSHOT</version>
+        <relativePath>../julez-parent/pom.xml</relativePath>
+    </parent>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+    <dependencies>
 
+        <dependency>
+            <groupId>uk.co.acuminous.julez</groupId>
+            <artifactId>julez-events</artifactId>
+            <version>0.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>joda-time</groupId>
+            <artifactId>joda-time</artifactId>
+            <version>${joda-time.version}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>            
+            </plugin>
+        </plugins>
+    </build>
 </project>
