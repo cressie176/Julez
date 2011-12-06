@@ -15,7 +15,7 @@ import org.junit.Test;
 import test.JmsTestUtils;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.marshalling.NamespaceBasedEventClassResolver;
-import uk.co.acuminous.julez.marshalling.json.JsonEventMarshaller;
+import uk.co.acuminous.julez.marshalling.json.JsonEventTranslator;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
@@ -25,13 +25,13 @@ import uk.co.acuminous.julez.util.JmsHelper;
 public class JmsEventHandlerTest {
 
     private QueueConnectionFactory connectionFactory;
-    private JsonEventMarshaller marshaller;
+    private JsonEventTranslator marshaller;
 
     @Before
     public void init() throws Exception {                
         JmsTestUtils.createBroker();
         connectionFactory = JmsTestUtils.getConnectionFactory(); 
-        marshaller = new JsonEventMarshaller(new NamespaceBasedEventClassResolver());        
+        marshaller = new JsonEventTranslator(new NamespaceBasedEventClassResolver());        
     }
     
     @After

@@ -13,7 +13,7 @@ import test.JmsTestUtils;
 import uk.co.acuminous.julez.event.handler.EventMonitor;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
 import uk.co.acuminous.julez.marshalling.NamespaceBasedEventClassResolver;
-import uk.co.acuminous.julez.marshalling.json.JsonEventMarshaller;
+import uk.co.acuminous.julez.marshalling.json.JsonEventTranslator;
 import uk.co.acuminous.julez.event.source.JmsEventSource;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
@@ -31,7 +31,7 @@ public class JmsEventSourceTest {
     public void init() {
         JmsTestUtils.createBroker(); 
         
-        JsonEventMarshaller marshaller = new JsonEventMarshaller(new NamespaceBasedEventClassResolver());        
+        JsonEventTranslator marshaller = new JsonEventTranslator(new NamespaceBasedEventClassResolver());        
         
         connectionFactory = JmsTestUtils.getConnectionFactory();
         eventMonitor = new EventMonitor();                

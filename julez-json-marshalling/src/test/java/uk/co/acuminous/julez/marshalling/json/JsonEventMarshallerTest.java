@@ -12,11 +12,11 @@ import uk.co.acuminous.julez.scenario.ScenarioEvent;
 
 public class JsonEventMarshallerTest {
 
-    private JsonEventMarshaller marshaller;
+    private JsonEventTranslator marshaller;
     
     @Before
     public void init() {
-        marshaller = new JsonEventMarshaller(new NamespaceBasedEventClassResolver());        
+        marshaller = new JsonEventTranslator(new NamespaceBasedEventClassResolver());        
     }
 
     @Test

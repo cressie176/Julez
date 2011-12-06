@@ -54,7 +54,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
 
         ConcurrencyUtils.sleep((startTime - System.currentTimeMillis()), MILLISECONDS);
         long stopTime = System.currentTimeMillis() + timeout;
-
+        
         onEvent(eventFactory.begin());
 
         while ((scenarios.available() > 0) && (stopTime > System.currentTimeMillis())) {

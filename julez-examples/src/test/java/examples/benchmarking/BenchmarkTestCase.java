@@ -26,8 +26,13 @@ public abstract class BenchmarkTestCase {
     protected void benchmark(Scenario scenario, int repetitions) {
         ScenarioSource scenarios = new SizedScenarioRepeater(scenario, repetitions);
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
+        ConcurrentScenarioRunner runner = getScenarioRunner();
         runner.register(durationMonitor);
         runner.queue(scenarios).go();
+    }
+
+
+    protected ConcurrentScenarioRunner getScenarioRunner() {
+        return new ConcurrentScenarioRunner();
     }    
 }

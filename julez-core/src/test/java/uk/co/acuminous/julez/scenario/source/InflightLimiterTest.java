@@ -25,7 +25,7 @@ public class InflightLimiterTest {
         
         ScenarioSource source = new InfiniteScenarioRepeater(new NoOpScenario());
         
-        InflightLimiter limiter = new InflightLimiter(source, 3);
+        InflightLimiter limiter = new InflightLimiter(source, 2);
         
         long startTime = System.currentTimeMillis();
         assertNotNull(limiter.next());
@@ -46,7 +46,7 @@ public class InflightLimiterTest {
         
         ScenarioSource source = new InfiniteScenarioRepeater(new NoOpScenario());
         
-        final InflightLimiter limiter = new InflightLimiter(source, 3);
+        final InflightLimiter limiter = new InflightLimiter(source, 2);
         
         limiter.next();
         limiter.next();

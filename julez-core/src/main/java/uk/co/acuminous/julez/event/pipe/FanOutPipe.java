@@ -1,5 +1,6 @@
 package uk.co.acuminous.julez.event.pipe;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashSet;
 
@@ -14,6 +15,10 @@ public class FanOutPipe implements EventPipe {
     public FanOutPipe() {
         this(new HashSet<EventHandler>());
     }    
+    
+    public FanOutPipe(EventHandler... handlers) {
+        this.handlers = Arrays.asList(handlers);
+    }
     
     public FanOutPipe(Collection<EventHandler> handlers) {
         this.handlers = handlers;
