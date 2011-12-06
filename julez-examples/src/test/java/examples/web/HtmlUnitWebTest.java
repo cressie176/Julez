@@ -44,7 +44,7 @@ public class HtmlUnitWebTest extends WebTestCase {
                 webClient.setCssEnabled(false);
                 webClient.setJavaScriptEnabled(false);                
                 
-                HtmlPage page = webClient.getPage("http://localhost:8080");
+                HtmlPage page = webClient.getPage("http://localhost:8081");
                 WebResponse webResponse = page.getWebResponse();
                 if (webResponse.getStatusCode() == 200) {
                     onEvent(eventFactory.pass());

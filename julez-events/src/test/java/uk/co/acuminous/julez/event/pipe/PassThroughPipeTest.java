@@ -4,7 +4,7 @@ import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.TestEvent;
+import uk.co.acuminous.julez.event.DummyEvent;
 import uk.co.acuminous.julez.event.handler.EventMonitor;
 
 public class PassThroughPipeTest {
@@ -17,7 +17,7 @@ public class PassThroughPipeTest {
         PassThroughPipe pipe = new PassThroughPipe();
         pipe.register(handler);
         
-        TestEvent event = new TestEvent();
+        DummyEvent event = new DummyEvent();
         pipe.onEvent(event);        
         
         assertSame(event, handler.getEvents().get(0));
@@ -26,7 +26,7 @@ public class PassThroughPipeTest {
     
     @Test
     public void tolleratesNoHandlers() {        
-        new PassThroughPipe().onEvent(new TestEvent());
+        new PassThroughPipe().onEvent(new DummyEvent());
     }    
     
 }

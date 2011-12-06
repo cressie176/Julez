@@ -5,7 +5,7 @@ import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.TestEvent;
+import uk.co.acuminous.julez.event.DummyEvent;
 import uk.co.acuminous.julez.event.handler.EventMonitor;
 
 public class FanOutPipeTest {
@@ -18,7 +18,7 @@ public class FanOutPipeTest {
         FanOutPipe pipe = new FanOutPipe();
         pipe.registerAll(handler1, handler2);
         
-        TestEvent event = new TestEvent();
+        DummyEvent event = new DummyEvent();
         pipe.onEvent(event);
         
         assertEquals(1, handler1.getEvents().size());
@@ -30,7 +30,7 @@ public class FanOutPipeTest {
     
     @Test
     public void tolleratesNoHandlers() {        
-        new FanOutPipe().onEvent(new TestEvent());
+        new FanOutPipe().onEvent(new DummyEvent());
     }
     
 }

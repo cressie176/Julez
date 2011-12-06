@@ -6,10 +6,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.Event;
+import uk.co.acuminous.julez.event.DummyEvent;
 import uk.co.acuminous.julez.event.handler.EventMonitor;
-import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
-import uk.co.acuminous.julez.scenario.ScenarioEvent;
-import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 
 public class EventDataFilterTest {
 
@@ -22,40 +20,33 @@ public class EventDataFilterTest {
     
     @Test
     public void excludesEventsWithWrongNamespace() {
-        EventDataFilter filter = new EventDataFilter(Event.TYPE, "Scenario/pass");
+        EventDataFilter filter = new EventDataFilter(Event.TYPE, "Car/start");
         filter.register(eventMonitor);
-        filter.onEvent(new ScenarioRunnerEventFactory().begin());
+        filter.onEvent(new DummyEvent("Race/start"));
         assertEquals(0, eventMonitor.getEvents().size());
     } 
     
     @Test
     public void excludesEventsWithWrongLocalName() {
-        EventDataFilter filter = new EventDataFilter(Event.TYPE, "Scenario/end");
+        EventDataFilter filter = new EventDataFilter(Event.TYPE, "Car/start");
         filter.register(eventMonitor);
-        filter.onEvent(new ScenarioEventFactory().begin());
+        filter.onEvent(new DummyEvent("Car/stop"));
         assertEquals(0, eventMonitor.getEvents().size());
     }    
 
     @Test
     public void includesEventsWithMatchingNamespace() {     
-        EventDataFilter filter = new EventDataFilter(Event.TYPE, "Scenario/.*");
+        EventDataFilter filter = new EventDataFilter(Event.TYPE, "Car/.*");
         filter.register(eventMonitor);        
-        filter.onEvent(new ScenarioEventFactory().begin());
+        filter.onEvent(new DummyEvent("Car/skid"));
         assertEquals(1, eventMonitor.getEvents().size());
     }    
     
     @Test
     public void includesEventsWithMatchingBaseTypeAndSubType() {     
-        EventDataFilter filter = new EventDataFilter(Event.TYPE, "Scenario/begin");
+        EventDataFilter filter = new EventDataFilter(Event.TYPE, "Car/start");
         filter.register(eventMonitor);        
-        filter.onEvent(new ScenarioEventFactory().begin());
+        filter.onEvent(new DummyEvent("Car/start"));
         assertEquals(1, eventMonitor.getEvents().size());
-    }
-        
-    class ChildScenarioEvent extends ScenarioEvent {
-        public ChildScenarioEvent() {
-            super("id", System.currentTimeMillis(), "type");
-        }
-
     }
 }

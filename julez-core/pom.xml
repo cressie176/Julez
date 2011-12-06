@@ -13,13 +13,20 @@
 		<relativePath>../julez-parent/pom.xml</relativePath>
 	</parent>
 
-	<dependencies>	
+	<dependencies>
+
+		<dependency>
+			<groupId>uk.co.acuminous.julez</groupId>
+			<artifactId>julez-events</artifactId>
+			<version>0.1-SNAPSHOT</version>
+		</dependency>
+
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<version>${junit.version}</version>
 			<scope>test</scope>
-		</dependency>		
+		</dependency>
 		<dependency>
 			<groupId>joda-time</groupId>
 			<artifactId>joda-time</artifactId>

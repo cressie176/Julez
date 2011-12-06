@@ -7,7 +7,7 @@ import static org.junit.Assert.*;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
-import uk.co.acuminous.julez.event.TestEvent;
+import uk.co.acuminous.julez.event.DummyEvent;
 import static java.util.concurrent.TimeUnit.*;
 
 public class AsynchronousPipeTest {
@@ -28,7 +28,7 @@ public class AsynchronousPipeTest {
         AsynchronousPipe pipe = new AsynchronousPipe();        
         pipe.register(handler);
         
-        pipe.onEvent(new TestEvent());
+        pipe.onEvent(new DummyEvent());
         
         latch.await(5, SECONDS);
         

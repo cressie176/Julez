@@ -17,6 +17,7 @@
 
 	<modules>
 		<module>../julez-core</module>
+		<module>../julez-events</module>
 		<module>../julez-marshalling</module>
 		<module>../julez-json-marshalling</module>
 		<module>../julez-jms</module>

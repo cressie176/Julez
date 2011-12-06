@@ -60,7 +60,7 @@ public class NettyWebTest extends WebTestCase {
             try
             {   
                 client.init();                
-                client.get("http://localhost:8080/");
+                client.get("http://localhost:8081/");
             } catch (Exception e) {
                 error(e.getMessage());
             } finally {
@@ -90,7 +90,7 @@ public class NettyWebTest extends WebTestCase {
     class HttpClient {
 
         private String host = "localhost";
-        private int port = 8080;
+        private int port = 8081;
         private Channel channel;
         private ClientBootstrap bootstrap;
         private final NettyScenario scenario;
