@@ -4,16 +4,18 @@ import java.util.regex.Pattern;
 
 import uk.co.acuminous.julez.event.Event;
 
-public class EventTypeFilter extends BaseEventFilter {
+public class EventDataFilter extends BaseEventFilter {
 
+    private final String key;    
     private final Pattern pattern;
 
-    public EventTypeFilter(String pattern) {
+    public EventDataFilter(String key, String pattern) {
+        this.key = key;
         this.pattern = Pattern.compile(pattern);
     }
 
     @Override
     public boolean accept(Event event) {
-        return pattern.matcher(event.getType()).matches();
+        return pattern.matcher(event.get(key)).matches();
     }
 }

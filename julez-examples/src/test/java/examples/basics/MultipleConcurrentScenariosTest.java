@@ -1,4 +1,4 @@
-package examples;
+package examples.basics;
 
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;

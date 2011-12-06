@@ -5,12 +5,13 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.EventMonitor;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 
-public class EventTypeFilterTest {
+public class EventDataFilterTest {
 
     private EventMonitor eventMonitor;
 
@@ -21,7 +22,7 @@ public class EventTypeFilterTest {
     
     @Test
     public void excludesEventsWithWrongNamespace() {
-        EventTypeFilter filter = new EventTypeFilter("Scenario/pass");
+        EventDataFilter filter = new EventDataFilter(Event.TYPE, "Scenario/pass");
         filter.register(eventMonitor);
         filter.onEvent(new ScenarioRunnerEventFactory().begin());
         assertEquals(0, eventMonitor.getEvents().size());
@@ -29,7 +30,7 @@ public class EventTypeFilterTest {
     
     @Test
     public void excludesEventsWithWrongLocalName() {
-        EventTypeFilter filter = new EventTypeFilter("Scenario/end");
+        EventDataFilter filter = new EventDataFilter(Event.TYPE, "Scenario/end");
         filter.register(eventMonitor);
         filter.onEvent(new ScenarioEventFactory().begin());
         assertEquals(0, eventMonitor.getEvents().size());
@@ -37,7 +38,7 @@ public class EventTypeFilterTest {
 
     @Test
     public void includesEventsWithMatchingNamespace() {     
-        EventTypeFilter filter = new EventTypeFilter("Scenario/.*");
+        EventDataFilter filter = new EventDataFilter(Event.TYPE, "Scenario/.*");
         filter.register(eventMonitor);        
         filter.onEvent(new ScenarioEventFactory().begin());
         assertEquals(1, eventMonitor.getEvents().size());
@@ -45,7 +46,7 @@ public class EventTypeFilterTest {
     
     @Test
     public void includesEventsWithMatchingBaseTypeAndSubType() {     
-        EventTypeFilter filter = new EventTypeFilter("Scenario/begin");
+        EventDataFilter filter = new EventDataFilter(Event.TYPE, "Scenario/begin");
         filter.register(eventMonitor);        
         filter.onEvent(new ScenarioEventFactory().begin());
         assertEquals(1, eventMonitor.getEvents().size());

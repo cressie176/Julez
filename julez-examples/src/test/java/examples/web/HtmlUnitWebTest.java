@@ -1,13 +1,8 @@
-package examples;
+package examples.web;
 
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
-import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import org.junit.Test;
-
-import com.gargoylesoftware.htmlunit.WebClient;
-import com.gargoylesoftware.htmlunit.WebResponse;
-import com.gargoylesoftware.htmlunit.html.HtmlPage;
 
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
@@ -17,12 +12,16 @@ import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
 import uk.co.acuminous.julez.test.WebTestCase;
 
-public class ConcurrentWebTest extends WebTestCase {
+import com.gargoylesoftware.htmlunit.WebClient;
+import com.gargoylesoftware.htmlunit.WebResponse;
+import com.gargoylesoftware.htmlunit.html.HtmlPage;
+
+public class HtmlUnitWebTest extends WebTestCase {
 
     @Test
-    public void demonstrateAConcurrentWebTest() {
+    public void demonstrateAConcurrentWebTestUsingHtmlUnit() {
 
-        SimpleWebScenario scenario = new SimpleWebScenario();
+        HtmlUnitScenario scenario = new HtmlUnitScenario();
         ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
@@ -32,10 +31,11 @@ public class ConcurrentWebTest extends WebTestCase {
         runner.register(throughputMonitor);
         runner.queue(scenarios).allocate(10, THREADS).go();
 
-        assertMinimumThroughput(14, throughputMonitor.getThroughput());
+        System.out.println("\nHtmlUnit Throughput\n----------------");
+        System.out.println(throughputMonitor.getThroughput());
     }
 
-    class SimpleWebScenario extends BaseScenario {
+    class HtmlUnitScenario extends BaseScenario {
 
         public void run() {
             onEvent(eventFactory.begin());
@@ -49,24 +49,24 @@ public class ConcurrentWebTest extends WebTestCase {
                 if (webResponse.getStatusCode() == 200) {
                     onEvent(eventFactory.pass());
                 } else {                                               
-                    raiseFailure(webResponse.getStatusCode(), webResponse.getStatusMessage());
+                    fail(webResponse.getStatusCode(), webResponse.getStatusMessage());
                 }
             } catch (Exception e) {
-                raiseError(e.getMessage());
+                error(e.getMessage());
             } finally {                
                 webClient.closeAllWindows();
             }
             onEvent(eventFactory.end());
         }
         
-        private void raiseFailure(Integer status, String message) {
+        private void fail(Integer status, String message) {
             ScenarioEvent event = eventFactory.fail();
             event.getData().put("statusCode", String.valueOf(status));
             event.getData().put("message", message);
             onEvent(event);
         }
         
-        private void raiseError(String message) {
+        private void error(String message) {
             ScenarioEvent event = eventFactory.error();
             event.getData().put("message", message);
             onEvent(event);       

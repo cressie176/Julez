@@ -22,7 +22,7 @@
 		<module>../julez-jms</module>
 		<module>../julez-jdbc</module>
 		<module>../julez-jbehave</module>
-		<module>../julez-test</module>
+		<module>../julez-test-support</module>
 		<module>../julez-examples</module>
 	</modules>
 

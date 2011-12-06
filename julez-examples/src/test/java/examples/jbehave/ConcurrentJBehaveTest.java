@@ -67,7 +67,7 @@ public class ConcurrentJBehaveTest {
         ScenarioSource scenarios = new PrePopulatedScenarioSource(list);
         runner.queue(scenarios).go();
 
-        assertMinimumThroughput(20, throughputMonitor.getThroughput());
+        assertMinimumThroughput(10, throughputMonitor.getThroughput());
         assertPassMark(100, resultMonitor.getPercentage());        
     }    
 }

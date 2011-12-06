@@ -78,8 +78,14 @@
 			<scope>test</scope>
 		</dependency>
 		<dependency>
+			<groupId>org.jboss.netty</groupId>
+			<artifactId>netty</artifactId>
+			<version>3.2.7.Final</version>
+			<scope>test</scope>		
+		</dependency>
+		<dependency>
 			<groupId>uk.co.acuminous.julez</groupId>
-			<artifactId>julez-test</artifactId>
+			<artifactId>julez-test-support</artifactId>
 			<version>${project.parent.version}</version>
 			<scope>test</scope>
 		</dependency>		

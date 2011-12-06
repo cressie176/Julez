@@ -5,7 +5,8 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.filter.EventTypeFilter;
+import uk.co.acuminous.julez.event.Event;
+import uk.co.acuminous.julez.event.filter.EventDataFilter;
 import uk.co.acuminous.julez.event.handler.EventMonitor;
 import uk.co.acuminous.julez.scenario.NoOpScenario;
 import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
@@ -28,7 +29,7 @@ public class MultiConcurrentScenarioRunnerTest {
     
     @Test
     public void startsAllRunners() {
-        EventTypeFilter filter = new EventTypeFilter(ScenarioRunnerEvent.BEGIN);
+        EventDataFilter filter = new EventDataFilter(Event.TYPE, ScenarioRunnerEvent.BEGIN);
         filter.register(eventMonitor);
         
         runner1.register(filter);
@@ -41,7 +42,7 @@ public class MultiConcurrentScenarioRunnerTest {
         
     @Test
     public void waitsForAllRunnersToFinish() {
-        EventTypeFilter filter = new EventTypeFilter(ScenarioRunnerEvent.END);
+        EventDataFilter filter = new EventDataFilter(Event.TYPE, ScenarioRunnerEvent.END);
         filter.register(eventMonitor);
         
         runner1.register(filter);
