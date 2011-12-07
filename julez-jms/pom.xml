@@ -56,7 +56,7 @@
 
         <dependency>
             <groupId>uk.co.acuminous.julez</groupId>
-            <artifactId>julez-test</artifactId>
+            <artifactId>julez-test-support</artifactId>
             <version>${project.parent.version}</version>
             <scope>test</scope>
         </dependency>
