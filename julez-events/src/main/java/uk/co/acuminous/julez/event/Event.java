@@ -7,7 +7,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 
-public abstract class Event {
+public class Event {
     public static final String EVENT_TYPE_FORMAT = "%s/%s";
 
     public static final String ID = "#ID";

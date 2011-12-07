@@ -1,6 +1,5 @@
 package uk.co.acuminous.julez.event.source;
 
-import java.lang.reflect.Constructor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -15,7 +14,6 @@ import org.springframework.jdbc.core.RowMapper;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventRepository;
 import uk.co.acuminous.julez.event.pipe.BaseEventPipe;
-import uk.co.acuminous.julez.mapper.OneWayMapper;
 import uk.co.acuminous.julez.mapper.TwoWayMapper;
 
 public class JdbcEventRepository extends BaseEventPipe implements EventRepository {
@@ -27,16 +25,14 @@ public class JdbcEventRepository extends BaseEventPipe implements EventRepositor
     private final String selectAll;
     private final String countAll;
     private final TwoWayMapper columnMapper;
-    private final OneWayMapper eventClassResolver;
 
-    public JdbcEventRepository(DataSource dataSource, TwoWayMapper columnMapper, OneWayMapper eventClassResolver) {
-        this(dataSource, columnMapper, eventClassResolver, SELECT_ALL, COUNT_ALL);
+    public JdbcEventRepository(DataSource dataSource, TwoWayMapper columnMapper) {
+        this(dataSource, columnMapper, SELECT_ALL, COUNT_ALL);
     }
     
-    public JdbcEventRepository(DataSource dataSource, TwoWayMapper columnMapper, OneWayMapper eventClassResolver, String selectAll, String countAll) {
+    public JdbcEventRepository(DataSource dataSource, TwoWayMapper columnMapper, String selectAll, String countAll) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.columnMapper = columnMapper;        
-        this.eventClassResolver = eventClassResolver;
         this.selectAll = selectAll;
         this.countAll = countAll;        
     }
@@ -83,10 +79,7 @@ public class JdbcEventRepository extends BaseEventPipe implements EventRepositor
                     }
                 }
                 
-                String className = eventClassResolver.getValue(eventData.get(Event.TYPE));
-                Constructor<?> constructor = Class.forName(className).getConstructor(Map.class);
-                Event event = (Event) constructor.newInstance(eventData); 
-                return event;
+                return new Event(eventData);
                 
             } catch (Exception e) {
                 throw new RuntimeException(e);

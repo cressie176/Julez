@@ -6,7 +6,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.marshalling.NamespaceBasedEventClassResolver;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 
@@ -16,7 +15,7 @@ public class JsonEventMarshallerTest {
     
     @Before
     public void init() {
-        marshaller = new JsonEventTranslator(new NamespaceBasedEventClassResolver());        
+        marshaller = new JsonEventTranslator();        
     }
 
     @Test

@@ -13,7 +13,6 @@ import uk.co.acuminous.julez.event.source.JdbcEventRepository;
 import uk.co.acuminous.julez.event.source.JmsEventSource;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
 import uk.co.acuminous.julez.mapper.TwoWayMapper;
-import uk.co.acuminous.julez.marshalling.NamespaceBasedEventClassResolver;
 import uk.co.acuminous.julez.marshalling.json.JsonEventTranslator;
 import uk.co.acuminous.julez.transformer.DefaultColumnNameTransformer;
 
@@ -39,7 +38,7 @@ public class EnterpriseTest {
         connectionFactory = JmsTestUtils.getConnectionFactory();        
                 
         // The json event translator marshalls / unmarshalls the event to and from json
-        JsonEventTranslator marshaller = new JsonEventTranslator(new NamespaceBasedEventClassResolver());
+        JsonEventTranslator marshaller = new JsonEventTranslator();
         
         // The JMS event handler writes events asynchronously to the queue        
         jmsEventHandler = new JmsEventHandler(connectionFactory, marshaller);
@@ -62,7 +61,7 @@ public class EnterpriseTest {
         jdbcEventHandler = new JdbcEventHandler(dataSource, columnMapper);  
         
         // The JDBC event repository can be queried for events, or asked to re-raise them        
-        jdbcEventRepository = new JdbcEventRepository(dataSource, columnMapper, new NamespaceBasedEventClassResolver());        
+        jdbcEventRepository = new JdbcEventRepository(dataSource, columnMapper);        
     }
 
     protected void createEventTable() {

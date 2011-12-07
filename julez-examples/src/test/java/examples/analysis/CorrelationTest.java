@@ -19,7 +19,6 @@ import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.event.source.JdbcEventRepository;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
-import uk.co.acuminous.julez.marshalling.NamespaceBasedEventClassResolver;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.MultiConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
@@ -146,7 +145,7 @@ public class CorrelationTest extends EnterpriseTest {
             
             initTestRun(testRun, "", jdbcEventHandler).go();
             
-            jdbcEventRepository = new JdbcEventRepository(dataSource, getColumnMapper(), new NamespaceBasedEventClassResolver(), 
+            jdbcEventRepository = new JdbcEventRepository(dataSource, getColumnMapper(), 
                     String.format("SELECT * FROM event WHERE test_run='%s' ORDER BY timestamp ASC, id ASC", testRun),
                     String.format("SELECT COUNT(*) FROM event WHERE test_run='%s'", testRun));
                     

@@ -15,7 +15,6 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JdbcEventHandler;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
-import uk.co.acuminous.julez.marshalling.NamespaceBasedEventClassResolver;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.test.JdbcTestUtils;
@@ -44,7 +43,7 @@ public class JdbcEventRepositoryTest {
 
     @Test
     public void listsretriesEventsFromRepositoryInOrder() {
-        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(dataSource, columnMapper, new NamespaceBasedEventClassResolver());               
+        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(dataSource, columnMapper);               
         
         List<Event> expectedEvents = initTestData();
 
@@ -54,7 +53,7 @@ public class JdbcEventRepositoryTest {
     
     @Test
     public void countsEventsInTheRepository() {
-        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(dataSource, columnMapper, new NamespaceBasedEventClassResolver());               
+        JdbcEventRepository jdbcEventSource = new JdbcEventRepository(dataSource, columnMapper);               
         
         List<Event> events = initTestData();
                 
@@ -64,7 +63,7 @@ public class JdbcEventRepositoryTest {
     @Test
     public void canOverideSelectQuery() { 
         JdbcEventRepository jdbcEventSource = new JdbcEventRepository(
-                dataSource, columnMapper, new NamespaceBasedEventClassResolver(), "SELECT * FROM EVENT WHERE TYPE='Scenario/begin'", "");
+                dataSource, columnMapper, "SELECT * FROM EVENT WHERE TYPE='Scenario/begin'", "");
         
         initTestData();
         
@@ -74,7 +73,7 @@ public class JdbcEventRepositoryTest {
     @Test
     public void canOverideCountQuery() {        
         JdbcEventRepository jdbcEventSource = new JdbcEventRepository(
-                dataSource, columnMapper, new NamespaceBasedEventClassResolver(), "", "SELECT COUNT(*) FROM EVENT WHERE TYPE='Scenario/begin'");
+                dataSource, columnMapper, "", "SELECT COUNT(*) FROM EVENT WHERE TYPE='Scenario/begin'");
         
         initTestData();
         

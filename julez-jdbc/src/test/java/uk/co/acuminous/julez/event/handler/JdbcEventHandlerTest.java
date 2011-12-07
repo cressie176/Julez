@@ -15,7 +15,6 @@ import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.source.JdbcEventRepository;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
 import uk.co.acuminous.julez.mapper.TwoWayMapper;
-import uk.co.acuminous.julez.marshalling.NamespaceBasedEventClassResolver;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.test.JdbcTestUtils;
@@ -37,7 +36,7 @@ public class JdbcEventHandlerTest {
         String[] persistentProperties = { Event.ID, Event.TIMESTAMP, Event.TYPE };
         columnMapper = new TransformingMapper(new DefaultColumnNameTransformer(), persistentProperties);
 
-        jdbcEventSource = new JdbcEventRepository(dataSource, columnMapper, new NamespaceBasedEventClassResolver());
+        jdbcEventSource = new JdbcEventRepository(dataSource, columnMapper);
     }
 
     @After
