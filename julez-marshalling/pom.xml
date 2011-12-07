@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>uk.co.acuminous.julez</groupId>
     <artifactId>julez-marshalling</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>${project.parent.version}</version>
     <name>Julez Marshalling</name>
     <description>Defines the interfaces for Julez event marshalling / unmarshalling</description>
     <url>http://www.github.com/cressie176/julez/wiki</url>
@@ -18,17 +18,25 @@
     <scm>
         <url>scm:git:git://github.com/cressie176/Julez.git</url>
     </scm>
-    
+
     <developers>
         <developer>
             <id>scresswell</id>
             <name>Stephen Cresswell</name>
-            <email/>
+            <email />
             <roles>
                 <role>Prisoner #6</role>
             </roles>
         </developer>
-    </developers>    
+        <developer>
+            <id>fcarver</id>
+            <name>Frank Carver</name>
+            <email />
+            <roles>
+                <role>Chief Dietitian</role>
+            </roles>
+        </developer>        
+    </developers>
 
     <parent>
         <groupId>uk.co.acuminous.julez</groupId>
@@ -68,8 +76,8 @@
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>            
-            </plugin>                        
+                <artifactId>maven-javadoc-plugin</artifactId>
+            </plugin>
         </plugins>
     </build>
 

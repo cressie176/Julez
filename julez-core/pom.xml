@@ -28,6 +28,14 @@
                 <role>Prisoner #6</role>
             </roles>
         </developer>
+        <developer>
+            <id>fcarver</id>
+            <name>Frank Carver</name>
+            <email />
+            <roles>
+                <role>Chief Dietitian</role>
+            </roles>
+        </developer>         
     </developers>
 
     <parent>
