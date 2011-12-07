@@ -2,8 +2,6 @@ package uk.co.acuminous.julez.test;
 
 import org.springframework.jdbc.core.JdbcTemplate;
 
-import test.JdbcTestUtils;
-
 public class TestEventSchema {
 
     public static void ddl() {
