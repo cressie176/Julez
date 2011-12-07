@@ -70,7 +70,7 @@ public class JmsEventSource extends PassThroughPipe implements MessageListener, 
         }
     }
 
-    public void shutdownGracefully() {
+    public void shutdownWhenEmpty() {
         try {            
             while (System.currentTimeMillis() - lastReceivedTimestamp < shutdownDelay) {
                 ConcurrencyUtils.sleep(1, SECONDS);

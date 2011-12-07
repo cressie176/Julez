@@ -6,6 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
+import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
@@ -73,5 +74,10 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
         }
 
         onEvent(eventFactory.end());
+    }
+    
+    public ConcurrentScenarioRunner register(EventHandler handler) {
+    	super.register(handler);
+    	return this;
     }
 }

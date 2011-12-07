@@ -51,7 +51,7 @@ public class JmsEventSourceTest {
     public void scenarioEventsAreRecreated() throws InterruptedException {
         jmsSender.onEvent(new ScenarioEventFactory().pass());
         
-        listener.shutdownGracefully();
+        listener.shutdownWhenEmpty();
         
         assertEquals(1, eventMonitor.getEvents().size());
         assertEquals(ScenarioEvent.PASS, eventMonitor.getEvents().get(0).getType());
@@ -61,7 +61,7 @@ public class JmsEventSourceTest {
     public void scenarioRunnerEventsAreRecreated() throws InterruptedException {
         jmsSender.onEvent(new ScenarioRunnerEventFactory().begin());
         
-        listener.shutdownGracefully();
+        listener.shutdownWhenEmpty();
         
         assertEquals(1, eventMonitor.getEvents().size());
         assertEquals(ScenarioRunnerEvent.BEGIN, eventMonitor.getEvents().get(0).getType());        

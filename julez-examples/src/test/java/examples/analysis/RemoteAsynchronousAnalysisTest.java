@@ -29,12 +29,13 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         scenario.register(jmsEventHandler);        
         ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);                                                             
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();                
-        runner.register(jmsEventHandler);                                                        
-        runner.queue(scenarios).allocate(3, THREADS).go();
+        new ConcurrentScenarioRunner()
+        	.register(jmsEventHandler)
+        	.queue(scenarios)
+        	.allocate(3, THREADS)
+        	.go();
         
-        // Ensure the queue is drained
-        jmsEventSource.shutdownGracefully();
+        jmsEventSource.shutdownWhenEmpty();
         
         assertEquals(64, resultMonitor.getPassCount());
         assertEquals(25, resultMonitor.getFailureCount());
@@ -57,7 +58,7 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         runner.queue(scenarios).allocate(3, THREADS).go();
         
         // Ensure the queue is drained
-        jmsEventSource.shutdownGracefully();
+        jmsEventSource.shutdownWhenEmpty();
         
         assertEquals(302, jdbcEventRepository.count());
         assertEquals(ScenarioRunnerEvent.BEGIN, jdbcEventRepository.list().get(0).getType());

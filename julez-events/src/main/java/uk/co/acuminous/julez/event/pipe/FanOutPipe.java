@@ -7,6 +7,7 @@ import java.util.HashSet;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.event.EventPipe;
+import uk.co.acuminous.julez.event.EventSource;
 
 public class FanOutPipe implements EventPipe {
 
@@ -32,8 +33,9 @@ public class FanOutPipe implements EventPipe {
     }
 
     @Override
-    public void register(EventHandler handler) {
+    public EventSource register(EventHandler handler) {
         handlers.add(handler);
+        return this;
     }
     
     public void registerAll(EventHandler... handlers) {
