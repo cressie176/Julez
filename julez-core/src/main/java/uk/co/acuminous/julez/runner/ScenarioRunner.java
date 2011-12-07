@@ -1,6 +1,8 @@
 package uk.co.acuminous.julez.runner;
 
-public interface ScenarioRunner {
+import uk.co.acuminous.julez.event.EventSource;
+
+public interface ScenarioRunner extends EventSource {
 
     public enum ConcurrencyUnit {
         THREADS

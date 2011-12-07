@@ -41,8 +41,9 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
         return this;
     }
 
-    public void useEventFactory(ScenarioRunnerEventFactory eventFactory) {
+    public ConcurrentScenarioRunner useEventFactory(ScenarioRunnerEventFactory eventFactory) {
         this.eventFactory = eventFactory;
+        return this;
     }
 
     public ConcurrentScenarioRunner waitUntil(long startTime) {
@@ -56,7 +57,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
         ConcurrencyUtils.sleep((startTime - System.currentTimeMillis()), MILLISECONDS);
         long stopTime = System.currentTimeMillis() + timeout;
         
-        onEvent(eventFactory.begin());
+        handler.onEvent(eventFactory.begin());
 
         while ((scenarios.available() > 0) && (stopTime > System.currentTimeMillis())) {
             Scenario scenario = scenarios.next();
@@ -73,7 +74,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
             }
         }
 
-        onEvent(eventFactory.end());
+        handler.onEvent(eventFactory.end());
     }
     
     public ConcurrentScenarioRunner register(EventHandler handler) {

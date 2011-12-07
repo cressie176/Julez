@@ -19,7 +19,9 @@ public class AsynchronousAnalysisTest {
 
     @Test
     public void demonstrateAsynchronousAnalysis() {
+        
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
+        
         AsynchronousPipe asynchronousPipe = new AsynchronousPipe();
         asynchronousPipe.register(throughputMonitor);        
         
@@ -30,9 +32,12 @@ public class AsynchronousAnalysisTest {
         FanOutPipe fanOutPipe = new FanOutPipe(asynchronousPipe, scenarios);        
         scenario.register(fanOutPipe);
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
-        runner.register(asynchronousPipe);
-        runner.allocate(3, THREADS).queue(scenarios).runFor(10, SECONDS).go();
+        new ConcurrentScenarioRunner()
+            .register(asynchronousPipe)
+            .allocate(3, THREADS)
+            .queue(scenarios)
+            .runFor(10, SECONDS)
+            .go();
         
         monitorThread.interrupt();
         

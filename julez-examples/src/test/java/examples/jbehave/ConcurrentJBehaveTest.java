@@ -13,42 +13,46 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.event.handler.ResultMonitor;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
+import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit;
 import uk.co.acuminous.julez.scenario.JBehaveEmbedderScenario;
 import uk.co.acuminous.julez.scenario.JBehaveStoryRunnerScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.PrePopulatedScenarioSource;
 
+
 public class ConcurrentJBehaveTest {
 
-    private ThroughputMonitor throughputMonitor;
-    private ResultMonitor resultMonitor;
     private URL scenarioLocation;
-    private ConcurrentScenarioRunner runner;
 
     @Before
     public void init() {
-        throughputMonitor = new ThroughputMonitor();
-        resultMonitor = new ResultMonitor();
         scenarioLocation = codeLocationFromClass(this.getClass());
-        
-        runner = new ConcurrentScenarioRunner();
-        runner.register(throughputMonitor);
     }
     
     @Test
     public void demonstrateTheJBehaveStoryRunnerScenario() {
         
+        ThroughputMonitor throughputMonitor = new ThroughputMonitor();  
+        ResultMonitor resultMonitor = new ResultMonitor();
+        FanOutPipe monitors = new FanOutPipe(throughputMonitor, resultMonitor);
+        
         List<Scenario> list = new ArrayList<Scenario>();
         for (int i = 0; i < 1000; i++) {
-            JBehaveStoryRunnerScenario scenario = new JBehaveStoryRunnerScenario(scenarioLocation, "jbehave/calculator.txt", new CalculatorSteps());
-            scenario.registerAll(throughputMonitor, resultMonitor);
+            JBehaveStoryRunnerScenario scenario = new JBehaveStoryRunnerScenario(scenarioLocation, "examples/jbehave/calculator.story", new CalculatorSteps());
+            scenario.register(monitors);
             list.add(scenario);
         }
         
-        ScenarioSource scenarios = new PrePopulatedScenarioSource(list);        
-        runner.queue(scenarios).go();
+        ScenarioSource scenarios = new PrePopulatedScenarioSource(list);  
+        
+        new ConcurrentScenarioRunner()
+            .register(throughputMonitor)
+            .allocate(3, ConcurrencyUnit.THREADS)
+            .queue(scenarios)
+            .go();
 
         assertMinimumThroughput(100, throughputMonitor.getThroughput());
         assertPassMark(100, resultMonitor.getPercentage());        
@@ -57,15 +61,24 @@ public class ConcurrentJBehaveTest {
     @Test
     public void demonstrateTheJBehaveEmbedderScenario() {
 
+        ThroughputMonitor throughputMonitor = new ThroughputMonitor();  
+        ResultMonitor resultMonitor = new ResultMonitor();
+        FanOutPipe monitors = new FanOutPipe(throughputMonitor, resultMonitor);
+                
         List<Scenario> list = new ArrayList<Scenario>();
         for (int i = 0; i < 1000; i++) {
-            JBehaveEmbedderScenario scenario = new JBehaveEmbedderScenario(scenarioLocation, "jbehave/calculator.txt", new CalculatorSteps());
-            scenario.registerAll(throughputMonitor, resultMonitor);
+            JBehaveEmbedderScenario scenario = new JBehaveEmbedderScenario(scenarioLocation, "examples/jbehave/calculator.story", new CalculatorSteps());
+            scenario.register(monitors);
             list.add(scenario);
         }
         
         ScenarioSource scenarios = new PrePopulatedScenarioSource(list);
-        runner.queue(scenarios).go();
+        
+        new ConcurrentScenarioRunner()
+            .register(throughputMonitor)
+            .allocate(3, ConcurrencyUnit.THREADS)
+            .queue(scenarios)
+            .go();
 
         assertMinimumThroughput(5, throughputMonitor.getThroughput());
         assertPassMark(100, resultMonitor.getPercentage());        

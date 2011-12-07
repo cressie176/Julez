@@ -79,12 +79,10 @@ public class CorrelationTest extends EnterpriseTest {
         scenario.register(monitor);        
         ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);                                                             
 
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();  
-        runner.useEventFactory(scenarioRunnerEventFactory);
-        runner.register(monitor);
-        runner.queue(scenarios);
-        
-        return runner;
+        return new ConcurrentScenarioRunner()
+            .useEventFactory(scenarioRunnerEventFactory)
+            .register(monitor)
+            .queue(scenarios);
     }
     
     
@@ -101,9 +99,11 @@ public class CorrelationTest extends EnterpriseTest {
         scenario.register(fanoutPipe);
         ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);
 
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
-        runner.register(fanoutPipe);
-        runner.queue(scenarios).allocate(10, THREADS).go();
+        new ConcurrentScenarioRunner()
+            .register(fanoutPipe)
+            .allocate(10, THREADS)
+            .queue(scenarios)
+            .go();
 
         ThroughputMonitor throughputMonitor2 = new ThroughputMonitor();
         jdbcEventRepository.register(throughputMonitor2);

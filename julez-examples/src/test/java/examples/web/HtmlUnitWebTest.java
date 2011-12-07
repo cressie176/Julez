@@ -38,7 +38,7 @@ public class HtmlUnitWebTest extends WebTestCase {
     class HtmlUnitScenario extends BaseScenario {
 
         public void run() {
-            onEvent(eventFactory.begin());
+            handler.onEvent(eventFactory.begin());
             WebClient webClient = new WebClient();
             try {                
                 webClient.setCssEnabled(false);
@@ -47,7 +47,7 @@ public class HtmlUnitWebTest extends WebTestCase {
                 HtmlPage page = webClient.getPage("http://localhost:8081");
                 WebResponse webResponse = page.getWebResponse();
                 if (webResponse.getStatusCode() == 200) {
-                    onEvent(eventFactory.pass());
+                    handler.onEvent(eventFactory.pass());
                 } else {                                               
                     fail(webResponse.getStatusCode(), webResponse.getStatusMessage());
                 }
@@ -56,20 +56,20 @@ public class HtmlUnitWebTest extends WebTestCase {
             } finally {                
                 webClient.closeAllWindows();
             }
-            onEvent(eventFactory.end());
+            handler.onEvent(eventFactory.end());
         }
         
         private void fail(Integer status, String message) {
             ScenarioEvent event = eventFactory.fail();
             event.getData().put("statusCode", String.valueOf(status));
             event.getData().put("message", message);
-            onEvent(event);
+            handler.onEvent(event);
         }
         
         private void error(String message) {
             ScenarioEvent event = eventFactory.error();
             event.getData().put("message", message);
-            onEvent(event);       
+            handler.onEvent(event);       
         }
     }
 }

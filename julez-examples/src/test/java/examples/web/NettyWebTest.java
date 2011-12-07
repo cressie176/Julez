@@ -55,7 +55,7 @@ public class NettyWebTest extends WebTestCase {
                
         @Override
         public void run() {
-            onEvent(eventFactory.begin());
+            handler.onEvent(eventFactory.begin());
             HttpClient client = new HttpClient(this);            
             try
             {   
@@ -66,24 +66,24 @@ public class NettyWebTest extends WebTestCase {
             } finally {
                 client.shutdown();
             }
-            onEvent(eventFactory.end());
+            handler.onEvent(eventFactory.end());
         }
                 
         public void pass() {
-            onEvent(eventFactory.pass());
+            handler.onEvent(eventFactory.pass());
         }
         
         public void fail(Integer status, String message) {
             ScenarioEvent event = eventFactory.fail();
             event.getData().put("statusCode", String.valueOf(status));
             event.getData().put("message", message);
-            onEvent(event);
+            handler.onEvent(event);
         }
         
         public void error(String message) {
             ScenarioEvent event = eventFactory.error();
             event.getData().put("message", message);
-            onEvent(event);       
+            handler.onEvent(event);       
         }        
     }
 

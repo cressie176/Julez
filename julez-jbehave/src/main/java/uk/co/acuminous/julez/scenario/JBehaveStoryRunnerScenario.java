@@ -30,7 +30,7 @@ public class JBehaveStoryRunnerScenario extends BaseScenario {
     @Override
     public void run() {
 
-        onEvent(eventFactory.begin());            
+        handler.onEvent(eventFactory.begin());            
         
         try {
             Configuration configuration = new MostUsefulConfiguration().usePendingStepStrategy(new FailingUponPendingStep());
@@ -50,11 +50,11 @@ public class JBehaveStoryRunnerScenario extends BaseScenario {
             if ( storyRunner.failed(afterStories) ){
                 throw new RuntimeException("Error after stories");
             }            
-            onEvent(eventFactory.pass());            
+            handler.onEvent(eventFactory.pass());            
         } catch (Throwable e) {
-            onEvent(eventFactory.error());            
+            handler.onEvent(eventFactory.error());            
         } finally {
-            onEvent(eventFactory.end());
+            handler.onEvent(eventFactory.end());
         }
         
     }

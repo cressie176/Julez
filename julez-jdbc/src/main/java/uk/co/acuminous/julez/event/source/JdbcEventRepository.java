@@ -13,10 +13,10 @@ import org.springframework.jdbc.core.RowMapper;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventRepository;
-import uk.co.acuminous.julez.event.pipe.BaseEventPipe;
+import uk.co.acuminous.julez.event.pipe.PassThroughPipe;
 import uk.co.acuminous.julez.mapper.TwoWayMapper;
 
-public class JdbcEventRepository extends BaseEventPipe implements EventRepository {
+public class JdbcEventRepository extends PassThroughPipe implements EventRepository {
 
     private static final String SELECT_ALL = "SELECT * FROM event ORDER BY timestamp ASC, id ASC";    
     private static final String COUNT_ALL = "SELECT count(*) FROM event";

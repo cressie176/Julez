@@ -8,8 +8,8 @@ public class InvocationCountingScenario extends BaseScenario {
             
     @Override 
     public void run() {
-        onEvent(eventFactory.begin());
+        handler.onEvent(eventFactory.begin());
         counter.incrementAndGet();
-        onEvent(eventFactory.end());
+        handler.onEvent(eventFactory.end());
     }
 }

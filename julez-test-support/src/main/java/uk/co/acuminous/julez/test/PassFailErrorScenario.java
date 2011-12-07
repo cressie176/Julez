@@ -9,18 +9,18 @@ public class PassFailErrorScenario extends BaseScenario {
     private AtomicInteger counter = new AtomicInteger();
     
     @Override public void run() {
-        onEvent(eventFactory.begin());
+        handler.onEvent(eventFactory.begin());
         
         int invocation = counter.incrementAndGet();
         
         if (invocation % 4 == 0) {
-            onEvent(eventFactory.fail());
+            handler.onEvent(eventFactory.fail());
         } else if (invocation % 7 == 0) {
-            onEvent(eventFactory.error());
+            handler.onEvent(eventFactory.error());
         } else {
-            onEvent(eventFactory.pass());                
+            handler.onEvent(eventFactory.pass());                
         }
         
-        onEvent(eventFactory.end());
+        handler.onEvent(eventFactory.end());
     }        
 }

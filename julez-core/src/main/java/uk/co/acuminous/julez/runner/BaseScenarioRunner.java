@@ -1,7 +1,8 @@
 package uk.co.acuminous.julez.runner;
 
-import uk.co.acuminous.julez.event.pipe.PassThroughPipe;
+import uk.co.acuminous.julez.event.source.BaseEventSource;
 
-public abstract class BaseScenarioRunner extends PassThroughPipe implements ScenarioRunner {
+
+public abstract class BaseScenarioRunner extends BaseEventSource implements ScenarioRunner {
 
 }

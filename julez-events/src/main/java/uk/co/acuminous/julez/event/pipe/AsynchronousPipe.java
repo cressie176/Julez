@@ -2,7 +2,7 @@ package uk.co.acuminous.julez.event.pipe;
 
 import uk.co.acuminous.julez.event.Event;
 
-public class AsynchronousPipe extends BaseEventPipe {
+public class AsynchronousPipe extends PassThroughPipe {
 
     @Override
     public void onEvent(final Event event) {

@@ -4,7 +4,7 @@ public class NoOpScenario extends BaseScenario {
 
     @Override
     public void run() {
-        onEvent(eventFactory.begin());
-        onEvent(eventFactory.end());
+        handler.onEvent(eventFactory.begin());
+        handler.onEvent(eventFactory.end());
     }
 }
