@@ -12,7 +12,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import test.JmsTestUtils;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.marshalling.NamespaceBasedEventClassResolver;
 import uk.co.acuminous.julez.marshalling.json.JsonEventTranslator;
@@ -20,6 +19,7 @@ import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
+import uk.co.acuminous.julez.test.JmsTestUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
 
 public class JmsEventHandlerTest {

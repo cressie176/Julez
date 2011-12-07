@@ -12,13 +12,13 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import test.JdbcTestUtils;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JdbcEventHandler;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
 import uk.co.acuminous.julez.marshalling.NamespaceBasedEventClassResolver;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
+import uk.co.acuminous.julez.test.JdbcTestUtils;
 import uk.co.acuminous.julez.test.TestEventSchema;
 import uk.co.acuminous.julez.transformer.DefaultColumnNameTransformer;
 
