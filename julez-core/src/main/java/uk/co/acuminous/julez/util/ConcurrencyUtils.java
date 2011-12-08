@@ -53,5 +53,9 @@ public class ConcurrencyUtils {
         } catch (InterruptedException e) {
             // Meh
         }        
+    }
+
+    public static void sleepUntil(long wakeUp) {
+        sleep(wakeUp - System.currentTimeMillis(), TimeUnit.MILLISECONDS);        
     }        
 }

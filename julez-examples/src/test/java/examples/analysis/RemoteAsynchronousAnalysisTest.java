@@ -47,7 +47,7 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         
         initJmsInfrastructure();
         initDatabaseInfrastructure();    
-        jmsEventSource.register(jdbcEventHandler);                        
+        jmsEventSource.register(jdbcEventRepository);                        
         
         Scenario scenario = new PassFailErrorScenario();
         scenario.register(jmsEventHandler);        

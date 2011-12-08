@@ -2,6 +2,7 @@ package uk.co.acuminous.julez.event.source;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,42 +15,50 @@ import org.springframework.jdbc.core.RowMapper;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.EventRepository;
 import uk.co.acuminous.julez.event.pipe.PassThroughPipe;
+import uk.co.acuminous.julez.jdbc.DefaultEventSql;
+import uk.co.acuminous.julez.jdbc.SqlStatementProvider;
 import uk.co.acuminous.julez.mapper.TwoWayMapper;
 
 public class JdbcEventRepository extends PassThroughPipe implements EventRepository {
 
-    private static final String SELECT_ALL = "SELECT * FROM event ORDER BY timestamp ASC, id ASC";    
-    private static final String COUNT_ALL = "SELECT count(*) FROM event";
-    
     private final JdbcTemplate jdbcTemplate;
-    private final String selectAll;
-    private final String countAll;
     private final TwoWayMapper columnMapper;
+    private final SqlStatementProvider sql;
 
     public JdbcEventRepository(DataSource dataSource, TwoWayMapper columnMapper) {
-        this(dataSource, columnMapper, SELECT_ALL, COUNT_ALL);
+        this(dataSource, columnMapper, new DefaultEventSql(columnMapper.getValues()));        
     }
     
-    public JdbcEventRepository(DataSource dataSource, TwoWayMapper columnMapper, String selectAll, String countAll) {
+    public JdbcEventRepository(DataSource dataSource, TwoWayMapper columnMapper, SqlStatementProvider sql) {
         this.jdbcTemplate = new JdbcTemplate(dataSource);
         this.columnMapper = columnMapper;        
-        this.selectAll = selectAll;
-        this.countAll = countAll;        
-    }
+        this.sql = sql;
+    }    
+    
+    @Override
+    public void onEvent(Event event) {
+        List<String> columnNames = sql.getColumnNames();        
+        List<Object> params = new ArrayList<Object>(sql.getColumnNames().size());
+        for (String columnName : columnNames) {            
+            String propertyName = columnMapper.getKey(columnName);
+            params.add(event.get(propertyName));
+        }            
+        jdbcTemplate.update(sql.getInsertStatement(), params.toArray());
+    }    
         
     @Override
     public void raise() {
-        jdbcTemplate.query(selectAll, new EventRaisingRowMapper());        
+        jdbcTemplate.query(sql.getSelectStatement(), new EventRaisingRowMapper());        
     }
     
     @Override
     public List<Event> list() {        
-        return jdbcTemplate.query(selectAll, new EventRowMapper());
+        return jdbcTemplate.query(sql.getSelectStatement(), new EventRowMapper());
     }
     
     @Override
     public int count() {
-        return jdbcTemplate.queryForInt(countAll);
+        return jdbcTemplate.queryForInt(sql.getCountStatement());
     }              
     
     private class EventRaisingRowMapper implements RowMapper<Event> {
@@ -59,7 +68,7 @@ public class JdbcEventRepository extends PassThroughPipe implements EventReposit
         @Override
         public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
             Event event = underlyingMapper.mapRow(rs, rowNum);
-            onEvent(event);
+            handler.onEvent(event);
             return null;
         }  
     }     

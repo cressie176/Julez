@@ -13,7 +13,7 @@ public abstract class WebTestCase {
     
     @BeforeClass
     public static void startServer() throws Exception {
-        server = new Server(8081);               
+        server = new Server(88081);               
 
         Context root = new Context(server, "/", Context.SESSIONS);
         root.addServlet(new ServletHolder(new DemoServlet()), "/");

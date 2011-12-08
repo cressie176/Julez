@@ -7,7 +7,6 @@ import org.junit.After;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.handler.JdbcEventHandler;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
 import uk.co.acuminous.julez.event.source.JdbcEventRepository;
 import uk.co.acuminous.julez.event.source.JmsEventSource;
@@ -22,7 +21,6 @@ public class EnterpriseTest {
     protected DataSource dataSource;
     protected JmsEventSource jmsEventSource;
     protected JmsEventHandler jmsEventHandler;
-    protected JdbcEventHandler jdbcEventHandler;
     protected JdbcEventRepository jdbcEventRepository;
     
     @After
@@ -56,9 +54,6 @@ public class EnterpriseTest {
         
         // The column mapper enables mapping from event data property names to jdbc column names
         TwoWayMapper columnMapper = getColumnMapper();        
-        
-        // The JDBC event repository persists events re-raised by the JMS event source                 
-        jdbcEventHandler = new JdbcEventHandler(dataSource, columnMapper);  
         
         // The JDBC event repository can be queried for events, or asked to re-raise them        
         jdbcEventRepository = new JdbcEventRepository(dataSource, columnMapper);        

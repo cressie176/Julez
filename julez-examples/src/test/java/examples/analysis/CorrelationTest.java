@@ -5,6 +5,7 @@ import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREAD
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import java.net.UnknownHostException;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -18,6 +19,7 @@ import uk.co.acuminous.julez.event.handler.EventMonitor;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.event.source.JdbcEventRepository;
+import uk.co.acuminous.julez.jdbc.DefaultEventSql;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.MultiConcurrentScenarioRunner;
@@ -93,7 +95,7 @@ public class CorrelationTest extends EnterpriseTest {
         
         ThroughputMonitor throughputMonitor1 = new ThroughputMonitor();
         FanOutPipe fanoutPipe = new FanOutPipe();
-        fanoutPipe.registerAll(throughputMonitor1, jdbcEventHandler);
+        fanoutPipe.registerAll(throughputMonitor1, jdbcEventRepository);
 
         Scenario scenario = new NoOpScenario();
         scenario.register(fanoutPipe);
@@ -121,7 +123,7 @@ public class CorrelationTest extends EnterpriseTest {
         
         for (String testRun : new String[] { "A", "B", "C" }) {
             
-            initTestRun(testRun, "", jdbcEventHandler).go();
+            initTestRun(testRun, "", jdbcEventRepository).go();
             
             ThroughputMonitor monitor = new ThroughputMonitor();
             EventDataFilter filter = new EventDataFilter("TEST_RUN", testRun);
@@ -143,12 +145,12 @@ public class CorrelationTest extends EnterpriseTest {
         
         for (String testRun : new String[] { "A", "B", "C" }) {
             
-            initTestRun(testRun, "", jdbcEventHandler).go();
+            initTestRun(testRun, "", jdbcEventRepository).go();
             
-            jdbcEventRepository = new JdbcEventRepository(dataSource, getColumnMapper(), 
-                    String.format("SELECT * FROM event WHERE test_run='%s' ORDER BY timestamp ASC, id ASC", testRun),
-                    String.format("SELECT COUNT(*) FROM event WHERE test_run='%s'", testRun));
-                    
+            TransformingMapper columnMapper = getColumnMapper();
+            CorrelatingEventSql sql = new CorrelatingEventSql(columnMapper.getValues(), testRun);
+            jdbcEventRepository = new JdbcEventRepository(dataSource, columnMapper, sql);
+            
             ThroughputMonitor monitor = new ThroughputMonitor();        
             jdbcEventRepository.register(monitor);
             jdbcEventRepository.raise();
@@ -174,5 +176,30 @@ public class CorrelationTest extends EnterpriseTest {
     @Override
     protected TransformingMapper getColumnMapper() {
         return new TransformingMapper(new DefaultColumnNameTransformer(), Event.ID, Event.TIMESTAMP, Event.TYPE, "TEST_RUN", "TEST_CLIENT");
-    }      
+    }     
+    
+    class CorrelatingEventSql extends DefaultEventSql {
+
+        private final String testRun;
+
+        CorrelatingEventSql(Collection<String> columnNames, String testRun) {
+            super(columnNames);
+            this.testRun = testRun;
+        }
+        
+        @Override
+        public String getSelectStatement() {
+            return String.format("SELECT * FROM event WHERE test_run='%s' ORDER BY timestamp ASC, id ASC", testRun);
+        }
+
+        @Override
+        public String getCountStatement() {
+            return String.format("SELECT COUNT(*) FROM event WHERE test_run='%s'", testRun);
+        }
+
+        @Override
+        public String getInsertStatement() {
+            return "INSERT INTO event (id, timestamp, type, test_run, test_client) values (?, ?, ?, ?, ?)";
+        }
+    }
 }
