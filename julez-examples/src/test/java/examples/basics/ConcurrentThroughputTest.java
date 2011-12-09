@@ -1,6 +1,6 @@
 package examples.basics;
 
-import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
+import static uk.co.acuminous.julez.util.JulezSugar.*;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import org.junit.Test;
@@ -22,7 +22,7 @@ public class ConcurrentThroughputTest {
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.register(throughputMonitor);                        
 
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(100).to(new ScenarioRepeater(scenario));        
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
         runner.register(throughputMonitor);

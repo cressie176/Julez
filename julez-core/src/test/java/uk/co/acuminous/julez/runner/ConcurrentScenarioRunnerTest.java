@@ -3,7 +3,8 @@ package uk.co.acuminous.julez.runner;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
-import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
+import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
+import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
 import java.util.Collections;
 import java.util.HashSet;
@@ -38,7 +39,7 @@ public class ConcurrentScenarioRunnerTest {
     public void runsScenarios() {        
         Scenario scenario = new NoOpScenario().register(repository);
         
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(10).to(new ScenarioRepeater(scenario));                                                                     
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(10, SCENARIOS).to(new ScenarioRepeater(scenario));                                                                     
         
         new ConcurrentScenarioRunner().queue(scenarios).go();
         
@@ -49,11 +50,11 @@ public class ConcurrentScenarioRunnerTest {
     @Test    
     public void stopsWhenScenariosTakeTooLong() {
         
-        Scenario scenario = new SleepingScenario(4, SECONDS).register(repository);       
+        Scenario scenario = new SleepingScenario(2, SECONDS).register(repository);       
         
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(3).to(new ScenarioRepeater(scenario));                                                                     
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(10, SCENARIOS).to(new ScenarioRepeater(scenario));                                                                     
         
-        new ConcurrentScenarioRunner().queue(scenarios).runFor(5, SECONDS).go();
+        new ConcurrentScenarioRunner().queue(scenarios).runFor(3, SECONDS).go();
         
         assertEquals(2, repository.count(Event.TYPE, ScenarioEvent.BEGIN));
         assertEquals(1, repository.count(Event.TYPE, ScenarioEvent.END));
@@ -62,7 +63,7 @@ public class ConcurrentScenarioRunnerTest {
     @Test    
     public void defersStartUntilAGivenTime() {
         
-        long desiredStartTime = new DateTime().plusSeconds(5).getMillis();       
+        long desiredStartTime = new DateTime().plusSeconds(1).getMillis();       
 
         Scenario scenario = new NoOpScenario().register(repository);
         
@@ -80,7 +81,7 @@ public class ConcurrentScenarioRunnerTest {
 
         Scenario scenario = new SleepingScenario(4, SECONDS).register(repository);
         
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(3).to(new ScenarioRepeater(scenario));                                                                     
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(3, SCENARIOS).to(new ScenarioRepeater(scenario));                                                                     
                 
         new ConcurrentScenarioRunner().queue(scenarios).waitUntil(desiredStartTime).runFor(5, SECONDS).go();
         
@@ -90,7 +91,7 @@ public class ConcurrentScenarioRunnerTest {
     
     @Test
     public void raisesBeginEvent() {
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(10).to(new ScenarioRepeater(new NoOpScenario()));                                                                     
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(10, SCENARIOS).to(new ScenarioRepeater(new NoOpScenario()));                                                                     
                 
         new ConcurrentScenarioRunner().register(repository).queue(scenarios).go();
         
@@ -113,7 +114,7 @@ public class ConcurrentScenarioRunnerTest {
     @Test
     public void raisesEndEvent() {
         
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(10).to(new ScenarioRepeater(new NoOpScenario()));        
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(10, SCENARIOS).to(new ScenarioRepeater(new NoOpScenario()));        
         
         new ConcurrentScenarioRunner().register(repository).queue(scenarios).go();
         
@@ -124,7 +125,7 @@ public class ConcurrentScenarioRunnerTest {
     public void canBeConfiguredForMultipleThreads() {
         ThreadCountingScenario scenario = new ThreadCountingScenario();
         
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(1000).to(new ScenarioRepeater(scenario));        
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(1000, SCENARIOS).to(new ScenarioRepeater(scenario));        
         
         new ConcurrentScenarioRunner().queue(scenarios).allocate(10, THREADS).go();
         

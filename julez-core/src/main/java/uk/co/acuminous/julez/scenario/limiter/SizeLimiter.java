@@ -2,6 +2,7 @@ package uk.co.acuminous.julez.scenario.limiter;
 
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.util.JulezSugar;
 
 public class SizeLimiter implements ScenarioSource {
 
@@ -21,7 +22,7 @@ public class SizeLimiter implements ScenarioSource {
         return this;
     }
     
-    public SizeLimiter applySizeLimit(long limit) {
+    public SizeLimiter applyLimitOf(long limit, JulezSugar units) {
         this.limit = limit;
         return this;
     }

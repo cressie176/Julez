@@ -3,7 +3,6 @@ package uk.co.acuminous.julez.scenario.source;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
 import org.junit.Test;
 
@@ -16,6 +15,8 @@ import uk.co.acuminous.julez.scenario.limiter.InLimboLimiter;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.SleepingScenario;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
+import static uk.co.acuminous.julez.util.JulezSugar.*;
+
 
 public class InLimboLimiterTest {
 
@@ -79,7 +80,6 @@ public class InLimboLimiterTest {
         passThroughPipe.register(limiter);
                 
         new ConcurrentScenarioRunner().queue(limiter).allocate(10, THREADS).runFor(60, SECONDS).go();            
-
     }
     
 }

@@ -3,7 +3,8 @@ package uk.co.acuminous.julez.scenario.source;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
+import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
+import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -29,7 +30,7 @@ public class SizeLimiterTest {
     @Test
     public void capsNumberOfScenariosToSpecifiedSize() {     
         
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(100).to(new ScenarioRepeater(new NoOpScenario()));
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(new NoOpScenario()));
                 
         SizeLimiter limiter = new SizeLimiter(scenarios, 10);  
                 
@@ -57,7 +58,7 @@ public class SizeLimiterTest {
         TestEventRepository repository = new TestEventRepository();
         Scenario scenario = new NoOpScenario().register(repository);
                 
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(200).to(new ScenarioRepeater(scenario));
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(200, SCENARIOS).to(new ScenarioRepeater(scenario));
         
         SizeLimiter limiter = new SizeLimiter(scenarios, 100);  
         

@@ -2,7 +2,6 @@ package examples.benchmarking;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
-import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
 import java.net.URL;
 
@@ -14,8 +13,8 @@ import uk.co.acuminous.julez.scenario.JBehaveStoryRunnerScenario;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.SleepingScenario;
 import examples.jbehave.CalculatorSteps;
+import static uk.co.acuminous.julez.util.JulezSugar.*;
 
-// TODO Cleanup
 public class JulezBenchmarkTest extends BenchmarkTestCase {
 
     private int oneMillionTimes = 1000000;

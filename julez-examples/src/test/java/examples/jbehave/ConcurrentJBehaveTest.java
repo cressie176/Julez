@@ -15,12 +15,12 @@ import uk.co.acuminous.julez.event.handler.ResultMonitor;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit;
 import uk.co.acuminous.julez.scenario.JBehaveEmbedderScenario;
 import uk.co.acuminous.julez.scenario.JBehaveStoryRunnerScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
+import static uk.co.acuminous.julez.util.JulezSugar.*;
 
 public class ConcurrentJBehaveTest {
 
@@ -49,7 +49,7 @@ public class ConcurrentJBehaveTest {
         
         new ConcurrentScenarioRunner()
             .register(throughputMonitor)
-            .allocate(3, ConcurrencyUnit.THREADS)
+            .allocate(3, THREADS)
             .queue(scenarios)
             .go();
 
@@ -75,7 +75,7 @@ public class ConcurrentJBehaveTest {
         
         new ConcurrentScenarioRunner()
             .register(throughputMonitor)
-            .allocate(3, ConcurrencyUnit.THREADS)
+            .allocate(3, THREADS)
             .queue(scenarios)
             .go();
 

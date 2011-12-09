@@ -1,7 +1,8 @@
 package examples.basics;
 
 import static org.junit.Assert.assertEquals;
-import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
+import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
+import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
 import org.junit.Test;
 
@@ -11,6 +12,7 @@ import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.PassFailErrorScenario;
+
 
 public class ScenarioOutcomeTest {
 
@@ -22,7 +24,7 @@ public class ScenarioOutcomeTest {
         ResultMonitor resultMonitor = new ResultMonitor();
         scenario.register(resultMonitor);        
                         
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(200).to(new ScenarioRepeater(scenario));
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(200, SCENARIOS).to(new ScenarioRepeater(scenario));
         
         new ConcurrentScenarioRunner().queue(scenarios).allocate(10, THREADS).go();
 
@@ -31,6 +33,4 @@ public class ScenarioOutcomeTest {
         assertEquals(21, resultMonitor.getErrorCount());
         assertEquals(64, resultMonitor.getPercentage());
     }
-
-
 }

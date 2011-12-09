@@ -1,7 +1,8 @@
 package examples.analysis;
 
 import static org.junit.Assert.assertEquals;
-import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
+import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
+import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
 import org.junit.Test;
 
@@ -29,7 +30,7 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         
         Scenario scenario = new PassFailErrorScenario();
         scenario.register(jmsEventHandler);        
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(100).to(new ScenarioRepeater(scenario));                                                                     
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));                                                                     
         
         new ConcurrentScenarioRunner()
         	.register(jmsEventHandler)
@@ -54,7 +55,7 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         
         Scenario scenario = new PassFailErrorScenario();
         scenario.register(jmsEventHandler);        
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(100).to(new ScenarioRepeater(scenario));                                                                     
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));                                                                     
                 
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();                
         runner.register(jmsEventHandler);                                                        

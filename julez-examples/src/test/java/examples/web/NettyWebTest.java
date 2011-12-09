@@ -1,7 +1,7 @@
 package examples.web;
 
+import static uk.co.acuminous.julez.util.JulezSugar.*;
 import static org.jboss.netty.channel.Channels.pipeline;
-import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
@@ -39,7 +39,7 @@ public class NettyWebTest extends WebTestCase {
     public void demonstrateAConcurrentWebTestUsingNetty() {
 
         NettyScenario scenario = new NettyScenario();
-        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(100).to(new ScenarioRepeater(scenario));
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.register(throughputMonitor);

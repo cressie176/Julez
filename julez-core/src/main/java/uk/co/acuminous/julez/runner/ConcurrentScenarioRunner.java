@@ -10,6 +10,7 @@ import uk.co.acuminous.julez.event.handler.EventHandler;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
+import uk.co.acuminous.julez.util.JulezSugar;
 
 public class ConcurrentScenarioRunner extends BaseScenarioRunner {
 
@@ -36,7 +37,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
         return this;
     }
 
-    public ConcurrentScenarioRunner allocate(int clients, ScenarioRunner.ConcurrencyUnit units) {
+    public ConcurrentScenarioRunner allocate(int clients, JulezSugar units) {
         this.executor.shutdownNow();
         this.executor = Executors.newFixedThreadPool(clients);
         return this;

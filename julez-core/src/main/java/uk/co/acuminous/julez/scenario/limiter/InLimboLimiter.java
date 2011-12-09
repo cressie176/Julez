@@ -11,6 +11,7 @@ import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
+import uk.co.acuminous.julez.util.JulezSugar;
 
 public class InLimboLimiter implements ScenarioSource, EventHandler {
     
@@ -32,19 +33,19 @@ public class InLimboLimiter implements ScenarioSource, EventHandler {
         this.scenarios = scenarios;
         this.upperLimit = upperLimit;
         this.lowerLimit = lowerLimit;
-    }    
+    }            
     
-    public InLimboLimiter restrict(ScenarioSource scenarios) {
+    public InLimboLimiter to(ScenarioSource scenarios) {
         this.scenarios = scenarios;
         return this;
     }
     
-    public InLimboLimiter applyAt(int limit) {
+    public InLimboLimiter applyLimitOf(int limit, JulezSugar units) {
         this.upperLimit = limit;
         return this;
     }    
     
-    public InLimboLimiter liftAt(int limit) {
+    public InLimboLimiter liftLimitAt(int limit, JulezSugar units) {
         this.lowerLimit = limit;
         return this;
     }    

@@ -1,7 +1,8 @@
 package examples.analysis;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
+import static uk.co.acuminous.julez.util.JulezSugar.IN_LIMBO_SCENARIOS;
+import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
 import org.junit.Test;
 
@@ -28,7 +29,7 @@ public class AsynchronousAnalysisTest {
         
         NoOpScenario scenario = new NoOpScenario();
         ScenarioRepeater scenarios = new ScenarioRepeater(scenario);
-        InLimboLimiter limiter = new InLimboLimiter().restrict(scenarios).applyAt(5000).liftAt(2500);
+        InLimboLimiter limiter = new InLimboLimiter().applyLimitOf(5000, IN_LIMBO_SCENARIOS).to(scenarios).liftLimitAt(2500, IN_LIMBO_SCENARIOS);
         
         FanOutPipe fanOutPipe = new FanOutPipe(asynchronousPipe, limiter);        
         scenario.register(fanOutPipe);
