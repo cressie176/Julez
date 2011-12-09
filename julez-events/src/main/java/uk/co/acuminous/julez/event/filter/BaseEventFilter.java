@@ -1,7 +1,7 @@
 package uk.co.acuminous.julez.event.filter;
 
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import uk.co.acuminous.julez.event.Event;
@@ -22,7 +22,7 @@ public abstract class BaseEventFilter extends PassThroughPipe implements EventFi
     }
     
     @Override
-    public List<Event> applyTo(Collection<Event> events) {
+    public List<Event> applyTo(Iterable<Event> events) {
         List<Event> filteredEvents = new ArrayList<Event>();
         for (Event event: events) {
             if (accept(event)) {

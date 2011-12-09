@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.test.TestEventRepository;
+import uk.co.acuminous.julez.test.TestUtils;
 
 public class FanOutPipeTest {
 
@@ -20,10 +21,10 @@ public class FanOutPipeTest {
         Event event = new Event("test");
         pipe.onEvent(event);
         
-        assertEquals(1, repository1.count());
+        assertEquals(1, TestUtils.countEvents(repository1));
         assertSame(event, repository1.first());
         
-        assertEquals(1, repository2.count());        
+        assertEquals(1, TestUtils.countEvents(repository2));        
         assertSame(event, repository2.first());
     }
     

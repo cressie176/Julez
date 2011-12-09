@@ -3,6 +3,7 @@ package uk.co.acuminous.julez.event.handler;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.repository.BaseEventRepository;
@@ -21,16 +22,6 @@ public class InMemoryEventRepository extends BaseEventRepository implements Even
     }
     
     @Override
-    public int count() {
-        return events.size();
-    }
-        
-    @Override
-    public Collection<Event> getAll() {
-        return events;
-    }
-
-    @Override
     public void raise() {
         for(Event event : events) {
             handler.onEvent(event);
@@ -41,4 +32,8 @@ public class InMemoryEventRepository extends BaseEventRepository implements Even
     public void onEvent(Event event) {
         events.add(event);
     }
+
+	@Override public Iterator<Event> iterator() {
+		return events.iterator();
+	}
 }

@@ -10,6 +10,7 @@ import uk.co.acuminous.julez.event.filter.EventDataFilter;
 import uk.co.acuminous.julez.event.filter.EventFilter;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.test.TestEventRepository;
+import uk.co.acuminous.julez.test.TestUtils;
 
 
 public class MultiConcurrentScenarioRunnerTest {
@@ -36,7 +37,7 @@ public class MultiConcurrentScenarioRunnerTest {
         
         multiRunner.go();
         
-        assertEquals(2, repository.count());
+        assertEquals(2, TestUtils.countEvents(repository));
     }
         
     @Test
@@ -48,7 +49,7 @@ public class MultiConcurrentScenarioRunnerTest {
         
         multiRunner.go();
         
-        assertEquals(2, repository.count());
+        assertEquals(2, TestUtils.countEvents(repository));
     } 
     
     @Test

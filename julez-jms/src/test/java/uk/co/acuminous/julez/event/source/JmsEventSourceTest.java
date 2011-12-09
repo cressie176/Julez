@@ -1,14 +1,16 @@
 package uk.co.acuminous.julez.event.source;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.Assert.assertEquals;
 
 import javax.jms.QueueConnectionFactory;
+
+import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
 import uk.co.acuminous.julez.marshalling.json.JsonEventTranslator;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
@@ -17,6 +19,7 @@ import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.test.JmsTestUtils;
 import uk.co.acuminous.julez.test.TestEventRepository;
+import uk.co.acuminous.julez.test.TestUtils;
 
 public class JmsEventSourceTest {
 
@@ -54,9 +57,8 @@ public class JmsEventSourceTest {
         jmsSender.onEvent(pass);
         
         listener.shutdownWhenEmpty();
-        
-        assertEquals(1, repository.count());
-        assertEquals(pass, repository.first());
+
+        Assert.assertTrue(TestUtils.checkEvents(new Event[] { pass }, repository));
     }
     
     @Test
@@ -67,7 +69,6 @@ public class JmsEventSourceTest {
         
         listener.shutdownWhenEmpty();
         
-        assertEquals(1, repository.count());
-        assertEquals(event, repository.first());        
+        Assert.assertTrue(TestUtils.checkEvents(new Event[] { event }, repository));
     }    
 }
