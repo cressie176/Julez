@@ -128,28 +128,7 @@ public class JdbcEventRepositoryTest {
         
         assertEquals(2, TestUtils.countEvents(repository));        
     }
-    
-// TODO   With the move away from an explicit count method, this no longer works
-// I could change things so it does work, but I'm not sure whather that is a wise idea, or even
-// what this test really represents. Even in the old count/list model, returning different sizes
-// for the two methods does not seem to make any sense
-//
-// On the other hand, if what is really needed is a way to inject some sort of restriction criteria
-// into a JDBC repo which cause the repo to "iterate" a subset of the stored data, that's cool, but
-// it's not really this test.
-//    @Test
-    public void canOverideCountQuery() {        
-
-        JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper, new DefaultEventSql(columnMapper.getValues()) {
-            @Override
-            public String getCountStatement() {
-                return "SELECT count(*) FROM EVENT WHERE TYPE='Scenario/begin'";
-            }
-        });        
-        initTestData(repository);
-        
-        assertEquals(2, TestUtils.countEvents(repository));        
-    } 
+     
     
     @Test
     public void canOverideInsertQuery() {        

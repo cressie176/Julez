@@ -53,10 +53,8 @@ public class InLimboLimiter implements ScenarioSource, EventHandler {
     public Scenario next() {
         if (counter.get() > upperLimit) {
             while (counter.get() > lowerLimit) {
-                System.err.println("Limiting");                
                 ConcurrencyUtils.sleep(pause, MILLISECONDS);
             }
-            System.err.println("Lifting");
         }
         counter.incrementAndGet();
         return scenarios.next();

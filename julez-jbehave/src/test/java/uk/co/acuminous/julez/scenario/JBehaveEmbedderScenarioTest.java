@@ -48,7 +48,7 @@ public class JBehaveEmbedderScenarioTest {
         scenario.register(repository);
         
         scenario.run();
-        assertEquals(3, TestUtils.countEvents(repository));                
+        assertEquals(3, repository.count());                
         assertEquals(ScenarioEvent.BEGIN, repository.get(0).getType());        
         assertEquals(ScenarioEvent.PASS, repository.get(1).getType());
         assertEquals(ScenarioEvent.END, repository.get(2).getType());
@@ -63,7 +63,7 @@ public class JBehaveEmbedderScenarioTest {
         
         scenario.run();
 
-        assertEquals(3, TestUtils.countEvents(repository));
+        assertEquals(3, repository.count());
         
         assertEquals(ScenarioEvent.BEGIN, repository.first().getType());        
         
@@ -83,7 +83,7 @@ public class JBehaveEmbedderScenarioTest {
         
         scenario.run();
         
-        assertEquals(3, TestUtils.countEvents(repository));        
+        assertEquals(3, repository.count());        
         assertEquals(ScenarioEvent.BEGIN, repository.first().getType());
         
         Event event = repository.get(1);
@@ -102,7 +102,7 @@ public class JBehaveEmbedderScenarioTest {
         
         scenario.run();
         
-        assertEquals(3, TestUtils.countEvents(repository));        
+        assertEquals(3, repository.count());        
         assertEquals(ScenarioEvent.BEGIN, repository.first().getType());
         
         Event event = repository.get(1);

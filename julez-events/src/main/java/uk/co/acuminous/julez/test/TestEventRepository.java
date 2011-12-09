@@ -34,6 +34,10 @@ public class TestEventRepository extends InMemoryEventRepository {
         return ret;
     }
     
+    public int count() {
+        return events.size();
+    }
+    
     public int count(String key, String pattern) {
         return getAll(key, pattern).size();
     }

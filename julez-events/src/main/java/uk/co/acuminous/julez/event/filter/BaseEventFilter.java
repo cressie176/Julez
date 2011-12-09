@@ -1,7 +1,6 @@
 package uk.co.acuminous.julez.event.filter;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import uk.co.acuminous.julez.event.Event;

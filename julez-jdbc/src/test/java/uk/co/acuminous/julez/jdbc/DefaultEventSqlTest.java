@@ -15,11 +15,6 @@ public class DefaultEventSqlTest {
     }
     
     @Test
-    public void returnsCountSql() {
-        assertEquals("SELECT count(*) FROM event", new DefaultEventSql("id").getCountStatement());
-    }    
-    
-    @Test
     public void returnsInsertSql() {
         assertEquals("INSERT INTO event (foo) VALUES (?)", new DefaultEventSql("foo").getInsertStatement());        
         assertEquals("INSERT INTO event (id,timestamp,type) VALUES (?,?,?)", new DefaultEventSql("id", "timestamp", "type").getInsertStatement());        

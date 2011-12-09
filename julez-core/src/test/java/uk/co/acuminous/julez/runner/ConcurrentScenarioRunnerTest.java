@@ -5,11 +5,16 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
+
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.Event;
+import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
@@ -19,7 +24,6 @@ import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.SleepingScenario;
 import uk.co.acuminous.julez.test.TestEventRepository;
-import uk.co.acuminous.julez.test.ThreadCountingScenario;
 
 public class ConcurrentScenarioRunnerTest {
     
@@ -125,5 +129,22 @@ public class ConcurrentScenarioRunnerTest {
         new ConcurrentScenarioRunner().queue(scenarios).allocate(10, THREADS).go();
         
         assertEquals(10, scenario.count());
+    }
+    
+    class ThreadCountingScenario extends BaseScenario {
+
+        private Set<Thread> threads = Collections.synchronizedSet(new HashSet<Thread>());
+        
+        @Override
+        public void run() {
+            handler.onEvent(eventFactory.begin());
+            threads.add(Thread.currentThread());
+            handler.onEvent(eventFactory.end());        
+        }
+        
+        public int count() {
+            return threads.size();
+        }
+
     }    
 }

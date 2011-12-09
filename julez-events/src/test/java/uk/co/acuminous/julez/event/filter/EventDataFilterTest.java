@@ -29,7 +29,7 @@ public class EventDataFilterTest {
         
         filter.onEvent(new Event("B/1"));
         
-        assertEquals(0, TestUtils.countEvents(repository));
+        assertEquals(0, repository.count());
     } 
     
     @Test
@@ -39,7 +39,7 @@ public class EventDataFilterTest {
         
         filter.onEvent(new Event("A/2"));
         
-        assertEquals(0, TestUtils.countEvents(repository));
+        assertEquals(0, repository.count());
     }    
 
     @Test
@@ -51,7 +51,7 @@ public class EventDataFilterTest {
         filter.onEvent(wantedEvent);
         filter.onEvent(new Event("B/foo"));        
         
-        assertEquals(1, TestUtils.countEvents(repository));
+        assertEquals(1, repository.count());
         assertEquals(wantedEvent, repository.first());
     }    
     
@@ -64,7 +64,7 @@ public class EventDataFilterTest {
         filter.onEvent(wantedEvent);                
         filter.onEvent(new Event("Wanted/bar"));
         
-        assertEquals(1, TestUtils.countEvents(repository));
+        assertEquals(1, repository.count());
         assertEquals(wantedEvent, repository.first());
     }
     

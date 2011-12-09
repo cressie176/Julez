@@ -32,7 +32,6 @@ import uk.co.acuminous.julez.test.EnterpriseTest;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.PassFailErrorScenario;
 import uk.co.acuminous.julez.test.TestEventRepository;
-import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.transformer.DefaultColumnNameTransformer;
 
 public class CorrelationTest extends EnterpriseTest {
@@ -65,8 +64,8 @@ public class CorrelationTest extends EnterpriseTest {
         );        
         runner.go();
         
-        int uncorrelatedEvents = TestUtils.countEvents(unfilteredRepository);
-        int correlatedEvents = TestUtils.countEvents(filteredRepository);
+        int uncorrelatedEvents = unfilteredRepository.count();
+        int correlatedEvents = filteredRepository.count();
         
         assertEquals(correlatedEvents * 4, uncorrelatedEvents);
     }
@@ -193,11 +192,6 @@ public class CorrelationTest extends EnterpriseTest {
         @Override
         public String getSelectStatement() {
             return String.format("SELECT * FROM event WHERE test_run='%s' ORDER BY timestamp ASC, id ASC", testRun);
-        }
-
-        @Override
-        public String getCountStatement() {
-            return String.format("SELECT COUNT(*) FROM event WHERE test_run='%s'", testRun);
         }
 
         @Override

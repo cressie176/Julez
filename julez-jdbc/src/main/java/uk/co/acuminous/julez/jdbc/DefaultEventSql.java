@@ -10,7 +10,6 @@ import uk.co.acuminous.julez.util.StringUtils;
 public class DefaultEventSql implements SqlStatementProvider {
 
     private static final String SELECT_ALL = "SELECT * FROM event ORDER BY timestamp ASC, id ASC";
-    private static final String COUNT_ALL = "SELECT count(*) FROM event";
     private final List<String> columnNames;
     private final String insertSql;
 
@@ -29,11 +28,6 @@ public class DefaultEventSql implements SqlStatementProvider {
     @Override
     public String getSelectStatement() {
         return SELECT_ALL;
-    }
-
-    @Override
-    public String getCountStatement() {
-        return COUNT_ALL;
     }
 
     @Override
