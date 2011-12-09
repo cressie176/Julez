@@ -37,6 +37,7 @@ public class ConcurrentScenarioRunnerTest {
     
     @Test
     public void runsScenarios() {        
+        
         Scenario scenario = new NoOpScenario().register(repository);
         
         ScenarioSource scenarios = new SizeLimiter().applyLimitOf(10, SCENARIOS).to(new ScenarioRepeater(scenario));                                                                     

@@ -21,8 +21,7 @@ public class DurationMonitorTest {
 
     @Test
     public void reportsDurationBeforeStarting() {
-        DurationMonitor monitor = new DurationMonitor();
-        assertEquals(0, monitor.getDuration());
+        assertEquals(0, new DurationMonitor().getDuration());
     }
     
     @Test
