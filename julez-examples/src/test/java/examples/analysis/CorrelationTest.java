@@ -26,6 +26,7 @@ import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.EnterpriseTest;
 import uk.co.acuminous.julez.test.NoOpScenario;
@@ -80,15 +81,14 @@ public class CorrelationTest extends EnterpriseTest {
         PassFailErrorScenario scenario = new PassFailErrorScenario();
         scenario.useEventFactory(scenarioEventFactory);
         scenario.register(monitor);        
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(100);                                                                     
+        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(100);                                                                     
 
         return new ConcurrentScenarioRunner()
             .useEventFactory(scenarioRunnerEventFactory)
             .register(monitor)
             .queue(scenarios);
     }
-    
-    
+        
     @Test
     public void demonstratePosthumousResultAnalysis() {        
         
@@ -101,7 +101,7 @@ public class CorrelationTest extends EnterpriseTest {
         Scenario scenario = new NoOpScenario();
         scenario.register(fanoutPipe);
         
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(100);        
+        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(100);        
 
         new ConcurrentScenarioRunner()
             .register(fanoutPipe)

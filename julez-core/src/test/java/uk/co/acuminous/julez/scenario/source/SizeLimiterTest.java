@@ -13,6 +13,7 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.TestEventRepository;
 
@@ -28,7 +29,7 @@ public class SizeLimiterTest {
     @Test
     public void capsNumberOfScenariosToSpecifiedSize() {     
         
-        ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario()).limitRepetitionsTo(100);
+        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(new NoOpScenario())).applyAt(100);
                 
         SizeLimiter limiter = new SizeLimiter(scenarios, 10);  
                 
@@ -56,7 +57,7 @@ public class SizeLimiterTest {
         TestEventRepository repository = new TestEventRepository();
         Scenario scenario = new NoOpScenario().register(repository);
                 
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(200);
+        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(200);
         
         SizeLimiter limiter = new SizeLimiter(scenarios, 100);  
         

@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.scenario.source;
+package uk.co.acuminous.julez.scenario.limiter;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
@@ -12,32 +12,51 @@ import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
-// TODO Make Fluent
-public class InflightLimiter implements ScenarioSource, EventHandler {
-
-    private final ScenarioSource scenarios;    
-    private final int upperLimit;
-    private final int lowerLimit;
+public class InLimboLimiter implements ScenarioSource, EventHandler {
+    
+    private ScenarioSource scenarios;    
+    private int upperLimit = Integer.MAX_VALUE;
+    private int lowerLimit = Integer.MAX_VALUE;
     
     private AtomicInteger counter = new AtomicInteger();
     private long pause = 100;
 
-    public InflightLimiter(ScenarioSource scenarios, int limit) {
+    public InLimboLimiter() {        
+    }
+    
+    public InLimboLimiter(ScenarioSource scenarios, int limit) {
         this(scenarios, limit, limit);
     }
     
-    public InflightLimiter(ScenarioSource scenarios, int upperLimit, int lowerLimit) {
+    public InLimboLimiter(ScenarioSource scenarios, int upperLimit, int lowerLimit) {
         this.scenarios = scenarios;
         this.upperLimit = upperLimit;
         this.lowerLimit = lowerLimit;
+    }    
+    
+    public InLimboLimiter restrict(ScenarioSource scenarios) {
+        this.scenarios = scenarios;
+        return this;
+    }
+    
+    public InLimboLimiter applyAt(int limit) {
+        this.upperLimit = limit;
+        return this;
+    }    
+    
+    public InLimboLimiter liftAt(int limit) {
+        this.lowerLimit = limit;
+        return this;
     }    
 
     @Override
     public Scenario next() {
         if (counter.get() > upperLimit) {
             while (counter.get() > lowerLimit) {
+                System.err.println("Limiting");                
                 ConcurrencyUtils.sleep(pause, MILLISECONDS);
-            }            
+            }
+            System.err.println("Lifting");
         }
         counter.incrementAndGet();
         return scenarios.next();

@@ -12,18 +12,19 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.scenario.limiter.InLimboLimiter;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.SleepingScenario;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
-public class InflightLimiterTest {
+public class InLimboLimiterTest {
 
     @Test
-    public void returnsScenariosWhileBelowOrAtSpecifiedLimit() { 
+    public void providesScenariosWhileBelowOrAtSpecifiedLimit() { 
         
         ScenarioSource source = new ScenarioRepeater(new NoOpScenario());
         
-        InflightLimiter limiter = new InflightLimiter(source, 2);
+        InLimboLimiter limiter = new InLimboLimiter(source, 2);
         
         long startTime = System.currentTimeMillis();
         
@@ -41,7 +42,7 @@ public class InflightLimiterTest {
         
         ScenarioSource source = new ScenarioRepeater(new NoOpScenario());
         
-        final InflightLimiter limiter = new InflightLimiter(source, 2);
+        final InLimboLimiter limiter = new InLimboLimiter(source, 2);
         
         limiter.next();
         limiter.next();
@@ -62,7 +63,7 @@ public class InflightLimiterTest {
     }    
     
     @Test
-    public void inflightLimiterPreventsOutOfMemoryErrors() {
+    public void preventsOutOfMemoryErrors() {
                 
         final PassThroughPipe passThroughPipe = new PassThroughPipe();
         
@@ -74,7 +75,7 @@ public class InflightLimiterTest {
             }
         };
         
-        InflightLimiter limiter = new InflightLimiter(scenarios, 100);
+        InLimboLimiter limiter = new InLimboLimiter(scenarios, 100);
         passThroughPipe.register(limiter);
                 
         new ConcurrentScenarioRunner().queue(limiter).allocate(10, THREADS).runFor(60, SECONDS).go();            

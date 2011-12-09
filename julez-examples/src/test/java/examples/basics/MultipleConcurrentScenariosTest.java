@@ -11,6 +11,7 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.MultiConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 
 public class MultipleConcurrentScenariosTest {
@@ -25,14 +26,14 @@ public class MultipleConcurrentScenariosTest {
         HelloWorldScenario helloWorldScenario = new HelloWorldScenario();
         helloWorldScenario.register(new FanOutPipe(monitor1, combinedMonitor));
         
-        ScenarioSource helloWorldScenarios = new ScenarioRepeater(helloWorldScenario).limitRepetitionsTo(100);
+        ScenarioSource helloWorldScenarios = new SizeLimiter().restrict(new ScenarioRepeater(helloWorldScenario)).applyAt(100);
         ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner().queue(helloWorldScenarios).allocate(10, THREADS);
         runner1.register(monitor1);
         
         GoodbyeWorldScenario goodbyeWorldScenario = new GoodbyeWorldScenario();
         goodbyeWorldScenario.register(new FanOutPipe(monitor2, combinedMonitor));
         
-        ScenarioSource goodbyeWorldScenarios = new ScenarioRepeater(goodbyeWorldScenario).limitRepetitionsTo(100);
+        ScenarioSource goodbyeWorldScenarios = new SizeLimiter().restrict(new ScenarioRepeater(goodbyeWorldScenario)).applyAt(100);
         ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner().queue(goodbyeWorldScenarios).allocate(10, THREADS);
         runner2.register(monitor2);
 

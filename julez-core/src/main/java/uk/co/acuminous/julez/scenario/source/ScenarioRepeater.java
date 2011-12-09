@@ -1,8 +1,9 @@
 package uk.co.acuminous.julez.scenario.source;
 
 import uk.co.acuminous.julez.scenario.Scenario;
+import uk.co.acuminous.julez.scenario.ScenarioSource;
 
-public class ScenarioRepeater extends BaseScenarioSource {
+public class ScenarioRepeater implements ScenarioSource {
 
     private Scenario scenario;
     

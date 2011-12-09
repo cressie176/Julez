@@ -10,6 +10,7 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.EnterpriseTest;
 import uk.co.acuminous.julez.test.PassFailErrorScenario;
@@ -27,7 +28,7 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         
         Scenario scenario = new PassFailErrorScenario();
         scenario.register(jmsEventHandler);        
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(100);                                                                     
+        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(100);                                                                     
         
         new ConcurrentScenarioRunner()
         	.register(jmsEventHandler)
@@ -52,7 +53,7 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         
         Scenario scenario = new PassFailErrorScenario();
         scenario.register(jmsEventHandler);        
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(100);                                                                     
+        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(100);                                                                     
                 
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();                
         runner.register(jmsEventHandler);                                                        
