@@ -23,9 +23,9 @@ public class InLimboLimiterTest {
     @Test
     public void providesScenariosWhileBelowOrAtSpecifiedLimit() { 
         
-        ScenarioSource source = new ScenarioRepeater(new NoOpScenario());
+        ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario());
         
-        InLimboLimiter limiter = new InLimboLimiter(source, 2);
+        InLimboLimiter limiter = new InLimboLimiter().applyLimitOf(2, IN_LIMBO_SCENARIOS).to(scenarios);
         
         long startTime = System.currentTimeMillis();
         
@@ -41,9 +41,9 @@ public class InLimboLimiterTest {
     @Test
     public void blocksScenariosWhileAboveSpecifiedLimit() { 
         
-        ScenarioSource source = new ScenarioRepeater(new NoOpScenario());
+        ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario());
         
-        final InLimboLimiter limiter = new InLimboLimiter(source, 2);
+        final InLimboLimiter limiter = new InLimboLimiter().applyLimitOf(2, IN_LIMBO_SCENARIOS).to(scenarios);
         
         limiter.next();
         limiter.next();
@@ -76,7 +76,7 @@ public class InLimboLimiterTest {
             }
         };
         
-        InLimboLimiter limiter = new InLimboLimiter(scenarios, 100);
+        InLimboLimiter limiter = new InLimboLimiter().applyLimitOf(100, IN_LIMBO_SCENARIOS).to(scenarios);
         passThroughPipe.register(limiter);
                 
         new ConcurrentScenarioRunner().queue(limiter).allocate(10, THREADS).runFor(60, SECONDS).go();            
