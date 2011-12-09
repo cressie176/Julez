@@ -48,7 +48,6 @@ public class JBehaveEmbedderScenarioTest {
         scenario.register(repository);
         
         scenario.run();
-        
         assertEquals(3, TestUtils.countEvents(repository));                
         assertEquals(ScenarioEvent.BEGIN, repository.get(0).getType());        
         assertEquals(ScenarioEvent.PASS, repository.get(1).getType());

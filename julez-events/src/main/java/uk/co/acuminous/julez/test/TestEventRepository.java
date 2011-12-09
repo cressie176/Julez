@@ -21,6 +21,7 @@ public class TestEventRepository extends InMemoryEventRepository {
     	int sofar = 0;
     	for (Event event : events) {
     		if (sofar == i) return event;
+    		++sofar;
     	}
         return null;
     }
