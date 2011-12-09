@@ -32,7 +32,9 @@ public class TestUtils {
 	public static Event getEvent(Iterable<Event> repo, int i) {
     	int sofar = 0;
     	for (Event event : repo) {
+System.err.println("looking for [" + i + "] considering index [" + sofar + "] event=" + event);
     		if (sofar == i) return event;
+    		++sofar;
     	}
         return null;
 	}

@@ -33,6 +33,7 @@ public class TestUtils {
     	int sofar = 0;
     	for (Event event : repo) {
     		if (sofar == i) return event;
+    		++sofar;
     	}
         return null;
 	}
