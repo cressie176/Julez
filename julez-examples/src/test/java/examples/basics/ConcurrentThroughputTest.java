@@ -22,7 +22,7 @@ public class ConcurrentThroughputTest {
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.register(throughputMonitor);                        
 
-        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(100);        
+        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(100).to(new ScenarioRepeater(scenario));        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
         runner.register(throughputMonitor);

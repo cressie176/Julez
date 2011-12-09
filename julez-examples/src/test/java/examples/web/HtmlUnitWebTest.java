@@ -23,7 +23,7 @@ public class HtmlUnitWebTest extends WebTestCase {
     public void demonstrateAConcurrentWebTestUsingHtmlUnit() {
 
         HtmlUnitScenario scenario = new HtmlUnitScenario();
-        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(100);                                                                     
+        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(100).to(new ScenarioRepeater(scenario));                                                                     
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.register(throughputMonitor);                                

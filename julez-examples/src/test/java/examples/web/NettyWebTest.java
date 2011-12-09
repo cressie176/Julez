@@ -39,7 +39,7 @@ public class NettyWebTest extends WebTestCase {
     public void demonstrateAConcurrentWebTestUsingNetty() {
 
         NettyScenario scenario = new NettyScenario();
-        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(100);
+        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(100).to(new ScenarioRepeater(scenario));
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.register(throughputMonitor);

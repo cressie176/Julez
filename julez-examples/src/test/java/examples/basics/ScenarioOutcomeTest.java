@@ -22,7 +22,7 @@ public class ScenarioOutcomeTest {
         ResultMonitor resultMonitor = new ResultMonitor();
         scenario.register(resultMonitor);        
                         
-        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(200);
+        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(200).to(new ScenarioRepeater(scenario));
         
         new ConcurrentScenarioRunner().queue(scenarios).allocate(10, THREADS).go();
 

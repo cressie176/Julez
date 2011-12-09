@@ -16,12 +16,12 @@ public class SizeLimiter implements ScenarioSource {
         this.limit = limit;
     }
     
-    public SizeLimiter restrict(ScenarioSource scenarios) {
+    public SizeLimiter to(ScenarioSource scenarios) {
         this.scenarios = scenarios;
         return this;
     }
     
-    public SizeLimiter applyAt(long limit) {
+    public SizeLimiter applySizeLimit(long limit) {
         this.limit = limit;
         return this;
     }

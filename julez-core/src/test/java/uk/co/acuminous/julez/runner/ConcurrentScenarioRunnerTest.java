@@ -38,7 +38,7 @@ public class ConcurrentScenarioRunnerTest {
     public void runsScenarios() {        
         Scenario scenario = new NoOpScenario().register(repository);
         
-        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(10);                                                                     
+        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(10).to(new ScenarioRepeater(scenario));                                                                     
         
         new ConcurrentScenarioRunner().queue(scenarios).go();
         
@@ -51,7 +51,7 @@ public class ConcurrentScenarioRunnerTest {
         
         Scenario scenario = new SleepingScenario(4, SECONDS).register(repository);       
         
-        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(3);                                                                     
+        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(3).to(new ScenarioRepeater(scenario));                                                                     
         
         new ConcurrentScenarioRunner().queue(scenarios).runFor(5, SECONDS).go();
         
@@ -80,7 +80,7 @@ public class ConcurrentScenarioRunnerTest {
 
         Scenario scenario = new SleepingScenario(4, SECONDS).register(repository);
         
-        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(3);                                                                     
+        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(3).to(new ScenarioRepeater(scenario));                                                                     
                 
         new ConcurrentScenarioRunner().queue(scenarios).waitUntil(desiredStartTime).runFor(5, SECONDS).go();
         
@@ -90,7 +90,7 @@ public class ConcurrentScenarioRunnerTest {
     
     @Test
     public void raisesBeginEvent() {
-        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(new NoOpScenario())).applyAt(10);                                                                     
+        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(10).to(new ScenarioRepeater(new NoOpScenario()));                                                                     
                 
         new ConcurrentScenarioRunner().register(repository).queue(scenarios).go();
         
@@ -113,7 +113,7 @@ public class ConcurrentScenarioRunnerTest {
     @Test
     public void raisesEndEvent() {
         
-        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(new NoOpScenario())).applyAt(10);        
+        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(10).to(new ScenarioRepeater(new NoOpScenario()));        
         
         new ConcurrentScenarioRunner().register(repository).queue(scenarios).go();
         
@@ -124,7 +124,7 @@ public class ConcurrentScenarioRunnerTest {
     public void canBeConfiguredForMultipleThreads() {
         ThreadCountingScenario scenario = new ThreadCountingScenario();
         
-        ScenarioSource scenarios = new SizeLimiter().restrict(new ScenarioRepeater(scenario)).applyAt(1000);        
+        ScenarioSource scenarios = new SizeLimiter().applySizeLimit(1000).to(new ScenarioRepeater(scenario));        
         
         new ConcurrentScenarioRunner().queue(scenarios).allocate(10, THREADS).go();
         
