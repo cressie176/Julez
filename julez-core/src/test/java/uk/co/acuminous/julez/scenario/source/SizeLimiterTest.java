@@ -8,8 +8,10 @@ import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREAD
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.Scenario;
+import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.TestEventRepository;
@@ -58,6 +60,7 @@ public class SizeLimiterTest {
         
         runner.queue(limiter).allocate(10, THREADS).go();
         
-        assertEquals(100, repository.count());
+        assertEquals(100, repository.count(Event.TYPE, ScenarioEvent.BEGIN));
+        assertEquals(100, repository.count(Event.TYPE, ScenarioEvent.END));
     }    
 }

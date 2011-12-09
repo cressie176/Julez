@@ -30,7 +30,8 @@ public class ConcurrentScenarioRunnerTest {
         
         new ConcurrentScenarioRunner().queue(scenarios).go();
         
-        assertEquals(10, repository.count());        
+        assertEquals(10, repository.count(Event.TYPE, ScenarioEvent.BEGIN));
+        assertEquals(10, repository.count(Event.TYPE, ScenarioEvent.END));
     }
     
     @Test    

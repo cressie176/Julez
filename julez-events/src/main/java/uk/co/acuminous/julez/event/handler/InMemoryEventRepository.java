@@ -18,7 +18,7 @@ public class InMemoryEventRepository extends BaseEventRepository {
         
     @Override
     public List<Event> list() {
-        return events;
+        return Collections.unmodifiableList(events);
     }
 
     @Override

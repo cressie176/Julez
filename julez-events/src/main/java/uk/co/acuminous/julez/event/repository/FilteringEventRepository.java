@@ -7,6 +7,5 @@ import uk.co.acuminous.julez.event.filter.EventFilter;
 
 public interface FilteringEventRepository extends EventRepository {    
     int count(EventFilter filter);
-    public List<Event> list(EventFilter filter);
-
+    List<Event> list(EventFilter filter);
 }
