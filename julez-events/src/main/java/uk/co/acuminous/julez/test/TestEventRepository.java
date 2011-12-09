@@ -14,22 +14,32 @@ public class TestEventRepository extends InMemoryEventRepository {
     }
     
     public Event first() {
-        return new ArrayList<Event>(list()).get(0);
+        return new ArrayList<Event>(getAll()).get(0);
     }
     
     public Event get(int i) {
-        return new ArrayList<Event>(list()).get(i);
+        return new ArrayList<Event>(getAll()).get(i);
     }
     
     public Event last() {
-        return new ArrayList<Event>(list()).get(count() - 1);
+        return new ArrayList<Event>(getAll()).get(count() - 1);
     }
     
     public int count(String key, String pattern) {
         return getAll(key, pattern).size();
     }
     
+    public List<Event> getAll(EventDataFilter filter) {
+        List<Event> filteredEvents = new ArrayList<Event>();
+        for (Event event : getAll()) {
+            if (filter.accept(event)) {
+                filteredEvents.add(event);
+            }
+        }
+        return filteredEvents;
+    }
+    
     public List<Event> getAll(String key, String pattern) {
-        return list(new EventDataFilter(key, pattern));
+        return getAll(new EventDataFilter(key, pattern));
     }
 }

@@ -93,7 +93,7 @@ public class EventDataFilterTest {
         repository.put(wantedEvent);        
         repository.put(new Event("A/2"));        
         
-        List<Event> filteredEvents = filter.applyTo(repository.list());  
+        List<Event> filteredEvents = filter.applyTo(repository.getAll());  
         
         assertEquals(1, filteredEvents.size());        
         assertEquals(wantedEvent, filteredEvents.get(0));

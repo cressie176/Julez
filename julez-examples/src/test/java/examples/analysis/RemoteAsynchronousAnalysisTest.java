@@ -61,7 +61,7 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         jmsEventSource.shutdownWhenEmpty();
         
         assertEquals(302, jdbcEventRepository.count());
-        assertEquals(ScenarioRunnerEvent.BEGIN, jdbcEventRepository.list().get(0).getType());
-        assertEquals(ScenarioRunnerEvent.END, jdbcEventRepository.list().get(301).getType());
+        assertEquals(ScenarioRunnerEvent.BEGIN, jdbcEventRepository.getAll().get(0).getType());
+        assertEquals(ScenarioRunnerEvent.END, jdbcEventRepository.getAll().get(301).getType());
     }
 }

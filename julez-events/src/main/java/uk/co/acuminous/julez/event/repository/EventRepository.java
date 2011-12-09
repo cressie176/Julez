@@ -7,6 +7,6 @@ import uk.co.acuminous.julez.event.source.EventSource;
 
 public interface EventRepository extends EventSource {
     int count();    
-    Collection<Event> list();
+    Collection<Event> getAll();
     void raise();    
 }

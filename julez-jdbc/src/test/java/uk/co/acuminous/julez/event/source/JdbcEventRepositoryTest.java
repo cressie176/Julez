@@ -52,7 +52,7 @@ public class JdbcEventRepositoryTest {
         JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);        
         repository.onEvent(event);
 
-        List<Event> events = repository.list();
+        List<Event> events = repository.getAll();
         
         assertEquals(1, events.size());
         assertEquals(event, events.get(0));
@@ -66,7 +66,7 @@ public class JdbcEventRepositoryTest {
         JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);                       
         repository.onEvent(event);
 
-        List<Event> events = repository.list();
+        List<Event> events = repository.getAll();
         
         assertEquals(1, events.size());
         assertEquals(event, events.get(0));
@@ -80,7 +80,7 @@ public class JdbcEventRepositoryTest {
         JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);        
         repository.onEvent(event);
 
-        Event actual = repository.list().get(0);
+        Event actual = repository.getAll().get(0);
         
         assertFalse(actual.getData().containsKey("statusCode"));
     }
@@ -94,7 +94,7 @@ public class JdbcEventRepositoryTest {
         JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);        
         repository.onEvent(event);
 
-        Event actual = repository.list().get(0);
+        Event actual = repository.getAll().get(0);
         
         assertFalse(actual.getData().containsKey("Foo"));
     }    
@@ -105,7 +105,7 @@ public class JdbcEventRepositoryTest {
         
         List<Event> expectedEvents = initTestData(repository);
 
-        List<Event> actualEvents = repository.list();
+        List<Event> actualEvents = repository.getAll();
         assertEquals(expectedEvents, actualEvents);
     }
     
@@ -130,7 +130,7 @@ public class JdbcEventRepositoryTest {
         
         initTestData(repository);
         
-        assertEquals(2, repository.list().size());        
+        assertEquals(2, repository.getAll().size());        
     }
     
     @Test
@@ -160,7 +160,7 @@ public class JdbcEventRepositoryTest {
         ScenarioRunnerEvent event = new ScenarioRunnerEvent("id", System.currentTimeMillis(), ScenarioRunnerEvent.END);
         repository.onEvent(event);
         
-        assertEquals("ScenarioRunner/end/override", repository.list().get(0).getType());        
+        assertEquals("ScenarioRunner/end/override", repository.getAll().get(0).getType());        
     }    
         
     @Test
@@ -176,7 +176,7 @@ public class JdbcEventRepositoryTest {
         Event event = new Event(data);
         repository.onEvent(event);
         
-        assertEquals(event, repository.list().get(0));
+        assertEquals(event, repository.getAll().get(0));
     }        
     
     private List<Event> initTestData(JdbcEventRepository repository) {

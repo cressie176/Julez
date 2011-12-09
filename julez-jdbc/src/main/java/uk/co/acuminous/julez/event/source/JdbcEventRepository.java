@@ -52,7 +52,7 @@ public class JdbcEventRepository extends PassThroughPipe implements EventReposit
     }
     
     @Override
-    public List<Event> list() {        
+    public List<Event> getAll() {        
         return jdbcTemplate.query(sql.getSelectStatement(), new EventRowMapper());
     }
     

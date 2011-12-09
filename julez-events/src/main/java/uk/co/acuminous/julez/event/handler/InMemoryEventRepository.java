@@ -6,8 +6,9 @@ import java.util.Collections;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.repository.BaseEventRepository;
+import uk.co.acuminous.julez.event.repository.EventRepository;
 
-public class InMemoryEventRepository extends BaseEventRepository {
+public class InMemoryEventRepository extends BaseEventRepository implements EventRepository {
 
     protected Collection<Event> events;
 
@@ -25,7 +26,7 @@ public class InMemoryEventRepository extends BaseEventRepository {
     }
         
     @Override
-    public Collection<Event> list() {
+    public Collection<Event> getAll() {
         return events;
     }
 
