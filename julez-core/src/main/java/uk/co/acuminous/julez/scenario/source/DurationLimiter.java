@@ -7,6 +7,7 @@ import java.util.concurrent.TimeUnit;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 
+// TODO Make fluent
 public class DurationLimiter implements ScenarioSource {
 
     private final ScenarioSource scenarios;

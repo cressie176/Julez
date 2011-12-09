@@ -1,6 +1,7 @@
 package examples.basics;
 
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
+import static uk.co.acuminous.julez.scenario.source.ScenarioRepeater.ScenarioRepeaterUnit.REPETITIONS;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import org.junit.Test;
@@ -9,7 +10,7 @@ import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 
 public class ConcurrentThroughputTest {
 
@@ -21,7 +22,7 @@ public class ConcurrentThroughputTest {
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.register(throughputMonitor);                        
 
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);        
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(100, REPETITIONS);        
         
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
         runner.register(throughputMonitor);

@@ -3,6 +3,7 @@ package uk.co.acuminous.julez.scenario.source;
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.Assert.assertEquals;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
+import static uk.co.acuminous.julez.scenario.source.ScenarioRepeater.ScenarioRepeaterUnit.REPETITIONS;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class ThroughputLimiterTest {
     public void limitsThroughputToSpecifiedFrequency() {        
         Scenario scenario = new NoOpScenario().register(throughputMonitor);
         
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(100, REPETITIONS);                                                                     
         
         int fiftyPerSecond = 1000 / 50;
         ThroughputLimiter limiter = new ThroughputLimiter(scenarios, fiftyPerSecond, MILLISECONDS);        
@@ -45,7 +46,7 @@ public class ThroughputLimiterTest {
         SleepingScenario scenario = new SleepingScenario();
         scenario.register(throughputMonitor);
         
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 5);
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(5, REPETITIONS);                                                                     
         
         int twoPerSecond = 1000 / 2;
         ThroughputLimiter limiter = new ThroughputLimiter(scenarios, twoPerSecond, MILLISECONDS);        

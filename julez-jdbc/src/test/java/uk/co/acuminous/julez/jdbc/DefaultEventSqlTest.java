@@ -33,8 +33,6 @@ public class DefaultEventSqlTest {
         } catch(IllegalArgumentException e) {
             assertEquals("At least one column name is required", e.getMessage());
         }
-        
-        
     }
     
     @Test

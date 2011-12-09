@@ -2,6 +2,7 @@ package examples.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
+import static uk.co.acuminous.julez.scenario.source.ScenarioRepeater.ScenarioRepeaterUnit.REPETITIONS;
 
 import org.junit.Test;
 
@@ -10,7 +11,7 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.EnterpriseTest;
 import uk.co.acuminous.julez.test.PassFailErrorScenario;
 
@@ -27,7 +28,7 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         
         Scenario scenario = new PassFailErrorScenario();
         scenario.register(jmsEventHandler);        
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);                                                             
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(100, REPETITIONS);                                                                     
         
         new ConcurrentScenarioRunner()
         	.register(jmsEventHandler)
@@ -47,17 +48,17 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         
         initJmsInfrastructure();
         initDatabaseInfrastructure();    
+        
         jmsEventSource.register(jdbcEventRepository);                        
         
         Scenario scenario = new PassFailErrorScenario();
         scenario.register(jmsEventHandler);        
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);                                                             
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(100, REPETITIONS);                                                                     
                 
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();                
         runner.register(jmsEventHandler);                                                        
         runner.queue(scenarios).allocate(3, THREADS).go();
         
-        // Ensure the queue is drained
         jmsEventSource.shutdownWhenEmpty();
         
         assertEquals(302, jdbcEventRepository.count());

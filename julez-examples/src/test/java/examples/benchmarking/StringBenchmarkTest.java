@@ -12,7 +12,7 @@ import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.InflightLimiter;
-import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 @SuppressWarnings("unused")

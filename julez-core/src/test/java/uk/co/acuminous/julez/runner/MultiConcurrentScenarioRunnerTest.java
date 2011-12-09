@@ -8,8 +8,7 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.filter.EventDataFilter;
 import uk.co.acuminous.julez.event.filter.EventFilter;
-import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
-import uk.co.acuminous.julez.test.NoOpScenario;
+import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.test.TestEventRepository;
 
 
@@ -23,8 +22,8 @@ public class MultiConcurrentScenarioRunnerTest {
     @Before
     public void init() {
         repository = new TestEventRepository();        
-        runner1 = new ConcurrentScenarioRunner().queue(new SizedScenarioRepeater(new NoOpScenario(), 0));
-        runner2 = new ConcurrentScenarioRunner().queue(new SizedScenarioRepeater(new NoOpScenario(), 0));        
+        runner1 = new ConcurrentScenarioRunner().queue(new ScenarioHopper());
+        runner2 = new ConcurrentScenarioRunner().queue(new ScenarioHopper());        
         multiRunner = new MultiConcurrentScenarioRunner(runner1, runner2);
     }
     

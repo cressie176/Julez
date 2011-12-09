@@ -7,15 +7,15 @@ import java.util.List;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 
-public class PrePopulatedScenarioSource implements ScenarioSource {
+public class ScenarioHopper implements ScenarioSource {
 
     private List<Scenario> scenarios;
 
-    public PrePopulatedScenarioSource(Scenario... scenarios) {
+    public ScenarioHopper(Scenario... scenarios) {
         this.scenarios = new ArrayList<Scenario>(Arrays.asList(scenarios));
     }
     
-    public PrePopulatedScenarioSource(List<Scenario> scenarios) {
+    public ScenarioHopper(List<Scenario> scenarios) {
         this.scenarios = scenarios;
     }
 

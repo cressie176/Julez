@@ -16,7 +16,7 @@ import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveStoryRunnerScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.scenario.source.PrePopulatedScenarioSource;
+import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.util.PerformanceAssert;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
@@ -53,7 +53,7 @@ public class InceptionSteps {
             list.add(scenario);
         }        
         
-        new ConcurrentScenarioRunner().register(monitors).allocate(numThreads, THREADS).queue(new PrePopulatedScenarioSource(list)).go();
+        new ConcurrentScenarioRunner().register(monitors).allocate(numThreads, THREADS).queue(new ScenarioHopper(list)).go();
     }
     
     @Then("the minimum throughput should be $minimumThroughput $scenarios per second")

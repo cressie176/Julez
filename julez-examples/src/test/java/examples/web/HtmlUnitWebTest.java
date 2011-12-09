@@ -1,6 +1,7 @@
 package examples.web;
 
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
+import static uk.co.acuminous.julez.scenario.source.ScenarioRepeater.ScenarioRepeaterUnit.REPETITIONS;
 
 import org.junit.Test;
 
@@ -9,7 +10,7 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.WebTestCase;
 
 import com.gargoylesoftware.htmlunit.WebClient;
@@ -22,14 +23,12 @@ public class HtmlUnitWebTest extends WebTestCase {
     public void demonstrateAConcurrentWebTestUsingHtmlUnit() {
 
         HtmlUnitScenario scenario = new HtmlUnitScenario();
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(100, REPETITIONS);                                                                     
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.register(throughputMonitor);                                
         
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
-        runner.register(throughputMonitor);
-        runner.queue(scenarios).allocate(10, THREADS).go();
+        new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).go();
 
         System.out.println("\nHtmlUnit Throughput\n----------------");
         System.out.println(throughputMonitor.getThroughput());

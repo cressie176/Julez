@@ -2,6 +2,7 @@ package examples.web;
 
 import static org.jboss.netty.channel.Channels.pipeline;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
+import static uk.co.acuminous.julez.scenario.source.ScenarioRepeater.ScenarioRepeaterUnit.REPETITIONS;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
@@ -29,7 +30,7 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.WebTestCase;
 
 public class NettyWebTest extends WebTestCase {
@@ -38,14 +39,12 @@ public class NettyWebTest extends WebTestCase {
     public void demonstrateAConcurrentWebTestUsingNetty() {
 
         NettyScenario scenario = new NettyScenario();
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(100, REPETITIONS);
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.register(throughputMonitor);
 
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
-        runner.register(throughputMonitor);
-        runner.queue(scenarios).allocate(10, THREADS).go();
+        new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).go();
 
         System.out.println("\nNetty Throughput\n----------------");
         System.out.println(throughputMonitor.getThroughput());
