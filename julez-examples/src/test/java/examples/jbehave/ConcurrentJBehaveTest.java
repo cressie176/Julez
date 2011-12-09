@@ -22,7 +22,6 @@ import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 
-
 public class ConcurrentJBehaveTest {
 
     private URL scenarioLocation;
