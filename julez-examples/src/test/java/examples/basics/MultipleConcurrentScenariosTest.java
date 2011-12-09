@@ -1,7 +1,6 @@
 package examples.basics;
 
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
-import static uk.co.acuminous.julez.scenario.source.ScenarioRepeater.ScenarioRepeaterUnit.REPETITIONS;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import org.junit.Test;
@@ -26,14 +25,14 @@ public class MultipleConcurrentScenariosTest {
         HelloWorldScenario helloWorldScenario = new HelloWorldScenario();
         helloWorldScenario.register(new FanOutPipe(monitor1, combinedMonitor));
         
-        ScenarioSource helloWorldScenarios = new ScenarioRepeater(helloWorldScenario).limitTo(100, REPETITIONS);
+        ScenarioSource helloWorldScenarios = new ScenarioRepeater(helloWorldScenario).limitRepetitionsTo(100);
         ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner().queue(helloWorldScenarios).allocate(10, THREADS);
         runner1.register(monitor1);
         
         GoodbyeWorldScenario goodbyeWorldScenario = new GoodbyeWorldScenario();
         goodbyeWorldScenario.register(new FanOutPipe(monitor2, combinedMonitor));
         
-        ScenarioSource goodbyeWorldScenarios = new ScenarioRepeater(goodbyeWorldScenario).limitTo(100, REPETITIONS);
+        ScenarioSource goodbyeWorldScenarios = new ScenarioRepeater(goodbyeWorldScenario).limitRepetitionsTo(100);
         ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner().queue(goodbyeWorldScenarios).allocate(10, THREADS);
         runner2.register(monitor2);
 

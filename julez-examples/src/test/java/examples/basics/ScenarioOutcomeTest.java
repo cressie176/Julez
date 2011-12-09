@@ -2,7 +2,6 @@ package examples.basics;
 
 import static org.junit.Assert.assertEquals;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
-import static uk.co.acuminous.julez.scenario.source.ScenarioRepeater.ScenarioRepeaterUnit.REPETITIONS;
 
 import org.junit.Test;
 
@@ -22,7 +21,7 @@ public class ScenarioOutcomeTest {
         ResultMonitor resultMonitor = new ResultMonitor();
         scenario.register(resultMonitor);        
                         
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(200, REPETITIONS);
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(200);
         
         new ConcurrentScenarioRunner().queue(scenarios).allocate(10, THREADS).go();
 

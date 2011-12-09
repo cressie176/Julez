@@ -6,9 +6,9 @@ import uk.co.acuminous.julez.scenario.ScenarioSource;
 public class SizeLimiter implements ScenarioSource {
 
     private final ScenarioSource scenarios;
-    private int count;
+    private long count;
 
-    public SizeLimiter(ScenarioSource scenarios, int sizeLimit) {
+    public SizeLimiter(ScenarioSource scenarios, long sizeLimit) {
         this.scenarios = scenarios;        
         this.count = sizeLimit;
     }

@@ -2,7 +2,6 @@ package examples.analysis;
 
 import static org.junit.Assert.assertEquals;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
-import static uk.co.acuminous.julez.scenario.source.ScenarioRepeater.ScenarioRepeaterUnit.REPETITIONS;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import java.net.UnknownHostException;
@@ -81,7 +80,7 @@ public class CorrelationTest extends EnterpriseTest {
         PassFailErrorScenario scenario = new PassFailErrorScenario();
         scenario.useEventFactory(scenarioEventFactory);
         scenario.register(monitor);        
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(100, REPETITIONS);                                                                     
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(100);                                                                     
 
         return new ConcurrentScenarioRunner()
             .useEventFactory(scenarioRunnerEventFactory)
@@ -102,7 +101,7 @@ public class CorrelationTest extends EnterpriseTest {
         Scenario scenario = new NoOpScenario();
         scenario.register(fanoutPipe);
         
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(100, REPETITIONS);        
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(100);        
 
         new ConcurrentScenarioRunner()
             .register(fanoutPipe)

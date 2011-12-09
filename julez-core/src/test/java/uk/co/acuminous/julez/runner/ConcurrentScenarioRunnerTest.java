@@ -4,7 +4,6 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
-import static uk.co.acuminous.julez.scenario.source.ScenarioRepeater.ScenarioRepeaterUnit.REPETITIONS;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
@@ -34,7 +33,7 @@ public class ConcurrentScenarioRunnerTest {
     public void runsScenarios() {        
         Scenario scenario = new NoOpScenario().register(repository);
         
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(10, REPETITIONS);                                                                     
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(10);                                                                     
         
         new ConcurrentScenarioRunner().queue(scenarios).go();
         
@@ -47,7 +46,7 @@ public class ConcurrentScenarioRunnerTest {
         
         Scenario scenario = new SleepingScenario(4, SECONDS).register(repository);       
         
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(3, REPETITIONS);                                                                     
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(3);                                                                     
         
         new ConcurrentScenarioRunner().queue(scenarios).runFor(5, SECONDS).go();
         
@@ -76,7 +75,7 @@ public class ConcurrentScenarioRunnerTest {
 
         Scenario scenario = new SleepingScenario(4, SECONDS).register(repository);
         
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(3, REPETITIONS);                                                                     
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(3);                                                                     
                 
         new ConcurrentScenarioRunner().queue(scenarios).waitUntil(desiredStartTime).runFor(5, SECONDS).go();
         
@@ -86,7 +85,7 @@ public class ConcurrentScenarioRunnerTest {
     
     @Test
     public void raisesBeginEvent() {
-        ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario()).limitTo(10, REPETITIONS);                                                                     
+        ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario()).limitRepetitionsTo(10);                                                                     
                 
         new ConcurrentScenarioRunner().register(repository).queue(scenarios).go();
         
@@ -109,7 +108,7 @@ public class ConcurrentScenarioRunnerTest {
     @Test
     public void raisesEndEvent() {
         
-        ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario()).limitTo(10, REPETITIONS);        
+        ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario()).limitRepetitionsTo(10);        
         
         new ConcurrentScenarioRunner().register(repository).queue(scenarios).go();
         
@@ -120,7 +119,7 @@ public class ConcurrentScenarioRunnerTest {
     public void canBeConfiguredForMultipleThreads() {
         ThreadCountingScenario scenario = new ThreadCountingScenario();
         
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(1000, REPETITIONS);        
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(1000);        
         
         new ConcurrentScenarioRunner().queue(scenarios).allocate(10, THREADS).go();
         

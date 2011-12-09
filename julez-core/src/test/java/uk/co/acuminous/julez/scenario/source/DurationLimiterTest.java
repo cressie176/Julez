@@ -3,7 +3,6 @@ package uk.co.acuminous.julez.scenario.source;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static uk.co.acuminous.julez.scenario.source.ScenarioRepeater.ScenarioRepeaterUnit.REPETITIONS;
 
 import org.junit.Test;
 
@@ -18,7 +17,7 @@ public class DurationLimiterTest {
     @Test
     public void limitsQueueToASpecifiedDuration() {
         
-        ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario()).limitTo(100, REPETITIONS);        
+        ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario()).limitRepetitionsTo(100);        
         
         DurationLimiter limiter = new DurationLimiter(scenarios, 2, SECONDS);
         

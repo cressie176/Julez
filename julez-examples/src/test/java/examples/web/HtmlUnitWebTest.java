@@ -1,7 +1,6 @@
 package examples.web;
 
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
-import static uk.co.acuminous.julez.scenario.source.ScenarioRepeater.ScenarioRepeaterUnit.REPETITIONS;
 
 import org.junit.Test;
 
@@ -23,7 +22,7 @@ public class HtmlUnitWebTest extends WebTestCase {
     public void demonstrateAConcurrentWebTestUsingHtmlUnit() {
 
         HtmlUnitScenario scenario = new HtmlUnitScenario();
-        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitTo(100, REPETITIONS);                                                                     
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(100);                                                                     
 
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         scenario.register(throughputMonitor);                                
