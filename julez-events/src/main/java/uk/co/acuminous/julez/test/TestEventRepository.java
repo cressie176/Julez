@@ -1,5 +1,6 @@
 package uk.co.acuminous.julez.test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import uk.co.acuminous.julez.event.Event;
@@ -13,22 +14,22 @@ public class TestEventRepository extends InMemoryEventRepository {
     }
     
     public Event first() {
-        return list().get(0);
+        return new ArrayList<Event>(list()).get(0);
     }
     
     public Event get(int i) {
-        return list().get(i);
+        return new ArrayList<Event>(list()).get(i);
     }
     
     public Event last() {
-        return list().get(count() - 1);
+        return new ArrayList<Event>(list()).get(count() - 1);
     }
     
     public int count(String key, String pattern) {
-        return list(key, pattern).size();
+        return getAll(key, pattern).size();
     }
     
-    public List<Event> list(String key, String pattern) {
+    public List<Event> getAll(String key, String pattern) {
         return list(new EventDataFilter(key, pattern));
     }
 }
