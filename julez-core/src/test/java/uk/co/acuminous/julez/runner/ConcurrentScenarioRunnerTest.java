@@ -16,7 +16,6 @@ import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
-import uk.co.acuminous.julez.scenario.source.SizeLimiter;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.SleepingScenario;
 import uk.co.acuminous.julez.test.TestEventRepository;
