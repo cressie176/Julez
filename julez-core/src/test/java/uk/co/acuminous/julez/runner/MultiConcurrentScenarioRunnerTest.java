@@ -29,7 +29,7 @@ public class MultiConcurrentScenarioRunnerTest {
     
     @Test
     public void startsAllRunners() {
-        EventFilter filter = new EventDataFilter(Event.TYPE, ScenarioRunnerEvent.BEGIN).register(repository);
+        EventFilter filter = new EventDataFilter().filterEventsWhere(Event.TYPE).matches(ScenarioRunnerEvent.BEGIN).register(repository);
         
         runner1.register(filter);
         runner2.register(filter);
@@ -41,7 +41,7 @@ public class MultiConcurrentScenarioRunnerTest {
         
     @Test
     public void waitsForAllRunnersToFinish() {
-        EventFilter filter = new EventDataFilter(Event.TYPE, ScenarioRunnerEvent.END).register(repository);
+        EventFilter filter = new EventDataFilter().filterEventsWhere(Event.TYPE).matches(ScenarioRunnerEvent.END).register(repository);
         
         runner1.register(filter);
         runner2.register(filter);

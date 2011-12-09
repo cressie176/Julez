@@ -53,6 +53,6 @@ public class TestEventRepository extends InMemoryEventRepository {
     }
     
     public List<Event> getAll(String key, String pattern) {
-        return getAll(new EventDataFilter(key, pattern));
+        return getAll(new EventDataFilter().filterEventsWhere(key).matches(pattern));
     }
 }

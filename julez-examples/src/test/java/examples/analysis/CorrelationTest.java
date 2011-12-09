@@ -16,6 +16,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.filter.EventDataFilter;
+import uk.co.acuminous.julez.event.filter.EventFilter;
 import uk.co.acuminous.julez.event.handler.EventHandler;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.event.pipe.FanOutPipe;
@@ -50,8 +51,8 @@ public class CorrelationTest extends EnterpriseTest {
         TestEventRepository unfilteredRepository = new TestEventRepository();
         TestEventRepository filteredRepository = new TestEventRepository();
         
-        EventDataFilter testRunFilter = new EventDataFilter("TEST_RUN", testRun1);
-        EventDataFilter testClientFilter = new EventDataFilter("TEST_CLIENT", testClient2);
+        EventDataFilter testRunFilter = new EventDataFilter().filterEventsWhere("TEST_RUN").matches(testRun1);
+        EventDataFilter testClientFilter = new EventDataFilter().filterEventsWhere("TEST_CLIENT").matches(testClient2);
         
         testRunFilter.register(testClientFilter);
         testClientFilter.register(filteredRepository); 
@@ -130,8 +131,7 @@ public class CorrelationTest extends EnterpriseTest {
             initTestRun(testRun, "", jdbcEventRepository).go();
             
             ThroughputMonitor monitor = new ThroughputMonitor();
-            EventDataFilter filter = new EventDataFilter("TEST_RUN", testRun);
-            filter.register(monitor);
+            EventFilter filter = new EventDataFilter().filterEventsWhere("TEST_RUN").matches(testRun).register(monitor);
             
             jdbcEventRepository.register(filter);
             jdbcEventRepository.raise();

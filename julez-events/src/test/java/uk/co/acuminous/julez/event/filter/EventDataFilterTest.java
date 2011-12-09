@@ -25,7 +25,7 @@ public class EventDataFilterTest {
     @Test
     public void excludesEventsWithWrongNamespace() {
         
-        EventFilter filter = new EventDataFilter(Event.TYPE, "A/1").register(repository);
+        EventFilter filter = new EventDataFilter().filterEventsWhere(Event.TYPE).matches("A/1").register(repository);
         
         filter.onEvent(new Event("B/1"));
         
@@ -35,7 +35,7 @@ public class EventDataFilterTest {
     @Test
     public void excludesEventsWithWrongLocalName() {
         
-        EventFilter filter = new EventDataFilter(Event.TYPE, "A/1").register(repository);
+        EventFilter filter = new EventDataFilter().filterEventsWhere(Event.TYPE).matches("A/1").register(repository);
         
         filter.onEvent(new Event("A/2"));
         
@@ -44,7 +44,7 @@ public class EventDataFilterTest {
 
     @Test
     public void includesEventsWithMatchingNamespace() {     
-        EventFilter filter = new EventDataFilter(Event.TYPE, "A/.*").register(repository);
+        EventFilter filter = new EventDataFilter().filterEventsWhere(Event.TYPE).matches("A/.*").register(repository);
         
         Event wantedEvent = new Event("A/foo");
         
@@ -57,7 +57,7 @@ public class EventDataFilterTest {
     
     @Test
     public void includesEventsWithMatchingBaseTypeAndSubType() {     
-        EventFilter filter = new EventDataFilter(Event.TYPE, "A/1").register(repository);
+        EventFilter filter = new EventDataFilter().filterEventsWhere(Event.TYPE).matches("A/1").register(repository);
         
         Event wantedEvent = new Event("A/1");
         
@@ -70,7 +70,7 @@ public class EventDataFilterTest {
     
     @Test
     public void includesMultipleMatchingEvents() {     
-        EventFilter filter = new EventDataFilter(Event.TYPE, "A/.*").register(repository);
+        EventFilter filter = new EventDataFilter().filterEventsWhere(Event.TYPE).matches("A/.*").register(repository);
         
         Event wantedEvent1 = new Event("A/1");
         Event wantedEvent2 = new Event("A/2");
@@ -88,7 +88,7 @@ public class EventDataFilterTest {
     
     @Test
     public void filtersCollections() {
-        EventDataFilter filter = new EventDataFilter(Event.TYPE, "A/1");
+        EventDataFilter filter = new EventDataFilter().filterEventsWhere(Event.TYPE).matches("A/1");
         
         Event wantedEvent = new Event("A/1");
         
