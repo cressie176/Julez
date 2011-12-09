@@ -31,6 +31,7 @@ import uk.co.acuminous.julez.test.EnterpriseTest;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.PassFailErrorScenario;
 import uk.co.acuminous.julez.test.TestEventRepository;
+import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.transformer.DefaultColumnNameTransformer;
 
 public class CorrelationTest extends EnterpriseTest {
@@ -64,8 +65,8 @@ public class CorrelationTest extends EnterpriseTest {
         
         runner.go();
         
-        int uncorrelatedEvents = unfilteredRepository.count();
-        int correlatedEvents = filteredRepository.count();
+        int uncorrelatedEvents = TestUtils.countEvents(unfilteredRepository);
+        int correlatedEvents = TestUtils.countEvents(filteredRepository);
         
         assertEquals(correlatedEvents * 4, uncorrelatedEvents);
     }

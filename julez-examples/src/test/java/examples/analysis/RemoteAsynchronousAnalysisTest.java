@@ -13,6 +13,7 @@ import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
 import uk.co.acuminous.julez.test.EnterpriseTest;
 import uk.co.acuminous.julez.test.PassFailErrorScenario;
+import uk.co.acuminous.julez.test.TestUtils;
 
 
 public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {      
@@ -60,8 +61,8 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         // Ensure the queue is drained
         jmsEventSource.shutdownWhenEmpty();
         
-        assertEquals(302, jdbcEventRepository.count());
-        assertEquals(ScenarioRunnerEvent.BEGIN, jdbcEventRepository.getAll().get(0).getType());
-        assertEquals(ScenarioRunnerEvent.END, jdbcEventRepository.getAll().get(301).getType());
+        assertEquals(302, TestUtils.countEvents(jdbcEventRepository));
+        assertEquals(ScenarioRunnerEvent.BEGIN, TestUtils.getEvent(jdbcEventRepository,0).getType());
+        assertEquals(ScenarioRunnerEvent.END, TestUtils.getEvent(jdbcEventRepository,301).getType());
     }
 }

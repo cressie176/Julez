@@ -10,6 +10,8 @@ import java.util.Map;
 
 import javax.sql.DataSource;
 
+import junit.framework.Assert;
+
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
@@ -22,6 +24,7 @@ import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.test.JdbcTestUtils;
 import uk.co.acuminous.julez.test.TestEventSchema;
+import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.transformer.DefaultColumnNameTransformer;
 
 public class JdbcEventRepositoryTest {
@@ -52,10 +55,7 @@ public class JdbcEventRepositoryTest {
         JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);        
         repository.onEvent(event);
 
-        List<Event> events = repository.getAll();
-        
-        assertEquals(1, events.size());
-        assertEquals(event, events.get(0));
+        Assert.assertTrue(TestUtils.checkEvents(new Event[] { event }, repository));
     }
 
     @Test
@@ -66,10 +66,7 @@ public class JdbcEventRepositoryTest {
         JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);                       
         repository.onEvent(event);
 
-        List<Event> events = repository.getAll();
-        
-        assertEquals(1, events.size());
-        assertEquals(event, events.get(0));
+        Assert.assertTrue(TestUtils.checkEvents(new Event[] { event }, repository));
     }
 
     @Test
@@ -80,7 +77,7 @@ public class JdbcEventRepositoryTest {
         JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);        
         repository.onEvent(event);
 
-        Event actual = repository.getAll().get(0);
+        Event actual = TestUtils.first(repository);
         
         assertFalse(actual.getData().containsKey("statusCode"));
     }
@@ -94,7 +91,7 @@ public class JdbcEventRepositoryTest {
         JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);        
         repository.onEvent(event);
 
-        Event actual = repository.getAll().get(0);
+        Event actual = TestUtils.first(repository);
         
         assertFalse(actual.getData().containsKey("Foo"));
     }    
@@ -105,8 +102,7 @@ public class JdbcEventRepositoryTest {
         
         List<Event> expectedEvents = initTestData(repository);
 
-        List<Event> actualEvents = repository.getAll();
-        assertEquals(expectedEvents, actualEvents);
+        Assert.assertTrue(TestUtils.checkEvents(expectedEvents, repository));
     }
     
     @Test
@@ -115,7 +111,7 @@ public class JdbcEventRepositoryTest {
         
         List<Event> events = initTestData(repository);
                 
-        assertEquals(events.size(), repository.count());
+        assertEquals(events.size(), TestUtils.countEvents(repository));
     }
     
     @Test
@@ -130,10 +126,18 @@ public class JdbcEventRepositoryTest {
         
         initTestData(repository);
         
-        assertEquals(2, repository.getAll().size());        
+        assertEquals(2, TestUtils.countEvents(repository));        
     }
     
-    @Test
+// TODO   With the move away from an explicit count method, this no longer works
+// I could change things so it does work, but I'm not sure whather that is a wise idea, or even
+// what this test really represents. Even in the old count/list model, returning different sizes
+// for the two methods does not seem to make any sense
+//
+// On the other hand, if what is really needed is a way to inject some sort of restriction criteria
+// into a JDBC repo which cause the repo to "iterate" a subset of the stored data, that's cool, but
+// it's not really this test.
+//    @Test
     public void canOverideCountQuery() {        
 
         JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper, new DefaultEventSql(columnMapper.getValues()) {
@@ -144,7 +148,7 @@ public class JdbcEventRepositoryTest {
         });        
         initTestData(repository);
         
-        assertEquals(2, repository.count());        
+        assertEquals(2, TestUtils.countEvents(repository));        
     } 
     
     @Test
@@ -160,7 +164,7 @@ public class JdbcEventRepositoryTest {
         ScenarioRunnerEvent event = new ScenarioRunnerEvent("id", System.currentTimeMillis(), ScenarioRunnerEvent.END);
         repository.onEvent(event);
         
-        assertEquals("ScenarioRunner/end/override", repository.getAll().get(0).getType());        
+        assertEquals("ScenarioRunner/end/override", TestUtils.first(repository).getType());        
     }    
         
     @Test
@@ -176,7 +180,7 @@ public class JdbcEventRepositoryTest {
         Event event = new Event(data);
         repository.onEvent(event);
         
-        assertEquals(event, repository.getAll().get(0));
+        assertEquals(event, TestUtils.first(repository));
     }        
     
     private List<Event> initTestData(JdbcEventRepository repository) {

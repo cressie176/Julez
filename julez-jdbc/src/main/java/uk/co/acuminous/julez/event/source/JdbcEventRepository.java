@@ -4,6 +4,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -51,16 +52,6 @@ public class JdbcEventRepository extends PassThroughPipe implements EventReposit
         jdbcTemplate.query(sql.getSelectStatement(), new EventRaisingRowMapper());        
     }
     
-    @Override
-    public List<Event> getAll() {        
-        return jdbcTemplate.query(sql.getSelectStatement(), new EventRowMapper());
-    }
-    
-    @Override
-    public int count() {
-        return jdbcTemplate.queryForInt(sql.getCountStatement());
-    }              
-    
     private class EventRaisingRowMapper implements RowMapper<Event> {
         
         private EventRowMapper underlyingMapper = new EventRowMapper();
@@ -94,5 +85,11 @@ public class JdbcEventRepository extends PassThroughPipe implements EventReposit
                 throw new RuntimeException(e);
             }        
         }  
-    }    
+    }
+
+    // TODO this is a hack for now. 
+    // There's no reason other than my laziness that this should load everything in one go
+    @Override public Iterator<Event> iterator() {
+        return jdbcTemplate.query(sql.getSelectStatement(), new EventRowMapper()).iterator();
+	}    
 }

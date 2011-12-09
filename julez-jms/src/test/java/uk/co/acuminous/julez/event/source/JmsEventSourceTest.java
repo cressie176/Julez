@@ -17,6 +17,7 @@ import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.test.JmsTestUtils;
 import uk.co.acuminous.julez.test.TestEventRepository;
+import uk.co.acuminous.julez.test.TestUtils;
 
 public class JmsEventSourceTest {
 
@@ -53,7 +54,7 @@ public class JmsEventSourceTest {
         
         listener.shutdownWhenEmpty();
         
-        assertEquals(1, repository.count());
+        assertEquals(1, TestUtils.countEvents(repository));
         assertEquals(ScenarioEvent.PASS, repository.first().getType());
     }
     
@@ -63,7 +64,7 @@ public class JmsEventSourceTest {
         
         listener.shutdownWhenEmpty();
         
-        assertEquals(1, repository.count());
+        assertEquals(1, TestUtils.countEvents(repository));
         assertEquals(ScenarioRunnerEvent.BEGIN, repository.first().getType());        
     }    
 }
