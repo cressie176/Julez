@@ -10,14 +10,14 @@ import uk.co.acuminous.julez.scenario.ScenarioSource;
 public class DurationLimiter implements ScenarioSource {
 
     private final ScenarioSource scenarios;
-    private final long duration;
+    private long duration;
     private long endTime;
 
     public DurationLimiter(ScenarioSource scenarios, long duration, TimeUnit units) {
         this.scenarios = scenarios;
         this.duration = MILLISECONDS.convert(duration, units);
     }
-
+    
     @Override
     public Scenario next() { 
         long now = System.currentTimeMillis();

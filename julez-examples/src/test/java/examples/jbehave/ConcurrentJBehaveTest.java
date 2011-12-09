@@ -20,8 +20,7 @@ import uk.co.acuminous.julez.scenario.JBehaveEmbedderScenario;
 import uk.co.acuminous.julez.scenario.JBehaveStoryRunnerScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.PrePopulatedScenarioSource;
-
+import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 
 public class ConcurrentJBehaveTest {
 
@@ -46,7 +45,7 @@ public class ConcurrentJBehaveTest {
             list.add(scenario);
         }
         
-        ScenarioSource scenarios = new PrePopulatedScenarioSource(list);  
+        ScenarioSource scenarios = new ScenarioHopper(list);  
         
         new ConcurrentScenarioRunner()
             .register(throughputMonitor)
@@ -72,7 +71,7 @@ public class ConcurrentJBehaveTest {
             list.add(scenario);
         }
         
-        ScenarioSource scenarios = new PrePopulatedScenarioSource(list);
+        ScenarioSource scenarios = new ScenarioHopper(list);
         
         new ConcurrentScenarioRunner()
             .register(throughputMonitor)

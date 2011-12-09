@@ -21,7 +21,7 @@ public class InflightLimiterTest {
     @Test
     public void returnsScenariosWhileBelowOrAtSpecifiedLimit() { 
         
-        ScenarioSource source = new InfiniteScenarioRepeater(new NoOpScenario());
+        ScenarioSource source = new ScenarioRepeater(new NoOpScenario());
         
         InflightLimiter limiter = new InflightLimiter(source, 2);
         
@@ -39,7 +39,7 @@ public class InflightLimiterTest {
     @Test
     public void blocksScenariosWhileAboveSpecifiedLimit() { 
         
-        ScenarioSource source = new InfiniteScenarioRepeater(new NoOpScenario());
+        ScenarioSource source = new ScenarioRepeater(new NoOpScenario());
         
         final InflightLimiter limiter = new InflightLimiter(source, 2);
         
@@ -47,13 +47,12 @@ public class InflightLimiterTest {
         limiter.next();
         limiter.next();        
 
-        Thread t = new Thread(new Runnable() {
+        ConcurrencyUtils.start(new Runnable() {
             @Override public void run() {
                 ConcurrencyUtils.sleep(1, SECONDS);
                 limiter.onEvent(new ScenarioEventFactory().end());
             }            
         });
-        t.start();
         
         long startTime = System.currentTimeMillis();
         assertNotNull(limiter.next());
@@ -78,9 +77,7 @@ public class InflightLimiterTest {
         InflightLimiter limiter = new InflightLimiter(scenarios, 100);
         passThroughPipe.register(limiter);
                 
-        ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
-        
-        runner.queue(limiter).allocate(10, THREADS).runFor(60, SECONDS).go();            
+        new ConcurrentScenarioRunner().queue(limiter).allocate(10, THREADS).runFor(60, SECONDS).go();            
 
     }
     

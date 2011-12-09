@@ -12,6 +12,7 @@ import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
+// TODO Make Fluent
 public class InflightLimiter implements ScenarioSource, EventHandler {
 
     private final ScenarioSource scenarios;    

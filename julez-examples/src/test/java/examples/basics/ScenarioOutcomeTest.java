@@ -8,7 +8,7 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.handler.ResultMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.PassFailErrorScenario;
 
 public class ScenarioOutcomeTest {
@@ -16,12 +16,12 @@ public class ScenarioOutcomeTest {
     @Test
     public void demonstrateRecordingConcurrentScenarioResults() {
         
-        final PassFailErrorScenario scenario = new PassFailErrorScenario();
+        PassFailErrorScenario scenario = new PassFailErrorScenario();
         
-        final ResultMonitor resultMonitor = new ResultMonitor();
+        ResultMonitor resultMonitor = new ResultMonitor();
         scenario.register(resultMonitor);        
-        
-        final ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 200);
+                        
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(200);
         
         new ConcurrentScenarioRunner().queue(scenarios).allocate(10, THREADS).go();
 

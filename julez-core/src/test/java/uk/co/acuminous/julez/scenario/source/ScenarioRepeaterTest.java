@@ -7,18 +7,15 @@ import org.junit.Test;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.test.NoOpScenario;
 
-public class InfiniteScenarioRepeaterTest {
+public class ScenarioRepeaterTest {
 
     @Test
     public void repeatsTheGivenScenarioForInfinity() {
-        
         Scenario scenario = new NoOpScenario();
-        InfiniteScenarioRepeater scenarios = new InfiniteScenarioRepeater(scenario);
-        
+        ScenarioRepeater scenarios = new ScenarioRepeater(scenario);
+
         for (int i = 0; i < 1000; i++) {
-            assertSame(scenario, scenarios.next());    
-        }        
-    }
-    
-    
+            assertSame(scenario, scenarios.next());
+        }
+    }    
 }

@@ -1,14 +1,16 @@
 package uk.co.acuminous.julez.event.source;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.Assert.assertEquals;
 
 import javax.jms.QueueConnectionFactory;
+
+import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
 import uk.co.acuminous.julez.marshalling.json.JsonEventTranslator;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
@@ -50,21 +52,23 @@ public class JmsEventSourceTest {
     
     @Test
     public void scenarioEventsAreRecreated() throws InterruptedException {
-        jmsSender.onEvent(new ScenarioEventFactory().pass());
+        ScenarioEvent pass = new ScenarioEventFactory().pass();
+        
+        jmsSender.onEvent(pass);
         
         listener.shutdownWhenEmpty();
-        
-        assertEquals(1, TestUtils.countEvents(repository));
-        assertEquals(ScenarioEvent.PASS, repository.first().getType());
+
+        Assert.assertTrue(TestUtils.checkEvents(new Event[] { pass }, repository));
     }
     
     @Test
     public void scenarioRunnerEventsAreRecreated() throws InterruptedException {
-        jmsSender.onEvent(new ScenarioRunnerEventFactory().begin());
+        ScenarioRunnerEvent event = new ScenarioRunnerEventFactory().begin();
+        
+        jmsSender.onEvent(event);
         
         listener.shutdownWhenEmpty();
         
-        assertEquals(1, TestUtils.countEvents(repository));
-        assertEquals(ScenarioRunnerEvent.BEGIN, repository.first().getType());        
+        Assert.assertTrue(TestUtils.checkEvents(new Event[] { event }, repository));
     }    
 }

@@ -1,5 +1,6 @@
 package examples.benchmarking;
 
+
 import org.junit.Before;
 
 import uk.co.acuminous.julez.event.handler.DurationMonitor;
@@ -7,7 +8,7 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 
 public abstract class BenchmarkTestCase {
 
@@ -24,7 +25,8 @@ public abstract class BenchmarkTestCase {
     
 
     protected void benchmark(Scenario scenario, int repetitions) {
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, repetitions);
+        
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(repetitions);        
         
         ConcurrentScenarioRunner runner = getScenarioRunner();
         runner.register(durationMonitor);

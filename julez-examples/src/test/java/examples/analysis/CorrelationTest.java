@@ -26,7 +26,7 @@ import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
+import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.EnterpriseTest;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.PassFailErrorScenario;
@@ -61,8 +61,7 @@ public class CorrelationTest extends EnterpriseTest {
             initTestRun(testRun1, testClient2, monitors),
             initTestRun(testRun2, testClient1, monitors),
             initTestRun(testRun2, testClient2, monitors)
-        );
-        
+        );        
         runner.go();
         
         int uncorrelatedEvents = TestUtils.countEvents(unfilteredRepository);
@@ -82,7 +81,7 @@ public class CorrelationTest extends EnterpriseTest {
         PassFailErrorScenario scenario = new PassFailErrorScenario();
         scenario.useEventFactory(scenarioEventFactory);
         scenario.register(monitor);        
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);                                                             
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(100);                                                                     
 
         return new ConcurrentScenarioRunner()
             .useEventFactory(scenarioRunnerEventFactory)
@@ -102,7 +101,8 @@ public class CorrelationTest extends EnterpriseTest {
 
         Scenario scenario = new NoOpScenario();
         scenario.register(fanoutPipe);
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 100);
+        
+        ScenarioSource scenarios = new ScenarioRepeater(scenario).limitRepetitionsTo(100);        
 
         new ConcurrentScenarioRunner()
             .register(fanoutPipe)

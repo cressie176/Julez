@@ -17,7 +17,7 @@ public class DurationLimiterTest {
     @Test
     public void limitsQueueToASpecifiedDuration() {
         
-        ScenarioSource scenarios = new SizedScenarioRepeater(new NoOpScenario(), 100);
+        ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario()).limitRepetitionsTo(100);        
         
         DurationLimiter limiter = new DurationLimiter(scenarios, 2, SECONDS);
         

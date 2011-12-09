@@ -10,8 +10,8 @@ import uk.co.acuminous.julez.event.pipe.AsynchronousPipe;
 import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.scenario.source.InfiniteScenarioRepeater;
 import uk.co.acuminous.julez.scenario.source.InflightLimiter;
+import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
@@ -28,7 +28,7 @@ public class AsynchronousAnalysisTest {
         Thread monitorThread = detach(throughputMonitor);        
         
         Scenario scenario = new NoOpScenario();
-        InflightLimiter scenarios = new InflightLimiter(new InfiniteScenarioRepeater(scenario), 5000, 2500);        
+        InflightLimiter scenarios = new InflightLimiter(new ScenarioRepeater(scenario), 5000, 2500);        
         FanOutPipe fanOutPipe = new FanOutPipe(asynchronousPipe, scenarios);        
         scenario.register(fanOutPipe);
         
