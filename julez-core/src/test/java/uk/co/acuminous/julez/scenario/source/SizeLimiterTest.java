@@ -2,15 +2,17 @@ package uk.co.acuminous.julez.scenario.source;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
 import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.scenario.InvocationCountingScenario;
-import uk.co.acuminous.julez.scenario.NoOpScenario;
+import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.test.NoOpScenario;
+import uk.co.acuminous.julez.test.TestEventRepository;
 
 public class SizeLimiterTest {
 
@@ -26,29 +28,13 @@ public class SizeLimiterTest {
         ScenarioSource scenarios = new SizedScenarioRepeater(new NoOpScenario(), 100);
                 
         SizeLimiter limiter = new SizeLimiter(scenarios, 10);  
-        
-        assertEquals(10, limiter.available());                
-        
+                
         for (int i = 10; i > 0; i--) {
-            assertEquals(i, limiter.available());
             assertNotNull(limiter.next());
         }
                 
-        assertEquals(0, limiter.available());                
-    }
-    
-    @Test
-    public void availabilityNeverFallsBelowZero() {        
-        ScenarioSource scenarios = new SizedScenarioRepeater(new NoOpScenario(), 100);
-                
-        SizeLimiter limiter = new SizeLimiter(scenarios, 1);  
-        
-        assertEquals(1, limiter.available());                
-        limiter.next();
-        assertEquals(0, limiter.available());
-        limiter.next();
-        assertEquals(0, limiter.available());
-    }     
+        assertNull(limiter.next());                
+    }   
     
     @Test
     public void tolleratesUnderlyingSourceSmallerThanSpecifiedSize() {        
@@ -56,23 +42,22 @@ public class SizeLimiterTest {
         
         SizeLimiter limiter = new SizeLimiter(scenarios, 10);
         
-        assertEquals(1, limiter.available());        
-                
         assertNotNull(limiter.next());
-        assertEquals(0, limiter.available());        
+        assertNull(limiter.next());        
     } 
     
     @Test
-    public void supportsMultiThreading() {        
-        InvocationCountingScenario scenario = new InvocationCountingScenario();
+    public void supportsMultiThreading() {
         
-        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 1000);
+        TestEventRepository repository = new TestEventRepository();
+        Scenario scenario = new NoOpScenario().register(repository);
+        
+        ScenarioSource scenarios = new SizedScenarioRepeater(scenario, 200);
         
         SizeLimiter limiter = new SizeLimiter(scenarios, 100);  
         
         runner.queue(limiter).allocate(10, THREADS).go();
         
-        assertEquals(100, scenario.counter.get());
-        assertEquals(0, limiter.available());                
+        assertEquals(100, repository.count());
     }    
 }

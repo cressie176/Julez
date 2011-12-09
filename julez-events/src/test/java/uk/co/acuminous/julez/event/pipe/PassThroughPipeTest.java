@@ -4,29 +4,27 @@ import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.DummyEvent;
-import uk.co.acuminous.julez.event.handler.EventMonitor;
+import uk.co.acuminous.julez.event.Event;
+import uk.co.acuminous.julez.test.TestEventRepository;
 
 public class PassThroughPipeTest {
 
     @Test
     public void forwardsEventsToRegisteredHandler() {
         
-        EventMonitor handler = new EventMonitor();
+        TestEventRepository repository = new TestEventRepository();
         
-        PassThroughPipe pipe = new PassThroughPipe();
-        pipe.register(handler);
+        PassThroughPipe pipe = new PassThroughPipe().register(repository);
         
-        DummyEvent event = new DummyEvent();
+        Event event = new Event("test");
         pipe.onEvent(event);        
         
-        assertSame(event, handler.getEvents().get(0));
+        assertSame(event, repository.first());
     }
-    
-    
+        
     @Test
     public void tolleratesNoHandlers() {        
-        new PassThroughPipe().onEvent(new DummyEvent());
+        new PassThroughPipe().onEvent(new Event("test"));
     }    
     
 }

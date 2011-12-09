@@ -20,10 +20,4 @@ public class DeferredScenarioSource implements ScenarioSource {
         ConcurrencyUtils.sleepUntil(startTime);
         return scenarios.next();
     }
-
-    @Override
-    public int available() {
-        return scenarios.available();
-    }
-
 }

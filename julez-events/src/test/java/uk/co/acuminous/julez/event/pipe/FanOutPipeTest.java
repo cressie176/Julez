@@ -5,32 +5,31 @@ import static org.junit.Assert.assertSame;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.DummyEvent;
-import uk.co.acuminous.julez.event.handler.EventMonitor;
+import uk.co.acuminous.julez.event.Event;
+import uk.co.acuminous.julez.test.TestEventRepository;
 
 public class FanOutPipeTest {
 
     @Test
     public void forwardsEventsToAllHandlers() {
-        EventMonitor handler1 = new EventMonitor();
-        EventMonitor handler2 = new EventMonitor();
+        TestEventRepository repository1 = new TestEventRepository();
+        TestEventRepository repository2 = new TestEventRepository();
         
-        FanOutPipe pipe = new FanOutPipe();
-        pipe.registerAll(handler1, handler2);
+        FanOutPipe pipe = new FanOutPipe().registerAll(repository1, repository2);
         
-        DummyEvent event = new DummyEvent();
+        Event event = new Event("test");
         pipe.onEvent(event);
         
-        assertEquals(1, handler1.getEvents().size());
-        assertSame(event, handler1.getEvents().get(0));
+        assertEquals(1, repository1.count());
+        assertSame(event, repository1.first());
         
-        assertEquals(1, handler2.getEvents().size());        
-        assertSame(event, handler2.getEvents().get(0));
+        assertEquals(1, repository2.count());        
+        assertSame(event, repository2.first());
     }
     
     @Test
     public void tolleratesNoHandlers() {        
-        new FanOutPipe().onEvent(new DummyEvent());
+        new FanOutPipe().onEvent(new Event("test"));
     }
     
 }

@@ -16,9 +16,4 @@ public class SizedScenarioRepeater implements ScenarioSource {
     public Scenario next() {
         return source.next();
     }
-
-    @Override
-    public int available() {
-        return source.available();
-    }
 }

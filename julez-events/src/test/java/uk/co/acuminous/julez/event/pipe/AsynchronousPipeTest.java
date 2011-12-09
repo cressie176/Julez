@@ -1,14 +1,15 @@
 package uk.co.acuminous.julez.event.pipe;
 
+import static java.util.concurrent.TimeUnit.SECONDS;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
 import java.util.concurrent.CountDownLatch;
 
 import org.junit.Test;
-import static org.junit.Assert.*;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.EventHandler;
-import uk.co.acuminous.julez.event.DummyEvent;
-import static java.util.concurrent.TimeUnit.*;
+import uk.co.acuminous.julez.event.handler.EventHandler;
 
 public class AsynchronousPipeTest {
 
@@ -28,7 +29,7 @@ public class AsynchronousPipeTest {
         AsynchronousPipe pipe = new AsynchronousPipe();        
         pipe.register(handler);
         
-        pipe.onEvent(new DummyEvent());
+        pipe.onEvent(new Event("test"));
         
         latch.await(5, SECONDS);
         

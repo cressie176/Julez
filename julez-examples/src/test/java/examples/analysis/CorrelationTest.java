@@ -13,9 +13,8 @@ import org.junit.Test;
 import org.springframework.jdbc.core.JdbcTemplate;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.event.filter.EventDataFilter;
-import uk.co.acuminous.julez.event.handler.EventMonitor;
+import uk.co.acuminous.julez.event.handler.EventHandler;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.event.source.JdbcEventRepository;
@@ -31,6 +30,7 @@ import uk.co.acuminous.julez.scenario.source.SizedScenarioRepeater;
 import uk.co.acuminous.julez.test.EnterpriseTest;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.PassFailErrorScenario;
+import uk.co.acuminous.julez.test.TestEventRepository;
 import uk.co.acuminous.julez.transformer.DefaultColumnNameTransformer;
 
 public class CorrelationTest extends EnterpriseTest {
@@ -44,15 +44,16 @@ public class CorrelationTest extends EnterpriseTest {
         String testRun2 = "B";        
         String testClient2 = "192.168.1.2";        
         
-        EventMonitor unfilteredMonitor = new EventMonitor();
-        EventMonitor filteredMonitor = new EventMonitor();
+        TestEventRepository unfilteredRepository = new TestEventRepository();
+        TestEventRepository filteredRepository = new TestEventRepository();
         
-        EventDataFilter filter1 = new EventDataFilter("TEST_RUN", testRun1);
-        EventDataFilter filter2 = new EventDataFilter("TEST_CLIENT", testClient2);
+        EventDataFilter testRunFilter = new EventDataFilter("TEST_RUN", testRun1);
+        EventDataFilter testClientFilter = new EventDataFilter("TEST_CLIENT", testClient2);
         
-        filter1.register(filter2);
-        filter2.register(filteredMonitor);        
-        FanOutPipe monitors = new FanOutPipe(unfilteredMonitor, filter1);
+        testRunFilter.register(testClientFilter);
+        testClientFilter.register(filteredRepository); 
+        
+        FanOutPipe monitors = new FanOutPipe(unfilteredRepository, testRunFilter);
        
         MultiConcurrentScenarioRunner runner = new MultiConcurrentScenarioRunner(
             initTestRun(testRun1, testClient1, monitors),
@@ -63,8 +64,9 @@ public class CorrelationTest extends EnterpriseTest {
         
         runner.go();
         
-        int uncorrelatedEvents = unfilteredMonitor.getEvents().size();
-        int correlatedEvents = filteredMonitor.getEvents().size();
+        int uncorrelatedEvents = unfilteredRepository.count();
+        int correlatedEvents = filteredRepository.count();
+        
         assertEquals(correlatedEvents * 4, uncorrelatedEvents);
     }
     

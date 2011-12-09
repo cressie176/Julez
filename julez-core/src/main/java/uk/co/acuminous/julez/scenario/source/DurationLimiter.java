@@ -30,10 +30,4 @@ public class DurationLimiter implements ScenarioSource {
         }
         return scenario;
     }
-
-    @Override
-    public int available() {
-        return endTime > System.currentTimeMillis() ? scenarios.available() : 0; 
-    }
-
 }

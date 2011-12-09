@@ -1,7 +1,6 @@
 package uk.co.acuminous.julez.event.source;
 
-import uk.co.acuminous.julez.event.EventHandler;
-import uk.co.acuminous.julez.event.EventSource;
+import uk.co.acuminous.julez.event.handler.EventHandler;
 import uk.co.acuminous.julez.event.handler.NullHandler;
 
 public class BaseEventSource implements EventSource {
@@ -12,6 +11,5 @@ public class BaseEventSource implements EventSource {
     public EventSource register(EventHandler handler) {
         this.handler = handler;
         return this;
-    }    
-    
+    }        
 }

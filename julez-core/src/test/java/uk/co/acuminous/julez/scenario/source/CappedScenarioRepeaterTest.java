@@ -5,8 +5,8 @@ import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.scenario.NoOpScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
+import uk.co.acuminous.julez.test.NoOpScenario;
 
 public class CappedScenarioRepeaterTest {
 
@@ -16,19 +16,9 @@ public class CappedScenarioRepeaterTest {
         Scenario scenario = new NoOpScenario();
         SizedScenarioRepeater scenarios = new SizedScenarioRepeater(scenario, 3);
         
-        assertEquals(3, scenarios.available());
         assertEquals(scenario, scenarios.next());
-        
-        assertEquals(2, scenarios.available());
         assertEquals(scenario, scenarios.next());
-        
-        assertEquals(1, scenarios.available());
         assertEquals(scenario, scenarios.next());
-        
-        assertEquals(0, scenarios.available());
-        assertNull(scenarios.next());
-        
-        assertEquals(0, scenarios.available());
         assertNull(scenarios.next());
     }
     

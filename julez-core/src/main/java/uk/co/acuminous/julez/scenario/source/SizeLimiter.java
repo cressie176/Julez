@@ -22,12 +22,4 @@ public class SizeLimiter implements ScenarioSource {
         }
         return scenario;
     }
-
-    @Override
-    public int available() {
-        int limitedAvailability = Math.max(0, count);
-        int underlyingAvailability = scenarios.available();
-        return Math.min(limitedAvailability, underlyingAvailability);
-    }
-
 }

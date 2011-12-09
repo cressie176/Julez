@@ -15,10 +15,4 @@ public class InfiniteScenarioRepeater implements ScenarioSource {
     public Scenario next() {
         return scenario;
     }
-
-    @Override
-    public int available() {
-        return Integer.MAX_VALUE;
-    }
-
 }

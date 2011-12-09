@@ -3,7 +3,6 @@ package uk.co.acuminous.julez.event.handler;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 
 public class ResultMonitor implements EventHandler {

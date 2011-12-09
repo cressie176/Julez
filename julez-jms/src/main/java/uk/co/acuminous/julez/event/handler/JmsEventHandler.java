@@ -9,7 +9,6 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.EventHandler;
 import uk.co.acuminous.julez.marshalling.EventMarshaller;
 import uk.co.acuminous.julez.util.JmsHelper;
 

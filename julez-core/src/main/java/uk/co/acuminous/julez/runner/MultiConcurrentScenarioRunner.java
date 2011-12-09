@@ -4,12 +4,13 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
 
+import uk.co.acuminous.julez.event.handler.EventHandler;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 public class MultiConcurrentScenarioRunner extends BaseScenarioRunner {
 
     private final CountDownLatch latch;
-    private List<ScenarioRunner> runners;
+    private final List<ScenarioRunner> runners;
     private ScenarioRunnerEventFactory eventFactory = new ScenarioRunnerEventFactory();
 
     public MultiConcurrentScenarioRunner(ScenarioRunner... concurrentTestRunners) {
@@ -27,7 +28,7 @@ public class MultiConcurrentScenarioRunner extends BaseScenarioRunner {
 
         for (final ScenarioRunner runner : runners) {
 
-            Runnable r = new Runnable() {
+            ConcurrencyUtils.start(new Runnable() {
                 @Override
                 public void run() {
                     try {
@@ -36,13 +37,17 @@ public class MultiConcurrentScenarioRunner extends BaseScenarioRunner {
                         latch.countDown();
                     }
                 }
-            };
-
-            ConcurrencyUtils.start(r);
+            });
         }
 
         ConcurrencyUtils.await(latch);
 
         handler.onEvent(eventFactory.end());
+    }
+    
+    @Override
+    public MultiConcurrentScenarioRunner register(EventHandler handler) {
+        super.register(handler);
+        return this;
     }
 }

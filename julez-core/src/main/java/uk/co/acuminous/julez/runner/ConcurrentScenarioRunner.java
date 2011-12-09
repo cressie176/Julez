@@ -6,7 +6,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
-import uk.co.acuminous.julez.event.EventHandler;
+import uk.co.acuminous.julez.event.handler.EventHandler;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
@@ -18,6 +18,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     private long timeout = 365 * 24 * 60 * 60 * 1000;
     private long startTime = System.currentTimeMillis();
     private ScenarioRunnerEventFactory eventFactory = new ScenarioRunnerEventFactory();
+    private long stopTime;
 
     public ConcurrentScenarioRunner queue(ScenarioSource scenarios) {
         this.scenarios = scenarios;
@@ -53,16 +54,27 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
 
     @Override
     public void go() {
+        prepare();        
+        run();
+        shutdown();
+    }
 
+    private void prepare() {
         ConcurrencyUtils.sleep((startTime - System.currentTimeMillis()), MILLISECONDS);
-        long stopTime = System.currentTimeMillis() + timeout;
-        
-        handler.onEvent(eventFactory.begin());
+        stopTime = System.currentTimeMillis() + timeout;
+        handler.onEvent(eventFactory.begin());        
+    }
 
-        while ((scenarios.available() > 0) && (stopTime > System.currentTimeMillis())) {
-            Scenario scenario = scenarios.next();
+    private void run() {        
+        
+        Scenario scenario = scenarios.next();
+        while (scenario != null && (stopTime > System.currentTimeMillis())) {
             executor.execute(scenario);
+            scenario = scenarios.next();
         }
+    }
+
+    private void shutdown() {
         try {
             executor.shutdown();
             executor.awaitTermination(stopTime - System.currentTimeMillis(), MILLISECONDS);
@@ -73,8 +85,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
                 executor.shutdownNow();
             }
         }
-
-        handler.onEvent(eventFactory.end());
+        handler.onEvent(eventFactory.end());        
     }
     
     public ConcurrentScenarioRunner register(EventHandler handler) {

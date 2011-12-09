@@ -1,21 +1,19 @@
 package uk.co.acuminous.julez.scenario.source;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static uk.co.acuminous.julez.runner.ScenarioRunner.ConcurrencyUnit.THREADS;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.EventPipe;
 import uk.co.acuminous.julez.event.pipe.PassThroughPipe;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.scenario.NoOpScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.SleepingScenario;
+import uk.co.acuminous.julez.test.NoOpScenario;
+import uk.co.acuminous.julez.test.SleepingScenario;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 public class InflightLimiterTest {
@@ -28,14 +26,11 @@ public class InflightLimiterTest {
         InflightLimiter limiter = new InflightLimiter(source, 2);
         
         long startTime = System.currentTimeMillis();
+        
         assertNotNull(limiter.next());
-        assertEquals(Integer.MAX_VALUE, limiter.available());
-
         assertNotNull(limiter.next());
-        assertEquals(Integer.MAX_VALUE, limiter.available());
-
         assertNotNull(limiter.next());
-        assertEquals(Integer.MAX_VALUE, limiter.available());
+        
         Long duration = System.currentTimeMillis() - startTime;
         
         assertTrue(duration < 1000);
@@ -70,18 +65,18 @@ public class InflightLimiterTest {
     @Test
     public void inflightLimiterPreventsOutOfMemoryErrors() {
                 
-        final EventPipe relay = new PassThroughPipe();
+        final PassThroughPipe passThroughPipe = new PassThroughPipe();
         
-        ScenarioSource scenarios = new OnDemandScenarioSource() {
+        ScenarioSource scenarios = new ScenarioSource() {
             @Override public Scenario next() {
                 SleepingScenario scenario = new SleepingScenario();
-                scenario.register(relay);
+                scenario.register(passThroughPipe);
                 return scenario;
             }
         };
         
         InflightLimiter limiter = new InflightLimiter(scenarios, 100);
-        relay.register(limiter);
+        passThroughPipe.register(limiter);
                 
         ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();
         

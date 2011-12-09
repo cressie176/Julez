@@ -51,11 +51,6 @@ public class ThroughputLimiter implements ScenarioSource {
         }
     }
 
-    @Override
-    public int available() {
-        return scenarios.available();
-    }
-
     private class DelayToken implements Delayed {
 
         private long blockUntil;

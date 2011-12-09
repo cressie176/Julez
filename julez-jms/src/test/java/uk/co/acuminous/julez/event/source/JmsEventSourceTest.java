@@ -9,7 +9,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.handler.EventMonitor;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
 import uk.co.acuminous.julez.marshalling.json.JsonEventTranslator;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
@@ -17,12 +16,13 @@ import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.test.JmsTestUtils;
+import uk.co.acuminous.julez.test.TestEventRepository;
 
 public class JmsEventSourceTest {
 
     private QueueConnectionFactory connectionFactory;
     private JmsEventSource listener;
-    private EventMonitor eventMonitor;
+    private TestEventRepository repository;
     private JmsEventHandler jmsSender;
     
     @Before
@@ -32,11 +32,11 @@ public class JmsEventSourceTest {
         JsonEventTranslator marshaller = new JsonEventTranslator();        
         
         connectionFactory = JmsTestUtils.getConnectionFactory();
-        eventMonitor = new EventMonitor();                
+        repository = new TestEventRepository();                
 
         listener = new JmsEventSource(connectionFactory, marshaller);
         listener.setShutdownDelay(1, SECONDS);
-        listener.register(eventMonitor);
+        listener.register(repository);
         listener.listen();        
         
         jmsSender = new JmsEventHandler(connectionFactory, marshaller);        
@@ -53,8 +53,8 @@ public class JmsEventSourceTest {
         
         listener.shutdownWhenEmpty();
         
-        assertEquals(1, eventMonitor.getEvents().size());
-        assertEquals(ScenarioEvent.PASS, eventMonitor.getEvents().get(0).getType());
+        assertEquals(1, repository.count());
+        assertEquals(ScenarioEvent.PASS, repository.first().getType());
     }
     
     @Test
@@ -63,7 +63,7 @@ public class JmsEventSourceTest {
         
         listener.shutdownWhenEmpty();
         
-        assertEquals(1, eventMonitor.getEvents().size());
-        assertEquals(ScenarioRunnerEvent.BEGIN, eventMonitor.getEvents().get(0).getType());        
+        assertEquals(1, repository.count());
+        assertEquals(ScenarioRunnerEvent.BEGIN, repository.first().getType());        
     }    
 }

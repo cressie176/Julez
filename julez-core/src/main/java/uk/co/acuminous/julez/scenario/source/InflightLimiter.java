@@ -6,7 +6,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.EventHandler;
+import uk.co.acuminous.julez.event.handler.EventHandler;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
@@ -40,11 +40,6 @@ public class InflightLimiter implements ScenarioSource, EventHandler {
         }
         counter.incrementAndGet();
         return scenarios.next();
-    }
-
-    @Override
-    public int available() {
-        return scenarios.available();
     }
 
     @Override

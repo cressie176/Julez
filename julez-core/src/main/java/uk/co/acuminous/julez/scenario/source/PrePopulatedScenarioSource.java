@@ -23,9 +23,4 @@ public class PrePopulatedScenarioSource implements ScenarioSource {
     public Scenario next() {
         return scenarios.size() > 0 ? scenarios.remove(0) : null;
     }
-
-    @Override
-    public int available() {
-        return scenarios.size();
-    }
 }
