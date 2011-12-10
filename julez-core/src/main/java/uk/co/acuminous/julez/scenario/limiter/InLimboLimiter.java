@@ -35,18 +35,18 @@ public class InLimboLimiter implements ScenarioSource, EventHandler {
         this.lowerLimit = lowerLimit;
     }            
     
-    public InLimboLimiter to(ScenarioSource scenarios) {
+    public InLimboLimiter block(ScenarioSource scenarios) {
         this.scenarios = scenarios;
         return this;
     }
     
-    public InLimboLimiter applyRestrictionWhen(int limit, JulezSugar units) {
+    public InLimboLimiter when(int limit, JulezSugar units) {
         this.upperLimit = limit;
         this.lowerLimit = lowerLimit == null ? limit : lowerLimit;
         return this;
     }    
     
-    public InLimboLimiter liftRestrictionWhen(int limit, JulezSugar units) {
+    public InLimboLimiter unblockWhen(int limit, JulezSugar units) {
         this.lowerLimit = limit;
         return this;
     }    

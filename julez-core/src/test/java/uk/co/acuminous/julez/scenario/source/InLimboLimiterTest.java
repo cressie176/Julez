@@ -27,7 +27,7 @@ public class InLimboLimiterTest {
         
         ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario());
         
-        InLimboLimiter limiter = new InLimboLimiter().applyRestrictionWhen(2, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED).to(scenarios);
+        InLimboLimiter limiter = new InLimboLimiter().block(scenarios).when(2, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED);        
         
         long startTime = System.currentTimeMillis();
         
@@ -45,7 +45,7 @@ public class InLimboLimiterTest {
         
         ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario());
         
-        final InLimboLimiter limiter = new InLimboLimiter().applyRestrictionWhen(2, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED).to(scenarios);
+        final InLimboLimiter limiter = new InLimboLimiter().block(scenarios).when(2, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED);
         
         limiter.next();
         limiter.next();
@@ -78,7 +78,7 @@ public class InLimboLimiterTest {
             }
         };
         
-        InLimboLimiter limiter = new InLimboLimiter().applyRestrictionWhen(100, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED).to(scenarios);
+        InLimboLimiter limiter = new InLimboLimiter().block(scenarios).when(100, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED);
         passThroughPipe.register(limiter);
                 
         new ConcurrentScenarioRunner().queue(limiter).allocate(10, THREADS).runFor(60, SECONDS).go();            

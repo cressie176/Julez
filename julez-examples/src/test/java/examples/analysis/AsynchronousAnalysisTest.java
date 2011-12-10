@@ -30,9 +30,9 @@ public class AsynchronousAnalysisTest {
         NoOpScenario scenario = new NoOpScenario();
         
         InLimboLimiter limiter = new InLimboLimiter()
-            .applyRestrictionWhen(5000, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED)
-            .to(new ScenarioRepeater(scenario))
-            .liftRestrictionWhen(2500, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED);
+            .block(new ScenarioRepeater(scenario))        
+            .when(5000, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED)            
+            .unblockWhen(2500, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED);
         
         scenario.register(new FanOutPipe(asynchronousPipe, limiter));
         
