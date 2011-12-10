@@ -22,7 +22,7 @@ public class ConcurrentThroughputTest {
         
         Scenario scenario = new HelloWorldScenario().register(throughputMonitor);                        
 
-        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));        
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);        
         
         new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).go();
 

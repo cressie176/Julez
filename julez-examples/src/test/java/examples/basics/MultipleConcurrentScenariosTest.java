@@ -27,12 +27,12 @@ public class MultipleConcurrentScenariosTest {
         
         Scenario helloWorldScenario = new HelloWorldScenario().register(new FanOutPipe(monitor1, combinedMonitor));
         
-        ScenarioSource helloWorldScenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(helloWorldScenario));
+        ScenarioSource helloWorldScenarios = new SizeLimiter().limit(new ScenarioRepeater(helloWorldScenario)).to(100, SCENARIOS);
         ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner().register(monitor1).allocate(10, THREADS).queue(helloWorldScenarios);
         
         Scenario goodbyeWorldScenario = new GoodbyeWorldScenario().register(new FanOutPipe(monitor2, combinedMonitor));
         
-        ScenarioSource goodbyeWorldScenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(goodbyeWorldScenario));
+        ScenarioSource goodbyeWorldScenarios = new SizeLimiter().limit(new ScenarioRepeater(goodbyeWorldScenario)).to(100, SCENARIOS);
         ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner().register(monitor2).allocate(10, THREADS).queue(goodbyeWorldScenarios);
 
         new MultiConcurrentScenarioRunner(runner1, runner2).register(combinedMonitor).go();

@@ -30,7 +30,7 @@ public class SizeLimiterTest {
     @Test
     public void capsNumberOfScenariosToSpecifiedSize() {     
         
-        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(new NoOpScenario()));
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(new NoOpScenario())).to(100, SCENARIOS);
                 
         SizeLimiter limiter = new SizeLimiter(scenarios, 10);  
                 
@@ -58,7 +58,7 @@ public class SizeLimiterTest {
         TestEventRepository repository = new TestEventRepository();
         Scenario scenario = new NoOpScenario().register(repository);
                 
-        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(200, SCENARIOS).to(new ScenarioRepeater(scenario));
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(200, SCENARIOS);
         
         SizeLimiter limiter = new SizeLimiter(scenarios, 100);  
         

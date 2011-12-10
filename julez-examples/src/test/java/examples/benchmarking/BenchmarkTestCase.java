@@ -26,7 +26,7 @@ public abstract class BenchmarkTestCase {
     
     protected void benchmark(Scenario scenario, int n) {
         
-        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(n, SCENARIOS).to(new ScenarioRepeater(scenario));
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(n, SCENARIOS);
         
         ConcurrentScenarioRunner runner = getScenarioRunner();
         runner.register(durationMonitor);

@@ -24,7 +24,7 @@ public class ScenarioOutcomeTest {
         
         Scenario scenario = new PassFailErrorScenario().register(resultMonitor);        
                         
-        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(200, SCENARIOS).to(new ScenarioRepeater(scenario));
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(200, SCENARIOS);
         
         new ConcurrentScenarioRunner().allocate(10, THREADS).queue(scenarios).go();
 

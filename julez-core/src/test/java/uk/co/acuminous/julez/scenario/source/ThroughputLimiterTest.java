@@ -32,7 +32,7 @@ public class ThroughputLimiterTest {
     public void limitsThroughputToSpecifiedFrequency() {        
         Scenario scenario = new NoOpScenario().register(throughputMonitor);
         
-        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));                                                                     
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);                                                                     
         
         ThroughputLimiter limiter = new ThroughputLimiter().applyLimitOf(50, SCENARIOS).perSecond().to(scenarios);
         
@@ -45,7 +45,7 @@ public class ThroughputLimiterTest {
     public void limittingThroughputForLongRunningScenariosDoesntCauseLag() {
         Scenario scenario = new SleepingScenario().register(throughputMonitor);
         
-        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(5, SCENARIOS).to(new ScenarioRepeater(scenario));                                                                     
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(5, SCENARIOS);                                                                     
         
         ThroughputLimiter limiter = new ThroughputLimiter().applyLimitOf(2, SCENARIOS).perSecond().to(scenarios);        
         

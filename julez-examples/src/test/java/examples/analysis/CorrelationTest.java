@@ -82,7 +82,7 @@ public class CorrelationTest extends EnterpriseTest {
 
         Scenario scenario = new NoOpScenario().register(fanoutPipe);
         
-        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));        
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);        
 
         new ConcurrentScenarioRunner().register(fanoutPipe).allocate(10, THREADS).queue(scenarios).go();
 
@@ -152,7 +152,7 @@ public class CorrelationTest extends EnterpriseTest {
         PassFailErrorScenario scenario = new PassFailErrorScenario();
         scenario.useEventFactory(scenarioEventFactory);
         scenario.register(monitor);        
-        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));                                                                     
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);                                                                     
 
         return new ConcurrentScenarioRunner()
             .useEventFactory(scenarioRunnerEventFactory)

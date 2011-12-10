@@ -17,12 +17,12 @@ public class SizeLimiter implements ScenarioSource {
         this.limit = limit;
     }
     
-    public SizeLimiter to(ScenarioSource scenarios) {
+    public SizeLimiter limit(ScenarioSource scenarios) {
         this.scenarios = scenarios;
         return this;
     }
     
-    public SizeLimiter applyLimitOf(long limit, JulezSugar units) {
+    public SizeLimiter to(long limit, JulezSugar units) {
         this.limit = limit;
         return this;
     }
