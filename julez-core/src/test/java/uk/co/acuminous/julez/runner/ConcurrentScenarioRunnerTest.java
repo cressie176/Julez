@@ -54,11 +54,11 @@ public class ConcurrentScenarioRunnerTest {
         
         Scenario scenario = new SleepingScenario(700, MILLISECONDS).register(repository);       
         
-        ScenarioSource scenarios = new ScenarioRepeater(scenario);                                                                     
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(10, SCENARIOS);                                                                     
         
-        new ConcurrentScenarioRunner().queue(scenarios).runFor(1, SECONDS).go();
+        new ConcurrentScenarioRunner().queue(scenarios).runFor(2, SECONDS).go();
         
-        assertEquals(2, repository.count(Event.TYPE, ScenarioEvent.BEGIN));
+        assertEquals(3, repository.count(Event.TYPE, ScenarioEvent.BEGIN));
     }
     
     @Test    
@@ -95,11 +95,11 @@ public class ConcurrentScenarioRunnerTest {
 
         Scenario scenario = new SleepingScenario(700, MILLISECONDS).register(repository);
         
-        ScenarioSource scenarios = new ScenarioRepeater(scenario);                                                                     
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(10, SCENARIOS);                                                                     
                 
-        new ConcurrentScenarioRunner().queue(scenarios).waitUntil(desiredStartTime).runFor(1, SECONDS).go();
+        new ConcurrentScenarioRunner().queue(scenarios).waitUntil(desiredStartTime).runFor(2, SECONDS).go();
         
-        assertEquals(2, repository.count(Event.TYPE, ScenarioEvent.BEGIN));
+        assertEquals(3, repository.count(Event.TYPE, ScenarioEvent.BEGIN));
     }    
     
     @Test
