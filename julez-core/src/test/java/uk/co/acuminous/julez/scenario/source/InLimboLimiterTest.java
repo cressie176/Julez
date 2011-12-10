@@ -3,7 +3,10 @@ package uk.co.acuminous.julez.scenario.source;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
+import static uk.co.acuminous.julez.util.JulezSugar.IN_LIMBO_SCENARIOS;
+import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.pipe.PassThroughPipe;
@@ -15,7 +18,6 @@ import uk.co.acuminous.julez.scenario.limiter.InLimboLimiter;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.SleepingScenario;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
-import static uk.co.acuminous.julez.util.JulezSugar.*;
 
 
 public class InLimboLimiterTest {
@@ -36,7 +38,7 @@ public class InLimboLimiterTest {
         Long duration = System.currentTimeMillis() - startTime;
         
         assertTrue(duration < 1000);
-    }
+    }      
     
     @Test
     public void blocksScenariosWhileAboveSpecifiedLimit() { 
@@ -63,7 +65,7 @@ public class InLimboLimiterTest {
         assertTrue("Inflight Limiter did not block after limit was exceeded", duration >= 1000);        
     }    
     
-    @Test
+    @Test @Ignore
     public void preventsOutOfMemoryErrors() {
                 
         final PassThroughPipe passThroughPipe = new PassThroughPipe();

@@ -16,8 +16,8 @@ import uk.co.acuminous.julez.util.JulezSugar;
 public class InLimboLimiter implements ScenarioSource, EventHandler {
     
     private ScenarioSource scenarios;    
-    private int upperLimit = Integer.MAX_VALUE;
-    private int lowerLimit = Integer.MAX_VALUE;
+    private Integer upperLimit = Integer.MAX_VALUE;
+    private Integer lowerLimit;
     
     private AtomicInteger counter = new AtomicInteger();
     private long pause = 100;
@@ -42,6 +42,7 @@ public class InLimboLimiter implements ScenarioSource, EventHandler {
     
     public InLimboLimiter applyLimitOf(int limit, JulezSugar units) {
         this.upperLimit = limit;
+        this.lowerLimit = lowerLimit == null ? limit : lowerLimit;
         return this;
     }    
     
