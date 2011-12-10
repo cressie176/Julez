@@ -15,13 +15,11 @@ public class CalendarBenchmarkTest extends BenchmarkTestCase {
     @Test
     public void benchmarkConstruction() {
         
-        Scenario scenario = new BaseScenario() {
+        benchmark(new BaseScenario() {
             @Override public void run() {
                 Calendar.getInstance();
             }            
-        };
-        
-        benchmark(scenario);
+        });
         
         System.out.println(String.format("%d x Calendar.getInstance() took %dms", repetitions, durationMonitor.getDuration()));
     }
@@ -29,15 +27,12 @@ public class CalendarBenchmarkTest extends BenchmarkTestCase {
     @Test
     public void benchmarkRolling() {
         
-        Scenario scenario = new BaseScenario() {
-            private Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/London"));
-            
+        benchmark(new BaseScenario() {
+            private Calendar calendar = Calendar.getInstance(TimeZone.getTimeZone("Europe/London"));            
             @Override public void run() {
                 calendar.roll(Calendar.DAY_OF_MONTH, 10);
             }            
-        };
-        
-        benchmark(scenario);
+        });
         
         System.out.println(String.format("%d x calendar.roll(DAY_OF_MONTH, 10) took %dms", repetitions, durationMonitor.getDuration()));
     }

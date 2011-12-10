@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.event.handler.ResultMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
@@ -18,15 +19,14 @@ public class ScenarioOutcomeTest {
 
     @Test
     public void demonstrateRecordingConcurrentScenarioResults() {
+
+        ResultMonitor resultMonitor = new ResultMonitor();        
         
-        PassFailErrorScenario scenario = new PassFailErrorScenario();
-        
-        ResultMonitor resultMonitor = new ResultMonitor();
-        scenario.register(resultMonitor);        
+        Scenario scenario = new PassFailErrorScenario().register(resultMonitor);        
                         
         ScenarioSource scenarios = new SizeLimiter().applyLimitOf(200, SCENARIOS).to(new ScenarioRepeater(scenario));
         
-        new ConcurrentScenarioRunner().queue(scenarios).allocate(10, THREADS).go();
+        new ConcurrentScenarioRunner().allocate(10, THREADS).queue(scenarios).go();
 
         assertEquals(129, resultMonitor.getPassCount());
         assertEquals(50, resultMonitor.getFailureCount());

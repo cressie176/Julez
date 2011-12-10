@@ -12,7 +12,6 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.test.TestEventRepository;
-import uk.co.acuminous.julez.test.TestUtils;
 
 public class JBehaveEmbedderScenarioTest {
 
@@ -30,9 +29,7 @@ public class JBehaveEmbedderScenarioTest {
     @Test
     public void runsJBehaveScenario() {
         
-        JBehaveEmbedderScenario scenario = new JBehaveEmbedderScenario(scenarioLocation, "jbehave-scenario-performs-steps.txt", new ScenarioSteps(stepRecorder));        
-        
-        scenario.run();
+        getEmbedderScenario("jbehave-scenario-performs-steps.txt").run();
         
         assertEquals(3, stepRecorder.size());
         assertEquals("given", stepRecorder.get(0));
@@ -43,11 +40,8 @@ public class JBehaveEmbedderScenarioTest {
     @Test
     public void raisesPassEventOnSuccess() {
         
-        JBehaveEmbedderScenario scenario = new JBehaveEmbedderScenario(scenarioLocation, "jbehave-scenario-performs-steps.txt", new ScenarioSteps(stepRecorder));        
+        getEmbedderScenario("jbehave-scenario-performs-steps.txt").register(repository).run();
         
-        scenario.register(repository);
-        
-        scenario.run();
         assertEquals(3, repository.count());                
         assertEquals(ScenarioEvent.BEGIN, repository.get(0).getType());        
         assertEquals(ScenarioEvent.PASS, repository.get(1).getType());
@@ -57,11 +51,7 @@ public class JBehaveEmbedderScenarioTest {
     @Test
     public void raisesErrorEventOnStoryNotFound() {
         
-        JBehaveEmbedderScenario scenario = new JBehaveEmbedderScenario(scenarioLocation, "does-not-exist.txt", new ScenarioSteps(stepRecorder));        
-        
-        scenario.register(repository);
-        
-        scenario.run();
+        getEmbedderScenario("does-not-exist.txt").register(repository).run();
 
         assertEquals(3, repository.count());
         
@@ -77,11 +67,7 @@ public class JBehaveEmbedderScenarioTest {
     @Test
     public void raisesErrorEventOnStepNotFound() {
         
-        JBehaveEmbedderScenario scenario = new JBehaveEmbedderScenario(scenarioLocation, "jbehave-scenario-handles-missing-steps.txt", new ScenarioSteps(stepRecorder));        
-        
-        scenario.register(repository);
-        
-        scenario.run();
+        getEmbedderScenario("jbehave-scenario-handles-missing-steps.txt").register(repository).run();
         
         assertEquals(3, repository.count());        
         assertEquals(ScenarioEvent.BEGIN, repository.first().getType());
@@ -96,11 +82,7 @@ public class JBehaveEmbedderScenarioTest {
     @Test
     public void raisesFailureEventWhenStepFails() {
         
-        JBehaveEmbedderScenario scenario = new JBehaveEmbedderScenario(scenarioLocation, "jbehave-scenario-handles-failures.txt", new ScenarioSteps(stepRecorder));        
-        
-        scenario.register(repository);
-        
-        scenario.run();
+        getEmbedderScenario("jbehave-scenario-handles-failures.txt").register(repository).run();
         
         assertEquals(3, repository.count());        
         assertEquals(ScenarioEvent.BEGIN, repository.first().getType());
@@ -115,13 +97,9 @@ public class JBehaveEmbedderScenarioTest {
     @Test
     public void raisesErrorEventWhenStepThrowsAnException() {
         
-        JBehaveEmbedderScenario scenario = new JBehaveEmbedderScenario(scenarioLocation, "jbehave-scenario-handles-errors.txt", new ScenarioSteps(stepRecorder));        
+        getEmbedderScenario("jbehave-scenario-handles-errors.txt").register(repository).run();
         
-        scenario.register(repository);
-        
-        scenario.run();
-        
-        assertEquals(3, TestUtils.countEvents(repository));
+        assertEquals(3, repository.count());
         
         assertEquals(ScenarioEvent.BEGIN, repository.first().getType());        
         
@@ -130,5 +108,9 @@ public class JBehaveEmbedderScenarioTest {
         assertEquals("Test Exception", event.getData().get("message"));
         
         assertEquals(ScenarioEvent.END, repository.last().getType());        
-    }    
+    }
+    
+    private JBehaveEmbedderScenario getEmbedderScenario(String story) {
+        return new JBehaveEmbedderScenario(scenarioLocation, story, new ScenarioSteps(stepRecorder));                
+    }
 }

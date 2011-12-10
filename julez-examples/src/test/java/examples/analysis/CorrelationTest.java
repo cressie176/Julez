@@ -19,6 +19,7 @@ import uk.co.acuminous.julez.event.filter.EventDataFilter;
 import uk.co.acuminous.julez.event.filter.EventFilter;
 import uk.co.acuminous.julez.event.handler.EventHandler;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
+import uk.co.acuminous.julez.event.pipe.EventPipe;
 import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.event.source.JdbcEventRepository;
 import uk.co.acuminous.julez.jdbc.DefaultEventSql;
@@ -50,12 +51,9 @@ public class CorrelationTest extends EnterpriseTest {
         
         TestEventRepository unfilteredRepository = new TestEventRepository();
         TestEventRepository filteredRepository = new TestEventRepository();
-        
-        EventDataFilter testRunFilter = new EventDataFilter().filterEventsWhere("TEST_RUN").matches(testRun1);
-        EventDataFilter testClientFilter = new EventDataFilter().filterEventsWhere("TEST_CLIENT").matches(testClient2);
-        
-        testRunFilter.register(testClientFilter);
-        testClientFilter.register(filteredRepository); 
+
+        EventFilter testClientFilter = new EventDataFilter().filterEventsWhere("TEST_CLIENT").matches(testClient2).register(filteredRepository);    
+        EventFilter testRunFilter = new EventDataFilter().filterEventsWhere("TEST_RUN").matches(testRun1).register(testClientFilter);
         
         FanOutPipe monitors = new FanOutPipe(unfilteredRepository, testRunFilter);
        
@@ -72,25 +70,6 @@ public class CorrelationTest extends EnterpriseTest {
         
         assertEquals(correlatedEvents * 4, uncorrelatedEvents);
     }
-    
-    private ConcurrentScenarioRunner initTestRun(String testRun, String testClient, EventHandler monitor) {
-        Map<String, String> correlationData = new HashMap<String, String>();
-        correlationData.put("TEST_RUN", testRun);
-        correlationData.put("TEST_CLIENT", testClient);
-        
-        ScenarioEventFactory scenarioEventFactory = new ScenarioEventFactory(correlationData);        
-        ScenarioRunnerEventFactory scenarioRunnerEventFactory = new ScenarioRunnerEventFactory(correlationData);
-
-        PassFailErrorScenario scenario = new PassFailErrorScenario();
-        scenario.useEventFactory(scenarioEventFactory);
-        scenario.register(monitor);        
-        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));                                                                     
-
-        return new ConcurrentScenarioRunner()
-            .useEventFactory(scenarioRunnerEventFactory)
-            .register(monitor)
-            .queue(scenarios);
-    }
         
     @Test
     public void demonstratePosthumousResultAnalysis() {        
@@ -98,19 +77,14 @@ public class CorrelationTest extends EnterpriseTest {
         initDatabaseInfrastructure();
         
         ThroughputMonitor throughputMonitor1 = new ThroughputMonitor();
-        FanOutPipe fanoutPipe = new FanOutPipe();
-        fanoutPipe.registerAll(throughputMonitor1, jdbcEventRepository);
+        
+        EventPipe fanoutPipe = new FanOutPipe().registerAll(throughputMonitor1, jdbcEventRepository);
 
-        Scenario scenario = new NoOpScenario();
-        scenario.register(fanoutPipe);
+        Scenario scenario = new NoOpScenario().register(fanoutPipe);
         
         ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));        
 
-        new ConcurrentScenarioRunner()
-            .register(fanoutPipe)
-            .allocate(10, THREADS)
-            .queue(scenarios)
-            .go();
+        new ConcurrentScenarioRunner().register(fanoutPipe).allocate(10, THREADS).queue(scenarios).go();
 
         ThroughputMonitor throughputMonitor2 = new ThroughputMonitor();
         jdbcEventRepository.register(throughputMonitor2);
@@ -128,13 +102,13 @@ public class CorrelationTest extends EnterpriseTest {
         
         for (String testRun : Arrays.asList("A", "B", "C")) {
             
-            initTestRun(testRun, "", jdbcEventRepository).go();
+            initTestRun(testRun, jdbcEventRepository).go();
             
             ThroughputMonitor monitor = new ThroughputMonitor();
+            
             EventFilter filter = new EventDataFilter().filterEventsWhere("TEST_RUN").matches(testRun).register(monitor);
             
-            jdbcEventRepository.register(filter);
-            jdbcEventRepository.raise();
+            jdbcEventRepository.register(filter).raise();
 
             System.out.println(String.format("TestRun %s: %d", testRun, monitor.getThroughput()));            
         }
@@ -155,13 +129,36 @@ public class CorrelationTest extends EnterpriseTest {
             CorrelatingEventSql sql = new CorrelatingEventSql(columnMapper.getValues(), testRun);
             jdbcEventRepository = new JdbcEventRepository(dataSource, columnMapper, sql);
             
-            ThroughputMonitor monitor = new ThroughputMonitor();        
-            jdbcEventRepository.register(monitor);
-            jdbcEventRepository.raise();
+            ThroughputMonitor monitor = new ThroughputMonitor();  
+            
+            jdbcEventRepository.register(monitor).raise();
 
             System.out.println(String.format("TestRun %s: %d", testRun, monitor.getThroughput()));
         }
     }
+     
+    private ConcurrentScenarioRunner initTestRun(String testRun, EventHandler monitor) {
+        return initTestRun(testRun, "", monitor);
+    }
+    
+    private ConcurrentScenarioRunner initTestRun(String testRun, String testClient, EventHandler monitor) {
+        Map<String, String> correlationData = new HashMap<String, String>();
+        correlationData.put("TEST_RUN", testRun);
+        correlationData.put("TEST_CLIENT", testClient);
+        
+        ScenarioEventFactory scenarioEventFactory = new ScenarioEventFactory(correlationData);        
+        ScenarioRunnerEventFactory scenarioRunnerEventFactory = new ScenarioRunnerEventFactory(correlationData);
+
+        PassFailErrorScenario scenario = new PassFailErrorScenario();
+        scenario.useEventFactory(scenarioEventFactory);
+        scenario.register(monitor);        
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));                                                                     
+
+        return new ConcurrentScenarioRunner()
+            .useEventFactory(scenarioRunnerEventFactory)
+            .register(monitor)
+            .queue(scenarios);
+    }    
     
     @Override    
     protected void createEventTable() {

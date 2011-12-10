@@ -14,13 +14,11 @@ public class JodaTimeBenchmarkTest extends BenchmarkTestCase {
     @Test
     public void benchmarkConstruction() {
         
-        Scenario scenario = new BaseScenario() {
+        benchmark(new BaseScenario() {
             @Override public void run() {
                 new DateTime();
             }            
-        };
-        
-        benchmark(scenario);
+        });
         
         System.out.println(String.format("%d x new DateTime() took %dms", repetitions, durationMonitor.getDuration()));
     }
@@ -28,15 +26,12 @@ public class JodaTimeBenchmarkTest extends BenchmarkTestCase {
     @Test
     public void benchmarkRolling() {
         
-        Scenario scenario = new BaseScenario() {
-            private DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/London"));
-            
+        benchmark(new BaseScenario() {
+            private DateTime dateTime = new DateTime(DateTimeZone.forID("Europe/London"));            
             @Override public void run() {
                 dateTime = dateTime.plusDays(10);
             }            
-        };
-        
-        benchmark(scenario);
+        });
         
         System.out.println(String.format("%d x dateTime = dateTime.plusDays(10) took %dms", repetitions, durationMonitor.getDuration()));
     }    

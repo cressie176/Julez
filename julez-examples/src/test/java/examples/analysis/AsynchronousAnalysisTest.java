@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.event.pipe.AsynchronousPipe;
+import uk.co.acuminous.julez.event.pipe.EventPipe;
 import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.limiter.InLimboLimiter;
@@ -22,8 +23,7 @@ public class AsynchronousAnalysisTest {
         
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
         
-        AsynchronousPipe asynchronousPipe = new AsynchronousPipe();
-        asynchronousPipe.register(throughputMonitor);        
+        EventPipe asynchronousPipe = new AsynchronousPipe().register(throughputMonitor);        
         
         Thread monitorThread = detach(throughputMonitor);        
         
@@ -31,18 +31,11 @@ public class AsynchronousAnalysisTest {
         ScenarioRepeater scenarios = new ScenarioRepeater(scenario);
         InLimboLimiter limiter = new InLimboLimiter().applyLimitOf(5000, IN_LIMBO_SCENARIOS).to(scenarios).liftLimitAt(2500, IN_LIMBO_SCENARIOS);
         
-        FanOutPipe fanOutPipe = new FanOutPipe(asynchronousPipe, limiter);        
-        scenario.register(fanOutPipe);
+        scenario.register(new FanOutPipe(asynchronousPipe, limiter));
         
-        new ConcurrentScenarioRunner()
-            .register(asynchronousPipe)
-            .allocate(3, THREADS)
-            .queue(limiter)
-            .runFor(10, SECONDS)
-            .go();
+        new ConcurrentScenarioRunner().register(asynchronousPipe).allocate(3, THREADS).queue(limiter).runFor(10, SECONDS).go();
         
-        monitorThread.interrupt();
-        
+        monitorThread.interrupt();        
     }
 
     private Thread detach(final ThroughputMonitor throughputMonitor) {

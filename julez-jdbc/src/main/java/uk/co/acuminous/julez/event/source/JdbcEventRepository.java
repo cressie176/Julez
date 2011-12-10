@@ -14,13 +14,12 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.pipe.PassThroughPipe;
-import uk.co.acuminous.julez.event.repository.EventRepository;
+import uk.co.acuminous.julez.event.repository.BaseEventRepository;
 import uk.co.acuminous.julez.jdbc.DefaultEventSql;
 import uk.co.acuminous.julez.jdbc.SqlStatementProvider;
 import uk.co.acuminous.julez.mapper.TwoWayMapper;
 
-public class JdbcEventRepository extends PassThroughPipe implements EventRepository {
+public class JdbcEventRepository extends BaseEventRepository {
 
     private final JdbcTemplate jdbcTemplate;
     private final TwoWayMapper columnMapper;

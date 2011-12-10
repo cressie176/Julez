@@ -43,8 +43,7 @@ public class ThroughputLimiterTest {
     
     @Test
     public void limittingThroughputForLongRunningScenariosDoesntCauseLag() {
-        SleepingScenario scenario = new SleepingScenario();
-        scenario.register(throughputMonitor);
+        Scenario scenario = new SleepingScenario().register(throughputMonitor);
         
         ScenarioSource scenarios = new SizeLimiter().applyLimitOf(5, SCENARIOS).to(new ScenarioRepeater(scenario));                                                                     
         

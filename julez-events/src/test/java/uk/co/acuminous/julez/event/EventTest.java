@@ -16,7 +16,7 @@ public class EventTest {
 
     @Test
     public void verboseConvenienceConstructorInitialisesEventCorrectly() {
-        Event event = new MinimalImplementationOfEvent("id", 1L, "type");
+        Event event = new Event("id", 1L, "type");
         
         assertEquals("id", event.get(Event.ID));
         assertEquals("1", event.get(Event.TIMESTAMP));
@@ -25,7 +25,7 @@ public class EventTest {
     
     @Test
     public void simpleConvenienceConstructorInitialisesEventCorrectly() {
-        Event event = new MinimalImplementationOfEvent("type");
+        Event event = new Event("type");
         
         assertNotNull(event.get(Event.ID));
         assertNotNull("1", event.get(Event.TIMESTAMP));
@@ -35,14 +35,14 @@ public class EventTest {
     @Test
     public void assertMapContructorIntialisesEventCorrectly() {
         Map<String, String> data = new HashMap<String, String>();
-        Event event = new MinimalImplementationOfEvent(data);
+        Event event = new Event(data);
         
         assertSame(data, event.getData());
     }
     
     @Test
     public void assertDataAccessorsReturnCorrectValues() {
-        Event event = new MinimalImplementationOfEvent("id", 1L, "type");
+        Event event = new Event("id", 1L, "type");
         event.put("Foo", "Bar");
         
         assertEquals("id", event.getId());
@@ -53,7 +53,7 @@ public class EventTest {
 
     @Test
     public void toStringIncludesClassName() {
-        Event event = new MinimalImplementationOfEvent();        
+        Event event = new Event("type");        
         String text = event.toString();
         assertTrue("Class name not found in Event.toString()", text.startsWith(event.getClass().getName()));
     }    
@@ -67,7 +67,7 @@ public class EventTest {
     
     @Test
     public void toStringSortsEventDataConsistently() {
-        Event event = new MinimalImplementationOfEvent("id", 1L, "type");
+        Event event = new Event("id", 1L, "type");
         event.getData().put("A", "Last");
         event.getData().put("!Z", "First");
         String text = event.toString().replace(event.getClass().getName(), "");
@@ -76,8 +76,8 @@ public class EventTest {
     
     @Test
     public void equalsReturnsTrueWhenTwoEventsAreEquivalent() {
-       Event event1 = new MinimalImplementationOfEvent();
-       Event event2 = new MinimalImplementationOfEvent();
+        Event event1 = new Event(new HashMap<String, String>());
+        Event event2 = new Event(new TreeMap<String, String>());
        
        assertEquals(event1, event2); 
        
@@ -88,8 +88,8 @@ public class EventTest {
     
     @Test
     public void equalsReturnsTrueUsingDifferentUnderlyingMapImplementations() {
-       Event event1 = new MinimalImplementationOfEvent(new HashMap<String, String>());
-       Event event2 = new MinimalImplementationOfEvent(new TreeMap<String, String>());
+       Event event1 = new Event(new HashMap<String, String>());
+       Event event2 = new Event(new TreeMap<String, String>());
        
        assertEquals(event1, event2); 
        
@@ -100,8 +100,8 @@ public class EventTest {
     
     @Test
     public void equalsReturnsFalseWhenTwoEventsAreEquivalent() {
-        Event event1 = new MinimalImplementationOfEvent();
-        Event event2 = new MinimalImplementationOfEvent();
+        Event event1 = new Event(new HashMap<String, String>());
+        Event event2 = new Event(new TreeMap<String, String>());
         
         event1.put("a", "1");
         assertFalse(String.format("%s != %s", event1, event2), event1.equals(event2));
@@ -109,20 +109,5 @@ public class EventTest {
         event2.put("a", "1");
         event2.put("b", "2");
         assertFalse(String.format("%s != %s", event1, event2), event1.equals(event2));        
-    }
-    
-    class MinimalImplementationOfEvent extends Event {
-        public MinimalImplementationOfEvent() {
-            super("id", 1L, "type");
-        }
-        public MinimalImplementationOfEvent(Map<String, String> data) {
-            super(data);
-        }
-        public MinimalImplementationOfEvent(String type) {
-            super(type);
-        }        
-        public MinimalImplementationOfEvent(String id, Long timestamp, String type) {
-            super(id, timestamp, type);
-        }
     }
 }

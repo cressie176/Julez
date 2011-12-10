@@ -27,6 +27,7 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
+import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
@@ -38,11 +39,11 @@ public class NettyWebTest extends WebTestCase {
     @Test
     public void demonstrateAConcurrentWebTestUsingNetty() {
 
-        NettyScenario scenario = new NettyScenario();
-        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));
-
         ThroughputMonitor throughputMonitor = new ThroughputMonitor();
-        scenario.register(throughputMonitor);
+        
+        Scenario scenario = new NettyScenario().register(throughputMonitor);
+        
+        ScenarioSource scenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(scenario));
 
         new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).go();
 

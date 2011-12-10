@@ -10,6 +10,7 @@ import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.MultiConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
+import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
@@ -24,23 +25,17 @@ public class MultipleConcurrentScenariosTest {
         ThroughputMonitor monitor1 = new ThroughputMonitor();
         ThroughputMonitor monitor2 = new ThroughputMonitor();
         
-        HelloWorldScenario helloWorldScenario = new HelloWorldScenario();
-        helloWorldScenario.register(new FanOutPipe(monitor1, combinedMonitor));
+        Scenario helloWorldScenario = new HelloWorldScenario().register(new FanOutPipe(monitor1, combinedMonitor));
         
         ScenarioSource helloWorldScenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(helloWorldScenario));
-        ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner().queue(helloWorldScenarios).allocate(10, THREADS);
-        runner1.register(monitor1);
+        ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner().register(monitor1).allocate(10, THREADS).queue(helloWorldScenarios);
         
-        GoodbyeWorldScenario goodbyeWorldScenario = new GoodbyeWorldScenario();
-        goodbyeWorldScenario.register(new FanOutPipe(monitor2, combinedMonitor));
+        Scenario goodbyeWorldScenario = new GoodbyeWorldScenario().register(new FanOutPipe(monitor2, combinedMonitor));
         
         ScenarioSource goodbyeWorldScenarios = new SizeLimiter().applyLimitOf(100, SCENARIOS).to(new ScenarioRepeater(goodbyeWorldScenario));
-        ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner().queue(goodbyeWorldScenarios).allocate(10, THREADS);
-        runner2.register(monitor2);
+        ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner().register(monitor2).allocate(10, THREADS).queue(goodbyeWorldScenarios);
 
-        MultiConcurrentScenarioRunner runner = new MultiConcurrentScenarioRunner(runner1, runner2);
-        runner.register(combinedMonitor);
-        runner.go();
+        new MultiConcurrentScenarioRunner(runner1, runner2).register(combinedMonitor).go();
 
         assertMinimumThroughput(500, monitor1.getThroughput());
         assertMinimumThroughput(250, monitor2.getThroughput());

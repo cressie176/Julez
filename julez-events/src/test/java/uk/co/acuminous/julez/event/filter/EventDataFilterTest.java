@@ -4,14 +4,11 @@ import static org.junit.Assert.assertEquals;
 
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.test.TestEventRepository;
-import uk.co.acuminous.julez.test.TestUtils;
 
 public class EventDataFilterTest {
 
@@ -62,7 +59,7 @@ public class EventDataFilterTest {
         Event wantedEvent = new Event("A/1");
         
         filter.onEvent(wantedEvent);                
-        filter.onEvent(new Event("Wanted/bar"));
+        filter.onEvent(new Event("A/2"));
         
         assertEquals(1, repository.count());
         assertEquals(wantedEvent, repository.first());
@@ -81,9 +78,7 @@ public class EventDataFilterTest {
         filter.onEvent(wantedEvent3);        
         filter.onEvent(new Event("B/1"));
         
-        Assert.assertTrue(TestUtils.checkEvents(new Event[] { 
-        		wantedEvent1, wantedEvent2, wantedEvent3}, 
-        		repository));
+        repository.assertEvents(wantedEvent1, wantedEvent2, wantedEvent3);
     }    
     
     @Test

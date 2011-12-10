@@ -1,6 +1,7 @@
 package uk.co.acuminous.julez.test;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import uk.co.acuminous.julez.event.Event;
@@ -54,5 +55,18 @@ public class TestEventRepository extends InMemoryEventRepository {
     
     public List<Event> getAll(String key, String pattern) {
         return getAll(new EventDataFilter().filterEventsWhere(key).matches(pattern));
+    }
+    
+    public void assertEvents(Event...expectedEvents) {
+        if (expectedEvents.length != events.size()) {
+            throw new AssertionError(String.format("Actual number of events %d did not match expected number of events %d", events.size(), expectedEvents.length));
+        }
+        Iterator<Event> actualEvents = events.iterator();
+        for (Event expected : expectedEvents) {
+            Event actual = actualEvents.next();
+            if (!expected.equals(actual)) {
+                throw new AssertionError(String.format("Actual event %s does not match expected event %s", actual, expected));
+            }
+        }   
     }
 }
