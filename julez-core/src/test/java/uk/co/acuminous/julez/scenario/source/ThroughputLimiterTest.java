@@ -1,7 +1,8 @@
 package uk.co.acuminous.julez.scenario.source;
 
 import static org.junit.Assert.assertEquals;
-import static uk.co.acuminous.julez.util.JulezSugar.*;
+import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
+import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -13,7 +14,6 @@ import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.limiter.ThroughputLimiter;
 import uk.co.acuminous.julez.test.NoOpScenario;
-import uk.co.acuminous.julez.test.SleepingScenario;
 
 public class ThroughputLimiterTest {
 
@@ -34,23 +34,10 @@ public class ThroughputLimiterTest {
         
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);                                                                     
         
-        ThroughputLimiter limiter = new ThroughputLimiter().applyLimitOf(50, SCENARIOS).perSecond().to(scenarios);
+        ThroughputLimiter limiter = new ThroughputLimiter().applyLimitOf(100, SCENARIOS).perSecond().to(scenarios);
         
-        runner.queue(limiter).allocate(10, THREADS).go();
+        runner.queue(limiter).allocate(4, THREADS).go();
         
-        assertEquals(50, throughputMonitor.getThroughput());
-    }
-    
-    @Test
-    public void limittingThroughputForLongRunningScenariosDoesntCauseLag() {
-        Scenario scenario = new SleepingScenario().register(throughputMonitor);
-        
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(5, SCENARIOS);                                                                     
-        
-        ThroughputLimiter limiter = new ThroughputLimiter().applyLimitOf(2, SCENARIOS).perSecond().to(scenarios);        
-        
-        runner.queue(limiter).allocate(10, THREADS).go();
-        
-        assertEquals(2, throughputMonitor.getThroughput());
-    }    
+        assertEquals(100, throughputMonitor.getThroughput());
+    }  
 }

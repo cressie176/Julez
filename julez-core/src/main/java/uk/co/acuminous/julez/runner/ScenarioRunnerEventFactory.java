@@ -28,5 +28,4 @@ public class ScenarioRunnerEventFactory {
     public ScenarioRunnerEvent end() {
         return newInstance(ScenarioRunnerEvent.END);
     }
-
 }

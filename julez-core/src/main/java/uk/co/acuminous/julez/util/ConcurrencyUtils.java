@@ -47,15 +47,16 @@ public class ConcurrencyUtils {
         }, timeout);
     }
 
-    public static void sleep(long value, TimeUnit timeUnit) {
+    public static boolean sleep(long value, TimeUnit timeUnit) {
         try {
             Thread.sleep(Math.max(TimeUnit.MILLISECONDS.convert(value, timeUnit), 0));
         } catch (InterruptedException e) {
-            // Meh
+            return false;
         }        
+        return true;
     }
 
-    public static void sleepUntil(long wakeUp) {
-        sleep(wakeUp - System.currentTimeMillis(), TimeUnit.MILLISECONDS);        
+    public static boolean sleepUntil(long wakeUp) {
+        return sleep(wakeUp - System.currentTimeMillis(), TimeUnit.MILLISECONDS);        
     }        
 }

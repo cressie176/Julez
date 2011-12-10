@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
-import org.junit.Ignore;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.pipe.PassThroughPipe;
@@ -65,15 +64,18 @@ public class InLimboLimiterTest {
         assertTrue("Inflight Limiter did not block after limit was exceeded", duration >= 1000);        
     }    
     
-    @Test @Ignore
+    @Test
     public void preventsOutOfMemoryErrors() {
                 
         final PassThroughPipe passThroughPipe = new PassThroughPipe();
         
         ScenarioSource scenarios = new ScenarioSource() {
-            @Override public Scenario next() {
-                SleepingScenario scenario = new SleepingScenario();
-                scenario.register(passThroughPipe);
+            @Override public Scenario next() {                
+                SleepingScenario scenario = new SleepingScenario(5, SECONDS) {
+                    @SuppressWarnings("unused")
+                    String lotsOfData = String.format("%10000d", System.currentTimeMillis());
+                };
+                scenario.register(passThroughPipe);                
                 return scenario;
             }
         };
@@ -81,7 +83,7 @@ public class InLimboLimiterTest {
         InLimboLimiter limiter = new InLimboLimiter().block(scenarios).when(100, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED);
         passThroughPipe.register(limiter);
                 
-        new ConcurrentScenarioRunner().queue(limiter).allocate(10, THREADS).runFor(60, SECONDS).go();            
+        new ConcurrentScenarioRunner().queue(limiter).allocate(4, THREADS).runFor(5, SECONDS).go();            
     }
     
 }

@@ -6,6 +6,7 @@ import java.util.List;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.filter.EventDataFilter;
+import uk.co.acuminous.julez.event.filter.EventFilter;
 import uk.co.acuminous.julez.event.handler.InMemoryEventRepository;
 
 public class TestEventRepository extends InMemoryEventRepository {
@@ -40,10 +41,22 @@ public class TestEventRepository extends InMemoryEventRepository {
     }
     
     public int count(String key, String pattern) {
-        return getAll(key, pattern).size();
+        return count(new EventDataFilter().filterEventsWhere(key).matches(pattern));
     }
     
-    public List<Event> getAll(EventDataFilter filter) {
+    public int count(EventFilter filter) {
+        return list(filter).size();
+    }
+    
+    public List<Event> list() {
+        return new ArrayList<Event>(events);
+    }      
+        
+    public List<Event> list(String key, String pattern) {
+        return list(new EventDataFilter().filterEventsWhere(key).matches(pattern));
+    }    
+    
+    public List<Event> list(EventFilter filter) {
         List<Event> filteredEvents = new ArrayList<Event>();
         for (Event event : events) {
             if (filter.accept(event)) {
@@ -51,10 +64,6 @@ public class TestEventRepository extends InMemoryEventRepository {
             }
         }
         return filteredEvents;
-    }
-    
-    public List<Event> getAll(String key, String pattern) {
-        return getAll(new EventDataFilter().filterEventsWhere(key).matches(pattern));
     }
     
     public void assertEvents(Event...expectedEvents) {

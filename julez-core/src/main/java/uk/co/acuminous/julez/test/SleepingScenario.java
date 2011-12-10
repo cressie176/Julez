@@ -25,7 +25,11 @@ public class SleepingScenario extends BaseScenario {
     @Override
     public void run() {
         handler.onEvent(eventFactory.begin());        
-        ConcurrencyUtils.sleep(duration, MILLISECONDS);
+        if (ConcurrencyUtils.sleep(duration, MILLISECONDS)) {
+            handler.onEvent(eventFactory.pass());
+        } else {
+            handler.onEvent(eventFactory.error());
+        }
         handler.onEvent(eventFactory.end());        
     }
 }

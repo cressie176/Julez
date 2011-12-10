@@ -29,7 +29,5 @@ public abstract class BaseEventFilter extends PassThroughPipe implements EventFi
             }
         }
         return filteredEvents;
-    }   
-    
-    protected abstract boolean accept(Event event);    
+    }        
 }

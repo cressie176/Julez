@@ -1,5 +1,6 @@
 package uk.co.acuminous.julez.runner;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
@@ -49,22 +50,33 @@ public class ConcurrentScenarioRunnerTest {
     }
     
     @Test    
-    public void stopsWhenScenariosTakeTooLong() {
+    public void doesntBeginNewScenariosAfterRunTimeIsExceeded() {
         
-        Scenario scenario = new SleepingScenario(2, SECONDS).register(repository);       
+        Scenario scenario = new SleepingScenario(700, MILLISECONDS).register(repository);       
         
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(10, SCENARIOS);                                                                     
+        ScenarioSource scenarios = new ScenarioRepeater(scenario);                                                                     
         
-        new ConcurrentScenarioRunner().queue(scenarios).runFor(3, SECONDS).go();
+        new ConcurrentScenarioRunner().queue(scenarios).runFor(1, SECONDS).go();
         
         assertEquals(2, repository.count(Event.TYPE, ScenarioEvent.BEGIN));
-        assertEquals(1, repository.count(Event.TYPE, ScenarioEvent.END));
+    }
+    
+    @Test    
+    public void interuptsInFlightScenariosWhenRunTimeIsExceeded() {
+        
+        Scenario scenario = new SleepingScenario(700, MILLISECONDS).register(repository);       
+        
+        ScenarioSource scenarios = new ScenarioRepeater(scenario);                                                                     
+        
+        new ConcurrentScenarioRunner().queue(scenarios).runFor(1, SECONDS).go();
+        
+        assertEquals(1, repository.count(Event.TYPE, ScenarioEvent.ERROR));
     }
     
     @Test    
     public void defersStartUntilAGivenTime() {
         
-        long desiredStartTime = new DateTime().plusSeconds(1).getMillis();       
+        long desiredStartTime = new DateTime().plusMillis(500).getMillis();       
 
         Scenario scenario = new NoOpScenario().register(repository);
         
@@ -73,21 +85,21 @@ public class ConcurrentScenarioRunnerTest {
         new ConcurrentScenarioRunner().queue(scenarios).waitUntil(desiredStartTime).go();
         
         assertTrue("Runner did not defer start", repository.first().getTimestamp() >= desiredStartTime);
+        assertTrue("Runner deferred start by too long", repository.first().getTimestamp() < desiredStartTime + 200);
     } 
     
     @Test    
-    public void stopsWhenScenariosTakeTooLongFromTheSpecifiedStartTime() {
+    public void considersDeferredStartWhenDeterminingWhetherTheGivenRunTimeExceeded() {
         
-        long desiredStartTime = new DateTime().plusSeconds(5).getMillis();       
+        long desiredStartTime = new DateTime().plusMillis(500).getMillis();       
 
-        Scenario scenario = new SleepingScenario(4, SECONDS).register(repository);
+        Scenario scenario = new SleepingScenario(700, MILLISECONDS).register(repository);
         
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(3, SCENARIOS);                                                                     
+        ScenarioSource scenarios = new ScenarioRepeater(scenario);                                                                     
                 
-        new ConcurrentScenarioRunner().queue(scenarios).waitUntil(desiredStartTime).runFor(5, SECONDS).go();
+        new ConcurrentScenarioRunner().queue(scenarios).waitUntil(desiredStartTime).runFor(1, SECONDS).go();
         
         assertEquals(2, repository.count(Event.TYPE, ScenarioEvent.BEGIN));
-        assertEquals(1, repository.count(Event.TYPE, ScenarioEvent.END));
     }    
     
     @Test
@@ -101,7 +113,7 @@ public class ConcurrentScenarioRunnerTest {
 
     @Test
     public void raisesBeginEventOnOrAfterDeferedStart() {
-        long desiredStartTime = new DateTime().plusSeconds(5).getMillis();       
+        long desiredStartTime = new DateTime().plusSeconds(1).getMillis();       
         
         Scenario scenario = new NoOpScenario().register(repository);
         

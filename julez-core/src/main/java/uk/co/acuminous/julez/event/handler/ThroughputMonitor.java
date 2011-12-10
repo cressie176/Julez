@@ -18,11 +18,15 @@ public class ThroughputMonitor implements EventHandler {
             started = event.getTimestamp();
         } else if (ScenarioRunnerEvent.END.equals(event.getType())) {
             finished = event.getTimestamp();
-        } else if (ScenarioEvent.END.equals(event.getType())) {
+        } else if (ScenarioEvent.END.equals(event.getType()) && isInTimeframe(event)) {
             completed.incrementAndGet();
         }
     }
 
+    private boolean isInTimeframe(Event event) {
+        return (started != 0 && event.getTimestamp() >= started) && (finished == 0 || event.getTimestamp() <= finished);
+    }
+    
     public int getThroughput() {
         long effectiveEnd = finished != 0 ? finished : System.currentTimeMillis();
         double duration = Math.max(effectiveEnd - started, 1);

@@ -49,7 +49,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     }
 
     public ConcurrentScenarioRunner waitUntil(long startTime) {
-        this.startTime = startTime + 1000;
+        this.startTime = startTime;
         return this;
     }
 
@@ -82,9 +82,7 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
         } catch (InterruptedException e) {
             // Meh
         } finally {
-            if (!executor.isShutdown()) {
-                executor.shutdownNow();
-            }
+            executor.shutdownNow();
         }
         handler.onEvent(eventFactory.end());        
     }
