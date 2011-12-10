@@ -39,7 +39,7 @@ public class ConcurrentJBehaveTest {
         FanOutPipe monitors = new FanOutPipe(throughputMonitor, resultMonitor);
         
         List<Scenario> list = new ArrayList<Scenario>();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 500; i++) {
             JBehaveStoryRunnerScenario scenario = new JBehaveStoryRunnerScenario(scenarioLocation, "examples/jbehave/calculator.story", new CalculatorSteps());
             scenario.register(monitors);
             list.add(scenario);
@@ -47,7 +47,7 @@ public class ConcurrentJBehaveTest {
         
         ScenarioSource scenarios = new ScenarioHopper(list);  
         
-        new ConcurrentScenarioRunner().register(throughputMonitor).allocate(3, THREADS).queue(scenarios).go();
+        new ConcurrentScenarioRunner().register(throughputMonitor).allocate(4, THREADS).queue(scenarios).go();
 
         assertMinimumThroughput(100, throughputMonitor.getThroughput());
         assertPassMark(100, resultMonitor.getPercentage());        
@@ -61,7 +61,7 @@ public class ConcurrentJBehaveTest {
         FanOutPipe monitors = new FanOutPipe(throughputMonitor, resultMonitor);
                 
         List<Scenario> list = new ArrayList<Scenario>();
-        for (int i = 0; i < 1000; i++) {
+        for (int i = 0; i < 500; i++) {
             JBehaveEmbedderScenario scenario = new JBehaveEmbedderScenario(scenarioLocation, "examples/jbehave/calculator.story", new CalculatorSteps());
             scenario.register(monitors);
             list.add(scenario);
@@ -69,7 +69,7 @@ public class ConcurrentJBehaveTest {
         
         ScenarioSource scenarios = new ScenarioHopper(list);
         
-        new ConcurrentScenarioRunner().register(throughputMonitor).allocate(3, THREADS).queue(scenarios).go();
+        new ConcurrentScenarioRunner().register(throughputMonitor).allocate(4, THREADS).queue(scenarios).go();
 
         assertMinimumThroughput(5, throughputMonitor.getThroughput());
         assertPassMark(100, resultMonitor.getPercentage());        

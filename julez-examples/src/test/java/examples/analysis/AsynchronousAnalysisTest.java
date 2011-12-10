@@ -36,7 +36,7 @@ public class AsynchronousAnalysisTest {
         
         scenario.register(new FanOutPipe(asynchronousPipe, limiter));
         
-        new ConcurrentScenarioRunner().register(asynchronousPipe).allocate(3, THREADS).queue(limiter).runFor(10, SECONDS).go();
+        new ConcurrentScenarioRunner().register(asynchronousPipe).allocate(4, THREADS).queue(limiter).runFor(5, SECONDS).go();
         
         monitorThread.interrupt();        
     }

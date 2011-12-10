@@ -17,16 +17,16 @@ import static uk.co.acuminous.julez.util.JulezSugar.*;
 
 public class JulezBenchmarkTest extends BenchmarkTestCase {
 
-    private int oneMillionTimes = 1000000;
+    private int oneHundredThousandTimes = 100000;
     private int oneThousandTimes = 1000;
     private ConcurrentScenarioRunner runner;
 
     @Test
     public void benchmarkSingleThreadedConcurrentScenarioRunnerUsingNoOpScenario() {
                 
-        benchmark(new NoOpScenario(), oneMillionTimes);
+        benchmark(new NoOpScenario(), oneHundredThousandTimes);
         
-        System.out.println(String.format("%d x Single threaded NoOp Scenarios took %dms", oneMillionTimes, durationMonitor.getDuration()));
+        System.out.println(String.format("%d x Single threaded NoOp Scenarios took %dms", oneHundredThousandTimes, durationMonitor.getDuration()));
     }
     
     @Test
@@ -34,9 +34,9 @@ public class JulezBenchmarkTest extends BenchmarkTestCase {
         
         runner = new ConcurrentScenarioRunner().allocate(10, THREADS);        
         
-        benchmark(new NoOpScenario(), oneMillionTimes);
+        benchmark(new NoOpScenario(), oneHundredThousandTimes);
         
-        System.out.println(String.format("%d x Multi threaded(%d) NoOp Scenarios took %dms", oneMillionTimes, 10, durationMonitor.getDuration()));
+        System.out.println(String.format("%d x Multi threaded(%d) NoOp Scenarios took %dms", oneHundredThousandTimes, 10, durationMonitor.getDuration()));
     } 
     
     @Test

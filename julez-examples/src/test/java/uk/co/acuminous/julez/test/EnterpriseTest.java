@@ -1,5 +1,7 @@
 package uk.co.acuminous.julez.test;
 
+import java.util.concurrent.TimeUnit;
+
 import javax.jms.QueueConnectionFactory;
 import javax.sql.DataSource;
 
@@ -43,6 +45,7 @@ public class EnterpriseTest {
 
         // The JMS event source re-raises events pulled asynchronously from the queue        
         jmsEventSource = new JmsEventSource(connectionFactory, marshaller);
+        jmsEventSource.setShutdownDelay(500, TimeUnit.MILLISECONDS);
         jmsEventSource.listen();        
     }
 

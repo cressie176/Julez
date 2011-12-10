@@ -1,6 +1,6 @@
 package uk.co.acuminous.julez.event.source;
 
-import static java.util.concurrent.TimeUnit.SECONDS;
+import static java.util.concurrent.TimeUnit.*;
 import static org.junit.Assert.assertEquals;
 
 import javax.jms.QueueConnectionFactory;
@@ -35,7 +35,7 @@ public class JmsEventSourceTest {
         repository = new TestEventRepository();                
 
         listener = new JmsEventSource(connectionFactory, marshaller);
-        listener.setShutdownDelay(1, SECONDS);
+        listener.setShutdownDelay(500, MILLISECONDS);
         listener.register(repository);
         listener.listen();        
         

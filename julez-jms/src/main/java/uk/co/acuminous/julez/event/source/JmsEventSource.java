@@ -1,7 +1,6 @@
 package uk.co.acuminous.julez.event.source;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
-import static java.util.concurrent.TimeUnit.SECONDS;
 
 import java.util.concurrent.TimeUnit;
 
@@ -73,7 +72,7 @@ public class JmsEventSource extends PassThroughPipe implements MessageListener, 
     public void shutdownWhenEmpty() {
         try {            
             while (System.currentTimeMillis() - lastReceivedTimestamp < shutdownDelay) {
-                ConcurrencyUtils.sleep(1, SECONDS);
+                ConcurrencyUtils.sleep(100, MILLISECONDS);
             }
         } finally {
             shutdown();

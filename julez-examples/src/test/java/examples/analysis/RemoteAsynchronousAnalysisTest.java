@@ -31,7 +31,7 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         Scenario scenario = new PassFailErrorScenario().register(jmsEventHandler);        
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);                                                                     
         
-        new ConcurrentScenarioRunner().register(jmsEventHandler).queue(scenarios).allocate(3, THREADS).go();
+        new ConcurrentScenarioRunner().register(jmsEventHandler).queue(scenarios).allocate(4, THREADS).go();
         
         jmsEventSource.shutdownWhenEmpty();
         
@@ -51,7 +51,7 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
         Scenario scenario = new PassFailErrorScenario().register(jmsEventHandler);        
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);                                                                     
                 
-        new ConcurrentScenarioRunner().register(jmsEventHandler).allocate(3, THREADS).queue(scenarios).go();
+        new ConcurrentScenarioRunner().register(jmsEventHandler).allocate(4, THREADS).queue(scenarios).go();
         
         jmsEventSource.shutdownWhenEmpty();
         
