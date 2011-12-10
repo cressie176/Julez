@@ -1,9 +1,8 @@
 package uk.co.acuminous.julez.event.handler;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Iterator;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.repository.BaseEventRepository;
@@ -14,7 +13,7 @@ public class InMemoryEventRepository extends BaseEventRepository implements Even
     protected Collection<Event> events;
 
     public InMemoryEventRepository() {
-        events = Collections.synchronizedList(new ArrayList<Event>());
+        events = new ConcurrentLinkedQueue<Event>();
     }
     
     public InMemoryEventRepository(Collection<Event> events) {
