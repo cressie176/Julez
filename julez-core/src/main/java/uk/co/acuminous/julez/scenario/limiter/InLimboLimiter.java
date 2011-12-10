@@ -40,13 +40,13 @@ public class InLimboLimiter implements ScenarioSource, EventHandler {
         return this;
     }
     
-    public InLimboLimiter applyLimitOf(int limit, JulezSugar units) {
+    public InLimboLimiter applyRestrictionWhen(int limit, JulezSugar units) {
         this.upperLimit = limit;
         this.lowerLimit = lowerLimit == null ? limit : lowerLimit;
         return this;
     }    
     
-    public InLimboLimiter liftLimitAt(int limit, JulezSugar units) {
+    public InLimboLimiter liftRestrictionWhen(int limit, JulezSugar units) {
         this.lowerLimit = limit;
         return this;
     }    

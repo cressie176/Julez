@@ -3,7 +3,7 @@ package uk.co.acuminous.julez.scenario.source;
 import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
-import static uk.co.acuminous.julez.util.JulezSugar.IN_LIMBO_SCENARIOS;
+import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
 import org.junit.Ignore;
@@ -27,7 +27,7 @@ public class InLimboLimiterTest {
         
         ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario());
         
-        InLimboLimiter limiter = new InLimboLimiter().applyLimitOf(2, IN_LIMBO_SCENARIOS).to(scenarios);
+        InLimboLimiter limiter = new InLimboLimiter().applyRestrictionWhen(2, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED).to(scenarios);
         
         long startTime = System.currentTimeMillis();
         
@@ -45,7 +45,7 @@ public class InLimboLimiterTest {
         
         ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario());
         
-        final InLimboLimiter limiter = new InLimboLimiter().applyLimitOf(2, IN_LIMBO_SCENARIOS).to(scenarios);
+        final InLimboLimiter limiter = new InLimboLimiter().applyRestrictionWhen(2, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED).to(scenarios);
         
         limiter.next();
         limiter.next();
@@ -78,7 +78,7 @@ public class InLimboLimiterTest {
             }
         };
         
-        InLimboLimiter limiter = new InLimboLimiter().applyLimitOf(100, IN_LIMBO_SCENARIOS).to(scenarios);
+        InLimboLimiter limiter = new InLimboLimiter().applyRestrictionWhen(100, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED).to(scenarios);
         passThroughPipe.register(limiter);
                 
         new ConcurrentScenarioRunner().queue(limiter).allocate(10, THREADS).runFor(60, SECONDS).go();            
