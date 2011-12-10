@@ -26,6 +26,7 @@ import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.SleepingScenario;
 import uk.co.acuminous.julez.test.TestEventRepository;
+import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 public class ConcurrentScenarioRunnerTest {
     
@@ -57,6 +58,8 @@ public class ConcurrentScenarioRunnerTest {
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(10, SCENARIOS);                                                                     
         
         new ConcurrentScenarioRunner().queue(scenarios).runFor(2, SECONDS).go();
+        
+        ConcurrencyUtils.sleep(1, SECONDS); // Workaround for ConcurrentModificationException        
         
         assertEquals(3, repository.count(Event.TYPE, ScenarioEvent.BEGIN));
     }
@@ -98,6 +101,8 @@ public class ConcurrentScenarioRunnerTest {
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(10, SCENARIOS);                                                                     
                 
         new ConcurrentScenarioRunner().queue(scenarios).waitUntil(desiredStartTime).runFor(2, SECONDS).go();
+        
+        ConcurrencyUtils.sleep(1, SECONDS); // Workaround for ConcurrentModificationException
         
         assertEquals(3, repository.count(Event.TYPE, ScenarioEvent.BEGIN));
     }    
