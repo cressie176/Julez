@@ -83,7 +83,7 @@ public class InLimboLimiterTest {
         InLimboLimiter limiter = new InLimboLimiter().block(scenarios).when(100, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED);
         passThroughPipe.register(limiter);
                 
-        new ConcurrentScenarioRunner().queue(limiter).allocate(4, THREADS).runFor(5, SECONDS).go();            
+        new ConcurrentScenarioRunner().queue(limiter).allocate(4, THREADS).runFor(5, SECONDS).start();            
     }
     
 }

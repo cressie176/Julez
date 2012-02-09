@@ -62,7 +62,7 @@ public class SizeLimiterTest {
         
         SizeLimiter limiter = new SizeLimiter(scenarios, 100);  
         
-        runner.queue(limiter).allocate(10, THREADS).go();
+        runner.queue(limiter).allocate(10, THREADS).start();
         
         assertEquals(100, repository.count(Event.TYPE, ScenarioEvent.BEGIN));
         assertEquals(100, repository.count(Event.TYPE, ScenarioEvent.END));

@@ -2,8 +2,8 @@ package uk.co.acuminous.julez.runner;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import uk.co.acuminous.julez.event.handler.EventHandler;
@@ -14,7 +14,7 @@ import uk.co.acuminous.julez.util.JulezSugar;
 
 public class ConcurrentScenarioRunner extends BaseScenarioRunner {
 
-    private ExecutorService executor = Executors.newFixedThreadPool(1);
+    private ThreadPoolExecutor executor;
     private ScenarioSource scenarios;
     private long timeout = 365 * 24 * 60 * 60 * 1000;
     private long startTime = System.currentTimeMillis();
@@ -31,17 +31,19 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
         return this;
     }
 
-    public ConcurrentScenarioRunner useExecutor(ExecutorService executor) {
-        this.executor.shutdownNow();
+    public ConcurrentScenarioRunner useExecutor(ThreadPoolExecutor executor) {
         this.executor = executor;
         return this;
     }
 
     public ConcurrentScenarioRunner allocate(int clients, JulezSugar units) {
-        this.executor.shutdownNow();
-        this.executor = Executors.newFixedThreadPool(clients);
+        this.executor = getExecutor(clients);
         return this;
     }
+    
+    protected ThreadPoolExecutor getExecutor(int numThreads) {
+        return new ThreadPoolExecutor(numThreads, numThreads, 0L, MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+    }    
 
     public ConcurrentScenarioRunner useEventFactory(ScenarioRunnerEventFactory eventFactory) {
         this.eventFactory = eventFactory;
@@ -54,22 +56,22 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     }
 
     @Override
-    public void go() {
-        prepare();        
+    public void start() {
+        prepare(); 
         run();
         shutdown();
     }
 
     private void prepare() {
+        executor = executor == null ? getExecutor(1) : executor;
         ConcurrencyUtils.sleep((startTime - System.currentTimeMillis()), MILLISECONDS);
         stopTime = System.currentTimeMillis() + timeout;
         handler.onEvent(eventFactory.begin());        
     }
 
-    private void run() {        
-        
+    private void run() {                
         Scenario scenario = scenarios.next();
-        while (scenario != null && (stopTime > System.currentTimeMillis())) {
+        while (!executor.isShutdown() && scenario != null && (stopTime > System.currentTimeMillis())) {
             executor.execute(scenario);
             scenario = scenarios.next();
         }
@@ -86,6 +88,20 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
         }
         handler.onEvent(eventFactory.end());        
     }
+    
+    @Override
+    public void stop(long timeout, TimeUnit units) {
+        try {
+            executor.getQueue().clear();            
+            executor.shutdown();
+            executor.awaitTermination(timeout, units);
+        } catch (InterruptedException e) {
+            // Meh
+        } finally {
+            executor.shutdownNow();
+        }
+        handler.onEvent(eventFactory.end());        
+    }    
     
     public ConcurrentScenarioRunner register(EventHandler handler) {
     	super.register(handler);

@@ -36,7 +36,7 @@ public class ThroughputLimiterTest {
         
         ThroughputLimiter limiter = new ThroughputLimiter().applyLimitOf(100, SCENARIOS).perSecond().to(scenarios);
         
-        runner.queue(limiter).allocate(4, THREADS).go();
+        runner.queue(limiter).allocate(4, THREADS).start();
         
         assertEquals(100, throughputMonitor.getThroughput());
     }  
