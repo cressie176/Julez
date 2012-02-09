@@ -24,7 +24,7 @@ public class ConcurrentThroughputTest {
 
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);        
         
-        new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).go();
+        new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).start();
 
         assertMinimumThroughput(500, throughputMonitor.getThroughput());
     }

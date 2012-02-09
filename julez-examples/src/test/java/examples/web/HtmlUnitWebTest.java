@@ -31,7 +31,7 @@ public class HtmlUnitWebTest extends WebTestCase {
         
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);                                                                     
         
-        new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).go();
+        new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).start();
 
         System.out.println("\nHtmlUnit Throughput\n----------------");
         System.out.println(throughputMonitor.getThroughput());

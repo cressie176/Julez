@@ -54,7 +54,7 @@ public class InceptionSteps {
             list.add(scenario);
         }        
         
-        new ConcurrentScenarioRunner().register(monitors).allocate(numThreads, THREADS).queue(new ScenarioHopper(list)).go();
+        new ConcurrentScenarioRunner().register(monitors).allocate(numThreads, THREADS).queue(new ScenarioHopper(list)).start();
     }
     
     @Then("the minimum throughput should be $minimumThroughput $scenarios per second")

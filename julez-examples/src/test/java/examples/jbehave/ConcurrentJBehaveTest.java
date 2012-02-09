@@ -47,7 +47,7 @@ public class ConcurrentJBehaveTest {
         
         ScenarioSource scenarios = new ScenarioHopper(list);  
         
-        new ConcurrentScenarioRunner().register(throughputMonitor).allocate(4, THREADS).queue(scenarios).go();
+        new ConcurrentScenarioRunner().register(throughputMonitor).allocate(4, THREADS).queue(scenarios).start();
 
         assertMinimumThroughput(100, throughputMonitor.getThroughput());
         assertPassMark(100, resultMonitor.getPercentage());        
@@ -69,7 +69,7 @@ public class ConcurrentJBehaveTest {
         
         ScenarioSource scenarios = new ScenarioHopper(list);
         
-        new ConcurrentScenarioRunner().register(throughputMonitor).allocate(4, THREADS).queue(scenarios).go();
+        new ConcurrentScenarioRunner().register(throughputMonitor).allocate(4, THREADS).queue(scenarios).start();
 
         assertMinimumThroughput(5, throughputMonitor.getThroughput());
         assertPassMark(100, resultMonitor.getPercentage());        

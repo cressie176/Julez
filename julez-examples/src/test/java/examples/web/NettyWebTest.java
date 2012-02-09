@@ -45,7 +45,7 @@ public class NettyWebTest extends WebTestCase {
         
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);
 
-        new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).go();
+        new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).start();
 
         System.out.println("\nNetty Throughput\n----------------");
         System.out.println(throughputMonitor.getThroughput());

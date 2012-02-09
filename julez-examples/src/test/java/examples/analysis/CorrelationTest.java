@@ -25,12 +25,13 @@ import uk.co.acuminous.julez.event.source.JdbcEventRepository;
 import uk.co.acuminous.julez.jdbc.DefaultEventSql;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.runner.MultiConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
+import uk.co.acuminous.julez.runner.ScenarioRunnerScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
+import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.EnterpriseTest;
 import uk.co.acuminous.julez.test.NoOpScenario;
@@ -52,18 +53,22 @@ public class CorrelationTest extends EnterpriseTest {
         TestEventRepository unfilteredRepository = new TestEventRepository();
         TestEventRepository filteredRepository = new TestEventRepository();
 
-        EventFilter testClientFilter = new EventDataFilter().filterEventsWhere("TEST_CLIENT").matches(testClient2).register(filteredRepository);    
-        EventFilter testRunFilter = new EventDataFilter().filterEventsWhere("TEST_RUN").matches(testRun1).register(testClientFilter);
+        EventFilter filterOnTestClient2 = new EventDataFilter().filterEventsWhere("TEST_CLIENT").matches(testClient2);    
+        EventFilter filterOnTestRun1 = new EventDataFilter().filterEventsWhere("TEST_RUN").matches(testRun1);
         
-        FanOutPipe monitors = new FanOutPipe(unfilteredRepository, testRunFilter);
-       
-        MultiConcurrentScenarioRunner runner = new MultiConcurrentScenarioRunner(
-            initTestRun(testRun1, testClient1, monitors),
-            initTestRun(testRun1, testClient2, monitors),
-            initTestRun(testRun2, testClient1, monitors),
-            initTestRun(testRun2, testClient2, monitors)
-        );        
-        runner.go();
+        filterOnTestClient2.register(filteredRepository);
+        filterOnTestRun1.register(filterOnTestClient2);
+        
+        FanOutPipe monitors = new FanOutPipe(unfilteredRepository, filterOnTestRun1);
+               
+        ScenarioSource concurrentScenarios = new ScenarioHopper(
+            new ScenarioRunnerScenario(initScenarioRunner(testRun1, testClient1, monitors)),
+            new ScenarioRunnerScenario(initScenarioRunner(testRun1, testClient2, monitors)),
+            new ScenarioRunnerScenario(initScenarioRunner(testRun2, testClient1, monitors)),
+            new ScenarioRunnerScenario(initScenarioRunner(testRun2, testClient2, monitors))                
+        );
+        
+        new ConcurrentScenarioRunner().queue(concurrentScenarios).start();
         
         int uncorrelatedEvents = unfilteredRepository.count();
         int correlatedEvents = filteredRepository.count();
@@ -84,7 +89,7 @@ public class CorrelationTest extends EnterpriseTest {
         
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);        
 
-        new ConcurrentScenarioRunner().register(fanoutPipe).allocate(10, THREADS).queue(scenarios).go();
+        new ConcurrentScenarioRunner().register(fanoutPipe).allocate(10, THREADS).queue(scenarios).start();
 
         ThroughputMonitor throughputMonitor2 = new ThroughputMonitor();
         jdbcEventRepository.register(throughputMonitor2);
@@ -102,7 +107,7 @@ public class CorrelationTest extends EnterpriseTest {
         
         for (String testRun : Arrays.asList("A", "B", "C")) {
             
-            initTestRun(testRun, jdbcEventRepository).go();
+            initTestRun(testRun, jdbcEventRepository).start();
             
             ThroughputMonitor monitor = new ThroughputMonitor();
             
@@ -123,7 +128,7 @@ public class CorrelationTest extends EnterpriseTest {
         
         for (String testRun : Arrays.asList("A", "B", "C")) {
             
-            initTestRun(testRun, "", jdbcEventRepository).go();
+            initScenarioRunner(testRun, "", jdbcEventRepository).start();
             
             TransformingMapper columnMapper = getColumnMapper();
             CorrelatingEventSql sql = new CorrelatingEventSql(columnMapper.getValues(), testRun);
@@ -138,10 +143,10 @@ public class CorrelationTest extends EnterpriseTest {
     }
      
     private ConcurrentScenarioRunner initTestRun(String testRun, EventHandler monitor) {
-        return initTestRun(testRun, "", monitor);
+        return initScenarioRunner(testRun, "", monitor);
     }
     
-    private ConcurrentScenarioRunner initTestRun(String testRun, String testClient, EventHandler monitor) {
+    private ConcurrentScenarioRunner initScenarioRunner(String testRun, String testClient, EventHandler monitor) {
         Map<String, String> correlationData = new HashMap<String, String>();
         correlationData.put("TEST_RUN", testRun);
         correlationData.put("TEST_CLIENT", testClient);

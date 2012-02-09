@@ -30,7 +30,7 @@ public abstract class BenchmarkTestCase {
         
         ConcurrentScenarioRunner runner = getScenarioRunner();
         runner.register(durationMonitor);
-        runner.queue(scenarios).go();
+        runner.queue(scenarios).start();
     }
 
     protected ConcurrentScenarioRunner getScenarioRunner() {

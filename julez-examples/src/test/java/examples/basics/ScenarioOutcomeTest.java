@@ -26,7 +26,7 @@ public class ScenarioOutcomeTest {
                         
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(200, SCENARIOS);
         
-        new ConcurrentScenarioRunner().allocate(10, THREADS).queue(scenarios).go();
+        new ConcurrentScenarioRunner().allocate(10, THREADS).queue(scenarios).start();
 
         assertEquals(129, resultMonitor.getPassCount());
         assertEquals(50, resultMonitor.getFailureCount());
