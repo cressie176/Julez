@@ -26,15 +26,15 @@ import uk.co.acuminous.julez.jdbc.DefaultEventSql;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
-import uk.co.acuminous.julez.runner.ScenarioRunnerScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.scenario.control.NoOpScenario;
+import uk.co.acuminous.julez.scenario.control.ScenarioRunnerStarter;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.EnterpriseTest;
-import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.PassFailErrorScenario;
 import uk.co.acuminous.julez.test.TestEventRepository;
 import uk.co.acuminous.julez.transformer.DefaultColumnNameTransformer;
@@ -62,10 +62,10 @@ public class CorrelationTest extends EnterpriseTest {
         FanOutPipe monitors = new FanOutPipe(unfilteredRepository, filterOnTestRun1);
                
         ScenarioSource concurrentScenarios = new ScenarioHopper(
-            new ScenarioRunnerScenario(initScenarioRunner(testRun1, testClient1, monitors)),
-            new ScenarioRunnerScenario(initScenarioRunner(testRun1, testClient2, monitors)),
-            new ScenarioRunnerScenario(initScenarioRunner(testRun2, testClient1, monitors)),
-            new ScenarioRunnerScenario(initScenarioRunner(testRun2, testClient2, monitors))                
+            new ScenarioRunnerStarter(initScenarioRunner(testRun1, testClient1, monitors)),
+            new ScenarioRunnerStarter(initScenarioRunner(testRun1, testClient2, monitors)),
+            new ScenarioRunnerStarter(initScenarioRunner(testRun2, testClient1, monitors)),
+            new ScenarioRunnerStarter(initScenarioRunner(testRun2, testClient2, monitors))                
         );
         
         new ConcurrentScenarioRunner().queue(concurrentScenarios).start();

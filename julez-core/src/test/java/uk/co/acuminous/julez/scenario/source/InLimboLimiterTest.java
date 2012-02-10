@@ -13,9 +13,9 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.scenario.control.NoOpScenario;
+import uk.co.acuminous.julez.scenario.control.SleepingScenario;
 import uk.co.acuminous.julez.scenario.limiter.InLimboLimiter;
-import uk.co.acuminous.julez.test.NoOpScenario;
-import uk.co.acuminous.julez.test.SleepingScenario;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 

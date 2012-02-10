@@ -11,9 +11,9 @@ import uk.co.acuminous.julez.event.pipe.AsynchronousPipe;
 import uk.co.acuminous.julez.event.pipe.EventPipe;
 import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.scenario.control.NoOpScenario;
 import uk.co.acuminous.julez.scenario.limiter.InLimboLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
-import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 public class AsynchronousAnalysisTest {

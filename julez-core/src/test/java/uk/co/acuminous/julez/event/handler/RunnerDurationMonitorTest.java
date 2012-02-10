@@ -10,7 +10,7 @@ import static java.util.concurrent.TimeUnit.*;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
-public class DurationMonitorTest {
+public class RunnerDurationMonitorTest {
 
     private ScenarioRunnerEventFactory scenarioRunnerEventFactory;
     
@@ -21,12 +21,12 @@ public class DurationMonitorTest {
 
     @Test
     public void reportsDurationBeforeStarting() {
-        assertEquals(0, new DurationMonitor().getDuration());
+        assertEquals(0, new RunnerDurationMonitor().getDuration());
     }
     
     @Test
     public void reportsDurationWhileRunning() {        
-        DurationMonitor monitor = new DurationMonitor();
+        RunnerDurationMonitor monitor = new RunnerDurationMonitor();
         monitor.onEvent(scenarioRunnerEventFactory.begin());        
         
         ConcurrencyUtils.sleep(250, MILLISECONDS);
@@ -43,7 +43,7 @@ public class DurationMonitorTest {
     @Test
     public void reportsDurationWhenFinished() {
         
-        DurationMonitor monitor = new DurationMonitor();
+        RunnerDurationMonitor monitor = new RunnerDurationMonitor();
 
         monitor.onEvent(scenarioRunnerEventFactory.begin());                
         

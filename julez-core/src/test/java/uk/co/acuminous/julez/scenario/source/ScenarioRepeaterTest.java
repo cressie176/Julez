@@ -5,7 +5,7 @@ import static org.junit.Assert.assertSame;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.test.NoOpScenario;
+import uk.co.acuminous.julez.scenario.control.NoOpScenario;
 
 public class ScenarioRepeaterTest {
 

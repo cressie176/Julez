@@ -10,24 +10,21 @@ import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.Event;
-import uk.co.acuminous.julez.event.handler.EventHandler;
-import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.scenario.control.NoOpScenario;
+import uk.co.acuminous.julez.scenario.control.SleepingScenario;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
-import uk.co.acuminous.julez.test.NoOpScenario;
-import uk.co.acuminous.julez.test.SleepingScenario;
 import uk.co.acuminous.julez.test.TestEventRepository;
 
 public class ConcurrentScenarioRunnerTest {
@@ -55,7 +52,7 @@ public class ConcurrentScenarioRunnerTest {
     @Test    
     public void doesntBeginNewScenariosAfterRunTimeIsExceeded() {
         
-        Scenario scenario = new SleepingScenario(700, MILLISECONDS).register(repository);       
+        Scenario scenario = new SleepingScenario().sleepFor(700, MILLISECONDS).register(repository);       
         
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(10, SCENARIOS);                                                                     
         
@@ -67,7 +64,7 @@ public class ConcurrentScenarioRunnerTest {
     @Test    
     public void interuptsInFlightScenariosWhenRunTimeIsExceeded() {
         
-        Scenario scenario = new SleepingScenario(700, MILLISECONDS).register(repository);       
+        Scenario scenario = new SleepingScenario().sleepFor(700, MILLISECONDS).register(repository);       
         
         ScenarioSource scenarios = new ScenarioRepeater(scenario);                                                                     
         
@@ -96,7 +93,7 @@ public class ConcurrentScenarioRunnerTest {
         
         long desiredStartTime = new DateTime().plusMillis(500).getMillis();       
 
-        Scenario scenario = new SleepingScenario(700, MILLISECONDS).register(repository);
+        Scenario scenario = new SleepingScenario().sleepFor(700, MILLISECONDS).register(repository);
         
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(10, SCENARIOS);                                                                     
                 
@@ -146,34 +143,6 @@ public class ConcurrentScenarioRunnerTest {
         new ConcurrentScenarioRunner().queue(scenarios).allocate(10, THREADS).start();
         
         assertEquals(10, scenario.count());
-    }
-
-    @Test
-    public void stopAllowsInflightScenariosToComplete() {
-
-        FanOutPipe handlers = new FanOutPipe();
-        Scenario scenario = new SleepingScenario(700, MILLISECONDS).register(handlers);        
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(10, SCENARIOS);                                                                                     
-        
-        final ConcurrentScenarioRunner runner = new ConcurrentScenarioRunner();        
-                
-        EventHandler shutdownInvoker = new EventHandler() {            
-            AtomicInteger counter = new AtomicInteger();            
-            @Override
-            public void onEvent(Event event) {
-                if (ScenarioEvent.BEGIN.equals(event.getType())) {
-                    if (counter.incrementAndGet() == 4) {
-                        runner.stop(1, SECONDS);
-                    }
-                }
-            }
-        };
-        
-        handlers.registerAll(shutdownInvoker, repository);
-
-        runner.allocate(4, THREADS).queue(scenarios).start();
-        
-        assertEquals(4, repository.count(Event.TYPE, ScenarioEvent.END));
     }
     
     class ThreadCountingScenario extends BaseScenario {

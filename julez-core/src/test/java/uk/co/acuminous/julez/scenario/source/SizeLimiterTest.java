@@ -14,8 +14,8 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.scenario.control.NoOpScenario;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
-import uk.co.acuminous.julez.test.NoOpScenario;
 import uk.co.acuminous.julez.test.TestEventRepository;
 
 public class SizeLimiterTest {

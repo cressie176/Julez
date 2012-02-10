@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.test;
+package uk.co.acuminous.julez.scenario.control;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static java.util.concurrent.TimeUnit.SECONDS;
@@ -8,20 +8,23 @@ import java.util.concurrent.TimeUnit;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
-// TODO Make fluent
 public class SleepingScenario extends BaseScenario {
 
-    private final long duration;
+    private long duration;
 
     public SleepingScenario() {
         this(1, SECONDS);
     }
     
     public SleepingScenario(long duration, TimeUnit units) {
-        this.duration = MILLISECONDS.convert(duration, units);
-        
+        sleepFor(duration, units);       
     }    
 
+    public SleepingScenario sleepFor(long duration, TimeUnit units) {
+        this.duration = MILLISECONDS.convert(duration, units);
+        return this;
+    }
+    
     @Override
     public void run() {
         handler.onEvent(eventFactory.begin());        

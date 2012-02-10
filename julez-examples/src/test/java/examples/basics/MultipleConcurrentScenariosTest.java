@@ -9,10 +9,10 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
 import uk.co.acuminous.julez.event.pipe.FanOutPipe;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
-import uk.co.acuminous.julez.runner.ScenarioRunnerScenario;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
+import uk.co.acuminous.julez.scenario.control.ScenarioRunnerStarter;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
@@ -37,7 +37,7 @@ public class MultipleConcurrentScenariosTest {
         ScenarioSource goodbyeWorldScenarios = new SizeLimiter().limit(new ScenarioRepeater(goodbyeWorldScenario)).to(100, SCENARIOS);
         ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner().register(monitor2).allocate(10, THREADS).queue(goodbyeWorldScenarios);
 
-        ScenarioSource concurrentScenarios = new ScenarioHopper(new ScenarioRunnerScenario(runner1), new ScenarioRunnerScenario(runner2));
+        ScenarioSource concurrentScenarios = new ScenarioHopper(new ScenarioRunnerStarter(runner1), new ScenarioRunnerStarter(runner2));
         new ConcurrentScenarioRunner().queue(concurrentScenarios).register(combinedMonitor).start();
 
         assertMinimumThroughput(500, monitor1.getThroughput());

@@ -87,24 +87,16 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
             executor.shutdownNow();
         }
         handler.onEvent(eventFactory.end());        
-    }
-    
-    @Override
-    public void stop(long timeout, TimeUnit units) {
-        try {
-            executor.getQueue().clear();            
-            executor.shutdown();
-            executor.awaitTermination(timeout, units);
-        } catch (InterruptedException e) {
-            // Meh
-        } finally {
-            executor.shutdownNow();
-        }
-        handler.onEvent(eventFactory.end());        
-    }    
+    }  
     
     public ConcurrentScenarioRunner register(EventHandler handler) {
     	super.register(handler);
     	return this;
+    }
+
+    @Override
+    public void stop() {
+        throw new UnsupportedOperationException("ConcurrentScenarioRunner is being replace. Not going to implement this method");
+        
     }
 }

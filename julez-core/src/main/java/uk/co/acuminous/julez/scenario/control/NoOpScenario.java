@@ -1,4 +1,4 @@
-package uk.co.acuminous.julez.test;
+package uk.co.acuminous.julez.scenario.control;
 
 import uk.co.acuminous.julez.scenario.BaseScenario;
 
