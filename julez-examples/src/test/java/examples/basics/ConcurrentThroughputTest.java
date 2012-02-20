@@ -5,7 +5,7 @@ import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughp
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
+import uk.co.acuminous.julez.event.handler.ScenarioThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
@@ -18,7 +18,7 @@ public class ConcurrentThroughputTest {
     @Test
     public void demonstrateAConcurrentThroughputTest() {
 
-        ThroughputMonitor throughputMonitor = new ThroughputMonitor();
+        ScenarioThroughputMonitor throughputMonitor = new ScenarioThroughputMonitor();
         
         Scenario scenario = new HelloWorldScenario().register(throughputMonitor);                        
 

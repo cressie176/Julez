@@ -18,9 +18,9 @@ import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.filter.EventDataFilter;
 import uk.co.acuminous.julez.event.filter.EventFilter;
 import uk.co.acuminous.julez.event.handler.EventHandler;
-import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
+import uk.co.acuminous.julez.event.handler.ScenarioThroughputMonitor;
 import uk.co.acuminous.julez.event.pipe.EventPipe;
-import uk.co.acuminous.julez.event.pipe.FanOutPipe;
+import uk.co.acuminous.julez.event.pipe.FanOutEventPipe;
 import uk.co.acuminous.julez.event.source.JdbcEventRepository;
 import uk.co.acuminous.julez.jdbc.DefaultEventSql;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
@@ -29,8 +29,8 @@ import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.control.NoOpScenario;
-import uk.co.acuminous.julez.scenario.control.ScenarioRunnerStarter;
+import uk.co.acuminous.julez.scenario.instruction.NoOpScenario;
+import uk.co.acuminous.julez.scenario.instruction.StartScenarioRunnerScenario;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
@@ -59,13 +59,13 @@ public class CorrelationTest extends EnterpriseTest {
         filterOnTestClient2.register(filteredRepository);
         filterOnTestRun1.register(filterOnTestClient2);
         
-        FanOutPipe monitors = new FanOutPipe(unfilteredRepository, filterOnTestRun1);
+        FanOutEventPipe monitors = new FanOutEventPipe(unfilteredRepository, filterOnTestRun1);
                
         ScenarioSource concurrentScenarios = new ScenarioHopper(
-            new ScenarioRunnerStarter(initScenarioRunner(testRun1, testClient1, monitors)),
-            new ScenarioRunnerStarter(initScenarioRunner(testRun1, testClient2, monitors)),
-            new ScenarioRunnerStarter(initScenarioRunner(testRun2, testClient1, monitors)),
-            new ScenarioRunnerStarter(initScenarioRunner(testRun2, testClient2, monitors))                
+            new StartScenarioRunnerScenario(initScenarioRunner(testRun1, testClient1, monitors)),
+            new StartScenarioRunnerScenario(initScenarioRunner(testRun1, testClient2, monitors)),
+            new StartScenarioRunnerScenario(initScenarioRunner(testRun2, testClient1, monitors)),
+            new StartScenarioRunnerScenario(initScenarioRunner(testRun2, testClient2, monitors))                
         );
         
         new ConcurrentScenarioRunner().queue(concurrentScenarios).start();
@@ -81,17 +81,17 @@ public class CorrelationTest extends EnterpriseTest {
         
         initDatabaseInfrastructure();
         
-        ThroughputMonitor throughputMonitor1 = new ThroughputMonitor();
+        ScenarioThroughputMonitor throughputMonitor1 = new ScenarioThroughputMonitor();
         
-        EventPipe fanoutPipe = new FanOutPipe().registerAll(throughputMonitor1, jdbcEventRepository);
+        EventPipe FanOutEventPipe = new FanOutEventPipe().registerAll(throughputMonitor1, jdbcEventRepository);
 
-        Scenario scenario = new NoOpScenario().register(fanoutPipe);
+        Scenario scenario = new NoOpScenario().register(FanOutEventPipe);
         
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);        
 
-        new ConcurrentScenarioRunner().register(fanoutPipe).allocate(10, THREADS).queue(scenarios).start();
+        new ConcurrentScenarioRunner().register(FanOutEventPipe).allocate(10, THREADS).queue(scenarios).start();
 
-        ThroughputMonitor throughputMonitor2 = new ThroughputMonitor();
+        ScenarioThroughputMonitor throughputMonitor2 = new ScenarioThroughputMonitor();
         jdbcEventRepository.register(throughputMonitor2);
         jdbcEventRepository.raise();
 
@@ -109,7 +109,7 @@ public class CorrelationTest extends EnterpriseTest {
             
             initTestRun(testRun, jdbcEventRepository).start();
             
-            ThroughputMonitor monitor = new ThroughputMonitor();
+            ScenarioThroughputMonitor monitor = new ScenarioThroughputMonitor();
             
             EventFilter filter = new EventDataFilter().filterEventsWhere("TEST_RUN").matches(testRun).register(monitor);
             
@@ -134,7 +134,7 @@ public class CorrelationTest extends EnterpriseTest {
             CorrelatingEventSql sql = new CorrelatingEventSql(columnMapper.getValues(), testRun);
             jdbcEventRepository = new JdbcEventRepository(dataSource, columnMapper, sql);
             
-            ThroughputMonitor monitor = new ThroughputMonitor();  
+            ScenarioThroughputMonitor monitor = new ScenarioThroughputMonitor();  
             
             jdbcEventRepository.register(monitor).raise();
 

@@ -2,7 +2,7 @@ package examples.benchmarking;
 
 import org.junit.Before;
 
-import uk.co.acuminous.julez.event.handler.RunnerDurationMonitor;
+import uk.co.acuminous.julez.event.handler.ScenarioRunnerDurationMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
@@ -13,7 +13,7 @@ import static uk.co.acuminous.julez.util.JulezSugar.*;
 
 public abstract class BenchmarkTestCase {
 
-    protected RunnerDurationMonitor durationMonitor = new RunnerDurationMonitor();        
+    protected ScenarioRunnerDurationMonitor durationMonitor = new ScenarioRunnerDurationMonitor();        
     
     @Before
     public void warmUpJulez() {     

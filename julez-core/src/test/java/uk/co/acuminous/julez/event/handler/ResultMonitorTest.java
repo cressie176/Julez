@@ -5,7 +5,7 @@ import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.handler.ResultMonitor;
+import uk.co.acuminous.julez.event.handler.ScenarioResultMonitor;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 
 public class ResultMonitorTest {
@@ -19,7 +19,7 @@ public class ResultMonitorTest {
     
     @Test
     public void countsPasses() {       
-        ResultMonitor resultMonitor = new ResultMonitor();
+        ScenarioResultMonitor resultMonitor = new ScenarioResultMonitor();
         assertEquals(0, resultMonitor.getPassCount());
         
         resultMonitor.onEvent(scenarioEventFactory.pass());
@@ -32,7 +32,7 @@ public class ResultMonitorTest {
     
     @Test
     public void countsFailures() {       
-        ResultMonitor resultMonitor = new ResultMonitor();
+        ScenarioResultMonitor resultMonitor = new ScenarioResultMonitor();
         assertEquals(0, resultMonitor.getFailureCount());
         
         resultMonitor.onEvent(scenarioEventFactory.fail());
@@ -45,7 +45,7 @@ public class ResultMonitorTest {
     
     @Test
     public void countsErrors() {       
-        ResultMonitor resultMonitor = new ResultMonitor();
+        ScenarioResultMonitor resultMonitor = new ScenarioResultMonitor();
         assertEquals(0, resultMonitor.getErrorCount());
         
         resultMonitor.onEvent(scenarioEventFactory.error());
@@ -58,7 +58,7 @@ public class ResultMonitorTest {
     
     @Test
     public void calculatesPercentage() {       
-        ResultMonitor resultMonitor = new ResultMonitor();
+        ScenarioResultMonitor resultMonitor = new ScenarioResultMonitor();
         assertEquals(0, resultMonitor.getPercentage());
         
         resultMonitor.onEvent(scenarioEventFactory.fail());

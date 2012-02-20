@@ -9,12 +9,12 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.filter.EventDataFilter;
 import uk.co.acuminous.julez.executor.ScenarioExecutor;
-import uk.co.acuminous.julez.executor.SequentialScenarioExecutor;
+import uk.co.acuminous.julez.executor.SynchronousScenarioExecutor;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.control.NoOpScenario;
-import uk.co.acuminous.julez.scenario.control.ScenarioRunnerTerminator;
+import uk.co.acuminous.julez.scenario.instruction.NoOpScenario;
+import uk.co.acuminous.julez.scenario.instruction.StopScenarioRunnerScenario;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
@@ -53,7 +53,7 @@ public class SimpleScenarioRunnerTest {
         scenario.register(new EventDataFilter().filterEventsWhere(Event.TYPE).matches(ScenarioEvent.BEGIN).register(testRepository));
         
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(3, SCENARIOS);
-        new SimpleScenarioRunner().queue(scenarios).assign(new SequentialScenarioExecutor()).start();
+        new SimpleScenarioRunner().queue(scenarios).assign(new SynchronousScenarioExecutor()).start();
                 
         assertEquals(3, testRepository.count());        
     }       
@@ -75,9 +75,9 @@ public class SimpleScenarioRunnerTest {
 
         final SimpleScenarioRunner runner = new SimpleScenarioRunner();
         
-        ScenarioSource scenarios = new ScenarioHopper(new ScenarioRunnerTerminator(runner), new NoOpScenario());
+        ScenarioSource scenarios = new ScenarioHopper(new StopScenarioRunnerScenario(runner), new NoOpScenario());
         
-        runner.queue(scenarios).assign(new SequentialScenarioExecutor());
+        runner.queue(scenarios).assign(new SynchronousScenarioExecutor());
         runner.start();
                
         assertNotNull("Runner dequeued all scenarios instead of stopping", scenarios.next());                  

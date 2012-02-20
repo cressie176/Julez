@@ -21,12 +21,12 @@ public class RunnerDurationMonitorTest {
 
     @Test
     public void reportsDurationBeforeStarting() {
-        assertEquals(0, new RunnerDurationMonitor().getDuration());
+        assertEquals(0, new ScenarioRunnerDurationMonitor().getDuration());
     }
     
     @Test
     public void reportsDurationWhileRunning() {        
-        RunnerDurationMonitor monitor = new RunnerDurationMonitor();
+        ScenarioRunnerDurationMonitor monitor = new ScenarioRunnerDurationMonitor();
         monitor.onEvent(scenarioRunnerEventFactory.begin());        
         
         ConcurrencyUtils.sleep(250, MILLISECONDS);
@@ -43,7 +43,7 @@ public class RunnerDurationMonitorTest {
     @Test
     public void reportsDurationWhenFinished() {
         
-        RunnerDurationMonitor monitor = new RunnerDurationMonitor();
+        ScenarioRunnerDurationMonitor monitor = new ScenarioRunnerDurationMonitor();
 
         monitor.onEvent(scenarioRunnerEventFactory.begin());                
         

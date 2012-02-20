@@ -6,7 +6,7 @@ import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.handler.ResultMonitor;
+import uk.co.acuminous.julez.event.handler.ScenarioResultMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
@@ -20,7 +20,7 @@ public class ScenarioOutcomeTest {
     @Test
     public void demonstrateRecordingConcurrentScenarioResults() {
 
-        ResultMonitor resultMonitor = new ResultMonitor();        
+        ScenarioResultMonitor resultMonitor = new ScenarioResultMonitor();        
         
         Scenario scenario = new PassFailErrorScenario().register(resultMonitor);        
                         

@@ -6,7 +6,7 @@ import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.handler.ResultMonitor;
+import uk.co.acuminous.julez.event.handler.ScenarioResultMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.scenario.Scenario;
@@ -25,7 +25,7 @@ public class RemoteAsynchronousAnalysisTest extends EnterpriseTest {
 
         initJmsInfrastructure();
         
-        ResultMonitor resultMonitor = new ResultMonitor();
+        ScenarioResultMonitor resultMonitor = new ScenarioResultMonitor();
         jmsEventSource.register(resultMonitor);
         
         Scenario scenario = new PassFailErrorScenario().register(jmsEventHandler);        

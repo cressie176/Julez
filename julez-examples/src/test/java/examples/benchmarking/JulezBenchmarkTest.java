@@ -10,8 +10,8 @@ import org.junit.Test;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveEmbedderScenario;
 import uk.co.acuminous.julez.scenario.JBehaveStoryRunnerScenario;
-import uk.co.acuminous.julez.scenario.control.NoOpScenario;
-import uk.co.acuminous.julez.scenario.control.SleepingScenario;
+import uk.co.acuminous.julez.scenario.instruction.NoOpScenario;
+import uk.co.acuminous.julez.scenario.instruction.SleepScenario;
 import examples.jbehave.CalculatorSteps;
 import static uk.co.acuminous.julez.util.JulezSugar.*;
 
@@ -42,7 +42,7 @@ public class JulezBenchmarkTest extends BenchmarkTestCase {
     @Test
     public void benchmarkSingleThreadedConcurrentScenarioRunnerSleepingNoOpScenario() {
                 
-        benchmark(new SleepingScenario().sleepFor(10, MILLISECONDS), oneThousandTimes);
+        benchmark(new SleepScenario().sleepFor(10, MILLISECONDS), oneThousandTimes);
         
         System.out.println(String.format("%d x Single threaded Sleep Scenarios took %dms", oneThousandTimes, durationMonitor.getDuration()));
     }
@@ -52,7 +52,7 @@ public class JulezBenchmarkTest extends BenchmarkTestCase {
         
         runner = new ConcurrentScenarioRunner().allocate(10, THREADS);        
         
-        benchmark(new SleepingScenario().sleepFor(10, MILLISECONDS), oneThousandTimes);
+        benchmark(new SleepScenario().sleepFor(10, MILLISECONDS), oneThousandTimes);
         
         System.out.println(String.format("%d x Multi threaded(%d) Sleep Scenarios took %dms", oneThousandTimes, 10, durationMonitor.getDuration()));
     }

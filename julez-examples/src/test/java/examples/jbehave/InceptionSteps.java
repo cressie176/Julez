@@ -10,9 +10,9 @@ import org.jbehave.core.annotations.Given;
 import org.jbehave.core.annotations.Then;
 import org.jbehave.core.annotations.When;
 
-import uk.co.acuminous.julez.event.handler.ResultMonitor;
-import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
-import uk.co.acuminous.julez.event.pipe.FanOutPipe;
+import uk.co.acuminous.julez.event.handler.ScenarioResultMonitor;
+import uk.co.acuminous.julez.event.handler.ScenarioThroughputMonitor;
+import uk.co.acuminous.julez.event.pipe.FanOutEventPipe;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveStoryRunnerScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
@@ -23,19 +23,19 @@ import static uk.co.acuminous.julez.util.JulezSugar.*;
 
 public class InceptionSteps {
 
-    private ThroughputMonitor throughputMonitor;
-    private ResultMonitor resultMonitor;
-    private FanOutPipe monitors = new FanOutPipe();
+    private ScenarioThroughputMonitor throughputMonitor;
+    private ScenarioResultMonitor resultMonitor;
+    private FanOutEventPipe monitors = new FanOutEventPipe();
     
     @Given("a throughput monitor")
     public void aThroughputMonitor() {
-        throughputMonitor = new ThroughputMonitor();
+        throughputMonitor = new ScenarioThroughputMonitor();
         monitors.register(throughputMonitor);
     }
     
     @Given("a result monitor")
     public void aResultMonitor() {
-        resultMonitor = new ResultMonitor();
+        resultMonitor = new ScenarioResultMonitor();
         monitors.register(resultMonitor);
     }
     

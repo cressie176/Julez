@@ -2,7 +2,7 @@ package uk.co.acuminous.julez.runner;
 
 import uk.co.acuminous.julez.event.handler.EventHandler;
 import uk.co.acuminous.julez.executor.ScenarioExecutor;
-import uk.co.acuminous.julez.executor.SequentialScenarioExecutor;
+import uk.co.acuminous.julez.executor.SynchronousScenarioExecutor;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
@@ -10,7 +10,7 @@ import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 public class SimpleScenarioRunner extends BaseScenarioRunner {
 
     private ScenarioSource scenarios = new ScenarioHopper();
-    private ScenarioExecutor executor = new SequentialScenarioExecutor();
+    private ScenarioExecutor executor = new SynchronousScenarioExecutor();
     private ScenarioRunnerEventFactory eventFactory = new ScenarioRunnerEventFactory();
     private boolean stopping = false;
 
@@ -34,8 +34,7 @@ public class SimpleScenarioRunner extends BaseScenarioRunner {
     @Override    
     public void stop() {
         stopping = true;
-    }
-    
+    } 
 
     public SimpleScenarioRunner queue(ScenarioSource scenarios) {
         this.scenarios = scenarios;

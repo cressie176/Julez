@@ -24,7 +24,7 @@ import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpVersion;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
+import uk.co.acuminous.julez.event.handler.ScenarioThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
@@ -39,7 +39,7 @@ public class NettyWebTest extends WebTestCase {
     @Test
     public void demonstrateAConcurrentWebTestUsingNetty() {
 
-        ThroughputMonitor throughputMonitor = new ThroughputMonitor();
+        ScenarioThroughputMonitor throughputMonitor = new ScenarioThroughputMonitor();
         
         Scenario scenario = new NettyScenario().register(throughputMonitor);
         

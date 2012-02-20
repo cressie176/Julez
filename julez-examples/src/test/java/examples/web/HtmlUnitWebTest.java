@@ -5,7 +5,7 @@ import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.handler.ThroughputMonitor;
+import uk.co.acuminous.julez.event.handler.ScenarioThroughputMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
@@ -25,7 +25,7 @@ public class HtmlUnitWebTest extends WebTestCase {
     @Test
     public void demonstrateAConcurrentWebTestUsingHtmlUnit() {
 
-        ThroughputMonitor throughputMonitor = new ThroughputMonitor();
+        ScenarioThroughputMonitor throughputMonitor = new ScenarioThroughputMonitor();
         
         Scenario scenario = new HtmlUnitScenario().register(throughputMonitor);
         

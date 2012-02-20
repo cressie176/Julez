@@ -20,8 +20,8 @@ import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.control.NoOpScenario;
-import uk.co.acuminous.julez.scenario.control.SleepingScenario;
+import uk.co.acuminous.julez.scenario.instruction.NoOpScenario;
+import uk.co.acuminous.julez.scenario.instruction.SleepScenario;
 import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
@@ -52,7 +52,7 @@ public class ConcurrentScenarioRunnerTest {
     @Test    
     public void doesntBeginNewScenariosAfterRunTimeIsExceeded() {
         
-        Scenario scenario = new SleepingScenario().sleepFor(700, MILLISECONDS).register(repository);       
+        Scenario scenario = new SleepScenario().sleepFor(700, MILLISECONDS).register(repository);       
         
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(10, SCENARIOS);                                                                     
         
@@ -64,7 +64,7 @@ public class ConcurrentScenarioRunnerTest {
     @Test    
     public void interuptsInFlightScenariosWhenRunTimeIsExceeded() {
         
-        Scenario scenario = new SleepingScenario().sleepFor(700, MILLISECONDS).register(repository);       
+        Scenario scenario = new SleepScenario().sleepFor(700, MILLISECONDS).register(repository);       
         
         ScenarioSource scenarios = new ScenarioRepeater(scenario);                                                                     
         
@@ -93,7 +93,7 @@ public class ConcurrentScenarioRunnerTest {
         
         long desiredStartTime = new DateTime().plusMillis(500).getMillis();       
 
-        Scenario scenario = new SleepingScenario().sleepFor(700, MILLISECONDS).register(repository);
+        Scenario scenario = new SleepScenario().sleepFor(700, MILLISECONDS).register(repository);
         
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(10, SCENARIOS);                                                                     
                 

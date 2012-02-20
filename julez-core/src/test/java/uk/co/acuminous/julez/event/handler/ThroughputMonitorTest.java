@@ -21,20 +21,20 @@ public class ThroughputMonitorTest {
 
     private ScenarioEventFactory scenarioEventFactory;
     private ScenarioRunnerEventFactory scenarioRunnerEventFactory;
-    private ThroughputMonitor monitor;
+    private ScenarioThroughputMonitor monitor;
     private DateTime timestamp;
 
     @Before
     public void init() {
         scenarioEventFactory = new ScenarioEventFactory();
         scenarioRunnerEventFactory = new ScenarioRunnerEventFactory();
-        monitor = new ThroughputMonitor();
+        monitor = new ScenarioThroughputMonitor();
         timestamp = new DateTime();        
     }
 
     @Test
     public void tolleratesThroughputEnquiriesBeforeTheScenarioRunnerHasStarted() {
-        assertTrue(0 == new ThroughputMonitor().getThroughput());        
+        assertTrue(0 == new ScenarioThroughputMonitor().getThroughput());        
     }
     
     public void disregardsScenarioEventsBeforeArrivalOfScenarioRunnerBeginEvent() {
@@ -115,7 +115,7 @@ public class ThroughputMonitorTest {
     @Test
     public void disregardsScenarioEventsArrivingAfterScenarioRunnerBeginButButStampedAsBefore() {
 
-        ThroughputMonitor monitor = new ThroughputMonitor();
+        ScenarioThroughputMonitor monitor = new ScenarioThroughputMonitor();
         
         DateTime now = new DateTime();
         
@@ -147,7 +147,7 @@ public class ThroughputMonitorTest {
     
     @Test
     public void regurgitatesThroughputAfterScenarioRunnerIsFinished() {
-        ThroughputMonitor monitor = new ThroughputMonitor();
+        ScenarioThroughputMonitor monitor = new ScenarioThroughputMonitor();
                 
         scenarioRunnerBegin();
         
@@ -166,7 +166,7 @@ public class ThroughputMonitorTest {
     
     @Test
     public void calculatesThroughputForVeryQuickScenarios() {
-        ThroughputMonitor monitor = new ThroughputMonitor();
+        ScenarioThroughputMonitor monitor = new ScenarioThroughputMonitor();
         
         monitor.onEvent(scenarioRunnerEventFactory.begin());
         monitor.onEvent(scenarioEventFactory.begin());
