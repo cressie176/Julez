@@ -1,7 +1,6 @@
 package uk.co.acuminous.julez.scenario.limiter;
 
-import static org.junit.Assert.*;
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
@@ -13,8 +12,6 @@ import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.instruction.NoOpScenario;
-import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
-import uk.co.acuminous.julez.scenario.limiter.ThroughputLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 
 public class ThroughputLimiterTest {
