@@ -2,7 +2,7 @@ package uk.co.acuminous.julez.runner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
+import static uk.co.acuminous.julez.util.JulezSugar.TIMES;
 
 import org.junit.Test;
 
@@ -15,7 +15,6 @@ import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.instruction.NoOpScenario;
 import uk.co.acuminous.julez.scenario.instruction.StopScenarioRunnerScenario;
-import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.TestEventRepository;
@@ -52,7 +51,7 @@ public class SimpleScenarioRunnerTest {
         NoOpScenario scenario = new NoOpScenario();
         scenario.register(new EventDataFilter().filterEventsWhere(Event.TYPE).matches(ScenarioEvent.BEGIN).register(testRepository));
         
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(3, SCENARIOS);
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).atMost(3, TIMES);
         new SimpleScenarioRunner().queue(scenarios).assign(new SynchronousScenarioExecutor()).start();
                 
         assertEquals(3, testRepository.count());        
@@ -63,7 +62,7 @@ public class SimpleScenarioRunnerTest {
         
         DummyScenarioExecutor executor = new DummyScenarioExecutor();                
         
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(new NoOpScenario())).to(3, SCENARIOS);
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(new NoOpScenario()).atMost(3, TIMES);
                 
         new SimpleScenarioRunner().queue(scenarios).assign(executor).start();
                

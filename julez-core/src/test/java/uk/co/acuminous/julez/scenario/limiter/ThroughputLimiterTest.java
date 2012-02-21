@@ -3,6 +3,7 @@ package uk.co.acuminous.julez.scenario.limiter;
 import static org.junit.Assert.assertTrue;
 import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
+import static uk.co.acuminous.julez.util.JulezSugar.TIMES;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,7 @@ public class ThroughputLimiterTest {
     public void aproximatelyLimitsThroughputToSpecifiedFrequency() {        
         Scenario scenario = new NoOpScenario().register(throughputMonitor);
         
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);                                                                     
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).atMost(100, TIMES);                                                                     
         
         ThroughputLimiter limiter = new ThroughputLimiter().applyLimitOf(100, SCENARIOS).perSecond().to(scenarios);
         

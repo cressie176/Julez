@@ -1,7 +1,8 @@
 package examples.web;
 
-import static uk.co.acuminous.julez.util.JulezSugar.*;
 import static org.jboss.netty.channel.Channels.pipeline;
+import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
+import static uk.co.acuminous.julez.util.JulezSugar.TIMES;
 
 import java.net.InetSocketAddress;
 import java.util.concurrent.Executors;
@@ -30,7 +31,6 @@ import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.WebTestCase;
 
@@ -43,7 +43,7 @@ public class NettyWebTest extends WebTestCase {
         
         Scenario scenario = new NettyScenario().register(throughputMonitor);
         
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).atMost(100, TIMES);
 
         new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).start();
 

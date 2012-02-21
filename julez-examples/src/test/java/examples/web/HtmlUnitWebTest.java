@@ -1,7 +1,7 @@
 package examples.web;
 
-import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
+import static uk.co.acuminous.julez.util.JulezSugar.TIMES;
 
 import org.junit.Test;
 
@@ -11,7 +11,6 @@ import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.WebTestCase;
 
@@ -29,7 +28,7 @@ public class HtmlUnitWebTest extends WebTestCase {
         
         Scenario scenario = new HtmlUnitScenario().register(throughputMonitor);
         
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);                                                                     
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).atMost(100, TIMES);                                                                     
         
         new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).start();
 

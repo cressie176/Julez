@@ -1,8 +1,8 @@
 package examples.analysis;
 
 import static org.junit.Assert.assertEquals;
-import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
+import static uk.co.acuminous.julez.util.JulezSugar.TIMES;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import java.net.UnknownHostException;
@@ -31,7 +31,6 @@ import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.instruction.NoOpScenario;
 import uk.co.acuminous.julez.scenario.instruction.StartScenarioRunnerScenario;
-import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.EnterpriseTest;
@@ -83,19 +82,19 @@ public class CorrelationTest extends EnterpriseTest {
         
         ScenarioThroughputMonitor throughputMonitor1 = new ScenarioThroughputMonitor();
         
-        EventPipe FanOutEventPipe = new FanOutEventPipe().registerAll(throughputMonitor1, jdbcEventRepository);
+        EventPipe realTimeEventHandlers = new FanOutEventPipe().registerAll(throughputMonitor1, jdbcEventRepository);
 
-        Scenario scenario = new NoOpScenario().register(FanOutEventPipe);
+        Scenario scenario = new NoOpScenario().register(realTimeEventHandlers);
         
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);        
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).atMost(100, TIMES);        
 
-        new ConcurrentScenarioRunner().register(FanOutEventPipe).allocate(10, THREADS).queue(scenarios).start();
+        new ConcurrentScenarioRunner().register(realTimeEventHandlers).allocate(10, THREADS).queue(scenarios).start();
 
-        ScenarioThroughputMonitor throughputMonitor2 = new ScenarioThroughputMonitor();
-        jdbcEventRepository.register(throughputMonitor2);
+        ScenarioThroughputMonitor posthumousEventHandler = new ScenarioThroughputMonitor();
+        jdbcEventRepository.register(posthumousEventHandler);
         jdbcEventRepository.raise();
 
-        assertMinimumThroughput(throughputMonitor1.getThroughput(), throughputMonitor2.getThroughput());
+        assertMinimumThroughput(throughputMonitor1.getThroughput(), posthumousEventHandler.getThroughput());
     }  
     
     @Test
@@ -157,7 +156,7 @@ public class CorrelationTest extends EnterpriseTest {
         PassFailErrorScenario scenario = new PassFailErrorScenario();
         scenario.useEventFactory(scenarioEventFactory);
         scenario.register(monitor);        
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);                                                                     
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).atMost(100, TIMES);                                                                     
 
         return new ConcurrentScenarioRunner()
             .useEventFactory(scenarioRunnerEventFactory)

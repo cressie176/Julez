@@ -1,8 +1,8 @@
 package examples.basics;
 
 import static org.junit.Assert.assertEquals;
-import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
+import static uk.co.acuminous.julez.util.JulezSugar.TIMES;
 
 import org.junit.Test;
 
@@ -10,7 +10,6 @@ import uk.co.acuminous.julez.event.handler.ScenarioResultMonitor;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.PassFailErrorScenario;
 
@@ -24,7 +23,7 @@ public class ScenarioOutcomeTest {
         
         Scenario scenario = new PassFailErrorScenario().register(resultMonitor);        
                         
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(200, SCENARIOS);
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).atMost(200, TIMES);
         
         new ConcurrentScenarioRunner().allocate(10, THREADS).queue(scenarios).start();
 

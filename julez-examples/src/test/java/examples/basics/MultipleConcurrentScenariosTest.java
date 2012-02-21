@@ -1,7 +1,7 @@
 package examples.basics;
 
-import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
+import static uk.co.acuminous.julez.util.JulezSugar.TIMES;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 
 import org.junit.Test;
@@ -13,7 +13,6 @@ import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.instruction.StartScenarioRunnerScenario;
-import uk.co.acuminous.julez.scenario.limiter.SizeLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 
@@ -29,12 +28,12 @@ public class MultipleConcurrentScenariosTest {
         
         Scenario helloWorldScenario = new HelloWorldScenario().register(new FanOutEventPipe(monitor1, combinedMonitor));
         
-        ScenarioSource helloWorldScenarios = new SizeLimiter().limit(new ScenarioRepeater(helloWorldScenario)).to(100, SCENARIOS);
+        ScenarioSource helloWorldScenarios = new ScenarioRepeater().repeat(helloWorldScenario).atMost(100, TIMES);
         ConcurrentScenarioRunner runner1 = new ConcurrentScenarioRunner().register(monitor1).allocate(10, THREADS).queue(helloWorldScenarios);
         
         Scenario goodbyeWorldScenario = new GoodbyeWorldScenario().register(new FanOutEventPipe(monitor2, combinedMonitor));
         
-        ScenarioSource goodbyeWorldScenarios = new SizeLimiter().limit(new ScenarioRepeater(goodbyeWorldScenario)).to(100, SCENARIOS);
+        ScenarioSource goodbyeWorldScenarios = new ScenarioRepeater().repeat(goodbyeWorldScenario).atMost(100, TIMES);
         ConcurrentScenarioRunner runner2 = new ConcurrentScenarioRunner().register(monitor2).allocate(10, THREADS).queue(goodbyeWorldScenarios);
 
         ScenarioSource concurrentScenarios = new ScenarioHopper(new StartScenarioRunnerScenario(runner1), new StartScenarioRunnerScenario(runner2));

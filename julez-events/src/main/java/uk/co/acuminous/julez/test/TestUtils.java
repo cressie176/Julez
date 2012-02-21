@@ -11,8 +11,7 @@ public class TestUtils {
 		int ret = 0;
 		for (@SuppressWarnings("unused") Event event : events) {
 			++ret;
-		}
-		
+		}		
 		return ret;
 	}
 
@@ -40,5 +39,9 @@ public class TestUtils {
 	
 	public static Event first(Iterable<Event> repo) {
 		return repo.iterator().next();
+	}
+	
+	public static Event last(Iterable<Event> repo) {
+	    return getEvent(repo, countEvents(repo)-1);
 	}
 }
