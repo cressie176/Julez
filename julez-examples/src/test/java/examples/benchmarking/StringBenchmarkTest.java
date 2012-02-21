@@ -1,19 +1,9 @@
 package examples.benchmarking;
 
-import java.util.concurrent.TimeUnit;
-
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-import uk.co.acuminous.julez.event.handler.ScenarioRunnerDurationMonitor;
-import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.scenario.ScenarioSource;
-import uk.co.acuminous.julez.scenario.limiter.InLimboLimiter;
-import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
-import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
 @SuppressWarnings("unused")
 public class StringBenchmarkTest extends BenchmarkTestCase {

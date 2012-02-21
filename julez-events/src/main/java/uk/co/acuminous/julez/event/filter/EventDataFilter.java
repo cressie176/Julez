@@ -29,6 +29,7 @@ public class EventDataFilter extends BaseEventFilter {
     
     @Override
     public boolean accept(Event event) {
-        return pattern.matcher(event.get(key)).matches();
+        String data = event.get(key);
+        return data != null ? pattern.matcher(data).matches() : false;
     }
 }

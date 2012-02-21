@@ -28,7 +28,7 @@ public class ThroughputLimiterTest {
     }
     
     @Test
-    public void limitsThroughputToSpecifiedFrequency() {        
+    public void aproximatelyLimitsThroughputToSpecifiedFrequency() {        
         Scenario scenario = new NoOpScenario().register(throughputMonitor);
         
         ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(100, SCENARIOS);                                                                     
@@ -37,7 +37,7 @@ public class ThroughputLimiterTest {
         
         runner.queue(limiter).allocate(4, THREADS).start();
         
-        assertTrue("Throughput was not limited", throughputMonitor.getThroughput() <= 100);
-        assertTrue("Throughput was not limited", throughputMonitor.getThroughput() >= 99);
+        assertTrue("Throughput was not limited: " + throughputMonitor.getThroughput(), throughputMonitor.getThroughput() <= 100);
+        assertTrue("Throughput was not limited: " + throughputMonitor.getThroughput(), throughputMonitor.getThroughput() >= 99);
     }  
 }

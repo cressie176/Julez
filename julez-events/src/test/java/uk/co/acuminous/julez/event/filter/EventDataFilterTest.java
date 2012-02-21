@@ -1,6 +1,7 @@
 package uk.co.acuminous.julez.event.filter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 import java.util.List;
 
@@ -94,5 +95,18 @@ public class EventDataFilterTest {
         
         assertEquals(1, filteredEvents.size());        
         assertEquals(wantedEvent, filteredEvents.get(0));
+    }
+    
+    @Test
+    public void ignoresDuffKeys() {
+        
+        EventFilter filter = new EventDataFilter().filterEventsWhere("duff").matches("A/1").register(repository);
+        
+        try {
+            filter.onEvent(new Event("B/1"));
+        } catch (NullPointerException e) {
+            fail("Filter did not ignore a duff key");
+        }
+        
     }
 }

@@ -20,6 +20,8 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     private long startTime = System.currentTimeMillis();
     private ScenarioRunnerEventFactory eventFactory = new ScenarioRunnerEventFactory();
     private long stopTime;
+    private int workQueueSize = Integer.MAX_VALUE;
+    private int numThreads = 1;
 
     public ConcurrentScenarioRunner queue(ScenarioSource scenarios) {
         this.scenarios = scenarios;
@@ -36,13 +38,20 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
         return this;
     }
 
-    public ConcurrentScenarioRunner allocate(int clients, JulezSugar units) {
-        this.executor = getExecutor(clients);
+    public ConcurrentScenarioRunner allocate(int threads, JulezSugar units) {
+        this.numThreads = threads;
         return this;
     }
     
-    protected ThreadPoolExecutor getExecutor(int numThreads) {
-        return new ThreadPoolExecutor(numThreads, numThreads, 0L, MILLISECONDS, new LinkedBlockingQueue<Runnable>());
+    public ConcurrentScenarioRunner limitWorkQueueTo(int workQueueSize, JulezSugar units) {
+        this.workQueueSize = workQueueSize;
+        return this;
+    }    
+    
+    protected ThreadPoolExecutor getDefaultExecutor() {
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(numThreads, numThreads, 0L, MILLISECONDS, new LinkedBlockingQueue<Runnable>(workQueueSize));
+        executor.setRejectedExecutionHandler(new ThreadPoolExecutor.CallerRunsPolicy());
+        return executor;
     }    
 
     public ConcurrentScenarioRunner useEventFactory(ScenarioRunnerEventFactory eventFactory) {
@@ -63,18 +72,26 @@ public class ConcurrentScenarioRunner extends BaseScenarioRunner {
     }
 
     private void prepare() {
-        executor = executor == null ? getExecutor(1) : executor;
+        executor = executor == null ? getDefaultExecutor() : executor;
+
         ConcurrencyUtils.sleep((startTime - System.currentTimeMillis()), MILLISECONDS);
         stopTime = System.currentTimeMillis() + timeout;
         handler.onEvent(eventFactory.begin());        
     }
 
-    private void run() {                
-        Scenario scenario = scenarios.next();
-        while (!executor.isShutdown() && scenario != null && (stopTime > System.currentTimeMillis())) {
-            executor.execute(scenario);
-            scenario = scenarios.next();
+    private void run() {
+        boolean keepRunning = shouldKeepRunning();
+        while (keepRunning) {
+            Scenario scenario = scenarios.next();
+            keepRunning = scenario != null && shouldKeepRunning();
+            if (keepRunning) {
+                executor.execute(scenario);                
+            }
         }
+    }
+
+    private boolean shouldKeepRunning() {
+        return !executor.isShutdown() && (stopTime > System.currentTimeMillis());
     }
 
     private void shutdown() {

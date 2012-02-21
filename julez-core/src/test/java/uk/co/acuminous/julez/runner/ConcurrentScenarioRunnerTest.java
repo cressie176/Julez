@@ -5,8 +5,10 @@ import static java.util.concurrent.TimeUnit.SECONDS;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
+import static uk.co.acuminous.julez.util.JulezSugar.SCENARIO;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
+import java.io.IOException;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -138,12 +140,34 @@ public class ConcurrentScenarioRunnerTest {
     public void canBeConfiguredForMultipleThreads() {
         ThreadCountingScenario scenario = new ThreadCountingScenario();
         
-        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(1000, SCENARIOS);        
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(1000, SCENARIOS);               
         
         new ConcurrentScenarioRunner().queue(scenarios).allocate(10, THREADS).start();
         
         assertEquals(10, scenario.count());
     }
+    
+    
+    @Test(timeout=10000)
+    public void aWorkQueueSizeCanBeSetToAvoidOutOfMemoryExceptions() throws IOException {
+        ScenarioRepeater scenarios = new ScenarioRepeater(new SleepScenario().sleepFor(6, SECONDS));
+        new ConcurrentScenarioRunner().queue(scenarios).allocate(1, THREADS).limitWorkQueueTo(100, SCENARIOS).runFor(5, SECONDS).start();
+    }
+    
+    @Test(timeout=10000)
+    public void autoRegulatesWhenWorkQueueCapacityHasBeenReached() throws IOException {
+
+        TestEventRepository repo = new TestEventRepository();
+        
+        Scenario scenario = new SleepScenario().sleepFor(2, SECONDS).register(repo);
+        
+        ScenarioSource scenarios = new SizeLimiter().limit(new ScenarioRepeater(scenario)).to(10, SCENARIOS);
+        
+        new ConcurrentScenarioRunner().queue(scenarios).allocate(1, THREADS).limitWorkQueueTo(1, SCENARIO).runFor(1, SECONDS).start();
+
+        assertTrue("The scenario runner did not auto regulate", repo.count(ScenarioEvent.TYPE, ScenarioEvent.BEGIN) <= 3);
+        assertTrue("The scenario runner did not auto regulate", repo.count(ScenarioEvent.TYPE, ScenarioEvent.BEGIN) >= 2);
+    }    
     
     class ThreadCountingScenario extends BaseScenario {
 

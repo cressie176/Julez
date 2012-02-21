@@ -1,7 +1,7 @@
 package examples.analysis;
 
 import static java.util.concurrent.TimeUnit.SECONDS;
-import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED;
+import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 
 import org.junit.Test;
@@ -9,10 +9,9 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.handler.ScenarioThroughputMonitor;
 import uk.co.acuminous.julez.event.pipe.AsynchronousEventPipe;
 import uk.co.acuminous.julez.event.pipe.EventPipe;
-import uk.co.acuminous.julez.event.pipe.FanOutEventPipe;
 import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.instruction.NoOpScenario;
-import uk.co.acuminous.julez.scenario.limiter.InLimboLimiter;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.util.ConcurrencyUtils;
 
@@ -27,16 +26,11 @@ public class AsynchronousAnalysisTest {
         
         Thread monitorThread = detach(throughputMonitor);        
         
-        NoOpScenario scenario = new NoOpScenario();
+        Scenario scenario = new NoOpScenario().register(asynchronousPipe);
         
-        InLimboLimiter limiter = new InLimboLimiter()
-            .block(new ScenarioRepeater(scenario))        
-            .when(5000, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED)            
-            .unblockWhen(2500, SCENARIOS_ARE_DEQUEUED_BUT_NOT_STARTED);
+        ScenarioRepeater scenarios = new ScenarioRepeater(scenario);
         
-        scenario.register(new FanOutEventPipe(asynchronousPipe, limiter));
-        
-        new ConcurrentScenarioRunner().register(asynchronousPipe).allocate(4, THREADS).queue(limiter).runFor(5, SECONDS).start();
+        new ConcurrentScenarioRunner().register(asynchronousPipe).allocate(4, THREADS).limitWorkQueueTo(100, SCENARIOS).queue(scenarios).runFor(5, SECONDS).start();
         
         monitorThread.interrupt();        
     }
