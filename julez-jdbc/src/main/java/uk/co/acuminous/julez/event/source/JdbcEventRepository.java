@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -19,12 +18,12 @@ import uk.co.acuminous.julez.jdbc.DefaultEventSql;
 import uk.co.acuminous.julez.jdbc.SqlStatementProvider;
 import uk.co.acuminous.julez.mapper.TwoWayMapper;
 
-public class JdbcEventRepository extends BaseEventRepository {
+public abstract class JdbcEventRepository extends BaseEventRepository {
 
-    private final JdbcTemplate jdbcTemplate;
+    protected final JdbcTemplate jdbcTemplate;
     private final TwoWayMapper columnMapper;
-    private final SqlStatementProvider sql;
-
+    protected final SqlStatementProvider sql;
+    
     public JdbcEventRepository(DataSource dataSource, TwoWayMapper columnMapper) {
         this(dataSource, columnMapper, new DefaultEventSql(columnMapper.getValues()));        
     }
@@ -63,7 +62,7 @@ public class JdbcEventRepository extends BaseEventRepository {
         }  
     }     
     
-    private class EventRowMapper implements RowMapper<Event> {
+    class EventRowMapper implements RowMapper<Event> {
         @Override
         public Event mapRow(ResultSet rs, int rowNum) throws SQLException {
             try {
@@ -85,10 +84,4 @@ public class JdbcEventRepository extends BaseEventRepository {
             }        
         }  
     }
-
-    // TODO this is a hack for now. 
-    // There's no reason other than my laziness that this should load everything in one go
-    @Override public Iterator<Event> iterator() {
-        return jdbcTemplate.query(sql.getSelectStatement(), new EventRowMapper()).iterator();
-	}    
 }

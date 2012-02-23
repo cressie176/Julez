@@ -10,6 +10,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
+import uk.co.acuminous.julez.event.source.BigGulpJdbcEventRepository;
 import uk.co.acuminous.julez.event.source.JdbcEventRepository;
 import uk.co.acuminous.julez.event.source.JmsEventSource;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
@@ -59,7 +60,7 @@ public class EnterpriseTest {
         TwoWayMapper columnMapper = getColumnMapper();        
         
         // The JDBC event repository can be queried for events, or asked to re-raise them        
-        jdbcEventRepository = new JdbcEventRepository(dataSource, columnMapper);        
+        jdbcEventRepository = new BigGulpJdbcEventRepository(dataSource, columnMapper);        
     }
 
     protected void createEventTable() {

@@ -1,7 +1,6 @@
 package examples.analysis;
 
 import static org.junit.Assert.assertEquals;
-import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 import static uk.co.acuminous.julez.util.JulezSugar.TIMES;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
@@ -22,7 +21,7 @@ import uk.co.acuminous.julez.event.handler.EventHandler;
 import uk.co.acuminous.julez.event.handler.ScenarioThroughputMonitor;
 import uk.co.acuminous.julez.event.pipe.EventPipe;
 import uk.co.acuminous.julez.event.pipe.FanOutEventPipe;
-import uk.co.acuminous.julez.event.source.JdbcEventRepository;
+import uk.co.acuminous.julez.event.source.BigGulpJdbcEventRepository;
 import uk.co.acuminous.julez.executor.ConcurrentScenarioExecutor;
 import uk.co.acuminous.julez.executor.ScenarioExecutor;
 import uk.co.acuminous.julez.executor.SynchronousScenarioExecutor;
@@ -140,7 +139,7 @@ public class CorrelationTest extends EnterpriseTest {
             
             TransformingMapper columnMapper = getColumnMapper();
             CorrelatingEventSql sql = new CorrelatingEventSql(columnMapper.getValues(), testRun);
-            jdbcEventRepository = new JdbcEventRepository(dataSource, columnMapper, sql);
+            jdbcEventRepository = new BigGulpJdbcEventRepository(dataSource, columnMapper, sql);
             
             ScenarioThroughputMonitor monitor = new ScenarioThroughputMonitor();  
             

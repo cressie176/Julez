@@ -18,6 +18,7 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.jdbc.DefaultEventSql;
+import uk.co.acuminous.julez.jdbc.SqlStatementProvider;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEvent;
@@ -26,10 +27,10 @@ import uk.co.acuminous.julez.test.TestEventSchema;
 import uk.co.acuminous.julez.test.TestUtils;
 import uk.co.acuminous.julez.transformer.DefaultColumnNameTransformer;
 
-public class JdbcEventRepositoryTest {
+public abstract class JdbcEventRepositoryTest {
 
-    private DataSource dataSource;
-    private TransformingMapper columnMapper;
+    protected DataSource dataSource;
+    protected TransformingMapper columnMapper;
 
     @Before
     public void init() {
@@ -51,7 +52,7 @@ public class JdbcEventRepositoryTest {
 
         Event event = new ScenarioEvent("id", System.currentTimeMillis(), ScenarioEvent.FAIL);
 
-        JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);        
+        JdbcEventRepository repository = createRepository();        
         repository.onEvent(event);
 
         assertEquals(event, repository.iterator().next());
@@ -62,7 +63,7 @@ public class JdbcEventRepositoryTest {
 
         ScenarioRunnerEvent event = new ScenarioRunnerEvent("id", System.currentTimeMillis(), ScenarioRunnerEvent.END);
 
-        JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);                       
+        JdbcEventRepository repository = createRepository();                       
         repository.onEvent(event);
 
         assertEquals(event, repository.iterator().next());
@@ -73,7 +74,7 @@ public class JdbcEventRepositoryTest {
 
         ScenarioRunnerEvent event = new ScenarioRunnerEvent("id", System.currentTimeMillis(), ScenarioRunnerEvent.END);
 
-        JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);        
+        JdbcEventRepository repository = createRepository();        
         repository.onEvent(event);
 
         Event actual = repository.iterator().next();
@@ -87,7 +88,7 @@ public class JdbcEventRepositoryTest {
         ScenarioRunnerEvent event = new ScenarioRunnerEvent("id", System.currentTimeMillis(), ScenarioRunnerEvent.END);
         event.put("Foo", "Bar");
 
-        JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);        
+        JdbcEventRepository repository = createRepository();        
         repository.onEvent(event);
 
         Event actual = repository.iterator().next();
@@ -97,7 +98,7 @@ public class JdbcEventRepositoryTest {
     
     @Test
     public void listsretriesEventsFromRepositoryInOrder() {
-        JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);               
+        JdbcEventRepository repository = createRepository();               
         
         List<Event> expectedEvents = initTestData(repository);
 
@@ -106,7 +107,7 @@ public class JdbcEventRepositoryTest {
     
     @Test
     public void countsEventsInTheRepository() {
-        JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);               
+        JdbcEventRepository repository = createRepository();               
         
         List<Event> events = initTestData(repository);
                 
@@ -116,7 +117,7 @@ public class JdbcEventRepositoryTest {
     @Test
     public void canOverideSelectQuery() {
         
-        JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper, new DefaultEventSql(columnMapper.getValues()) {
+        JdbcEventRepository repository = createRepository(new DefaultEventSql(columnMapper.getValues()) {
             @Override
             public String getSelectStatement() {
                 return "SELECT * FROM EVENT WHERE TYPE='Scenario/begin'";
@@ -132,7 +133,7 @@ public class JdbcEventRepositoryTest {
     @Test
     public void canOverideInsertQuery() {        
 
-        JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper, new DefaultEventSql(columnMapper.getValues()) {
+        JdbcEventRepository repository = createRepository(new DefaultEventSql(columnMapper.getValues()) {
             @Override
             public String getInsertStatement() {
                 return "INSERT INTO event (id, timestamp, type) VALUES (?, ?, ? + '/override')" ;
@@ -148,7 +149,8 @@ public class JdbcEventRepositoryTest {
     @Test
     public void maintainsColumnOrderSpecifiedInSqlStatementProvider() {        
 
-        JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper, new DefaultEventSql("ID", "TYPE", "TIMESTAMP"));        
+        DefaultEventSql sql = new DefaultEventSql("ID", "TYPE", "TIMESTAMP");
+		JdbcEventRepository repository = createRepository(sql);        
 
         Map<String, String> data = new LinkedHashMap<String, String>();
         data.put("#TYPE", "type");
@@ -159,7 +161,7 @@ public class JdbcEventRepositoryTest {
         repository.onEvent(event);
         
         assertEquals(event, repository.iterator().next());
-    }        
+    }
     
     private List<Event> initTestData(JdbcEventRepository repository) {
                                 
@@ -180,4 +182,7 @@ public class JdbcEventRepositoryTest {
         
         return events;
     }    
+
+	protected abstract JdbcEventRepository createRepository(SqlStatementProvider sql);
+	protected abstract JdbcEventRepository createRepository();
 }
