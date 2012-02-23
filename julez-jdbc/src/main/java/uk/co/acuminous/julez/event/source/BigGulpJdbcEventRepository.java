@@ -12,7 +12,6 @@ import uk.co.acuminous.julez.mapper.TwoWayMapper;
  * 
  * An event repository which grabs all stored events in one huge gulp in order to iterate.
  * 
- * Instead this implementation repeatedly grabs up to a specified buffer size until exhausted.
  * This approach can make better use of database fetches, but at the expense of memory for large datasets.
  * 
  * @see BufferedEventRepository
