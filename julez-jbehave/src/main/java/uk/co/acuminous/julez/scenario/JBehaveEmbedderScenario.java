@@ -11,6 +11,8 @@ import org.jbehave.core.io.StoryFinder;
 import org.jbehave.core.steps.CandidateSteps;
 import org.jbehave.core.steps.InstanceStepsFactory;
 
+import uk.co.acuminous.julez.event.Event;
+
 public class JBehaveEmbedderScenario extends BaseScenario {
 
     private final URL codeLocation;
@@ -40,7 +42,7 @@ public class JBehaveEmbedderScenario extends BaseScenario {
                 handler.onEvent(eventFactory.pass());
             }
         } catch (Throwable t) {
-            ScenarioEvent event = eventFactory.error();
+            Event event = eventFactory.error();
             event.getData().put("message", t.getMessage());
             handler.onEvent(event);
         } finally {

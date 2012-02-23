@@ -5,6 +5,7 @@ import uk.co.acuminous.julez.scenario.Scenario;
 public interface ScenarioExecutor {
 
     void execute(Scenario scenario);
-    void stop();
+    void awaitTermination() throws InterruptedException;
+    void shutdown();
 
 }

@@ -5,7 +5,7 @@ import static org.junit.Assert.assertTrue;
 public class PerformanceAssert {
 
     public static void assertMinimumThroughput(int expected, int actual) {
-        assertTrue(String.format("Actual throughput: %d scenarios per second", actual), actual >= expected);
+        assertTrue(String.format("Actual throughput: %d scenarios per second, but required %d", actual, expected), actual >= expected);
     }
     
     public static void assertMinimumPasses(int expected, int actual) {

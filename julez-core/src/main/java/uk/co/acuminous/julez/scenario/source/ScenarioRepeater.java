@@ -26,7 +26,7 @@ public class ScenarioRepeater implements ScenarioSource {
         return this;
     }    
     
-    public ScenarioRepeater atMost(int repetitions, JulezSugar units) {
+    public ScenarioRepeater upTo(int repetitions, JulezSugar units) {
         this.repetitions = repetitions;
         return this;
     }    

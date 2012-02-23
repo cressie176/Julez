@@ -37,7 +37,7 @@ public class ScenarioRepeaterTest {
     public void testFluidApi() {
         
         Scenario scenario = new NoOpScenario();
-        ScenarioRepeater scenarios = new ScenarioRepeater().repeat(scenario).atMost(10, TIMES);
+        ScenarioRepeater scenarios = new ScenarioRepeater().repeat(scenario).upTo(10, TIMES);
         
         for (int i = 0; i < 10; i++) {
             assertSame(scenario, scenarios.next());

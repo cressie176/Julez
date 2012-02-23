@@ -1,6 +1,6 @@
 package uk.co.acuminous.julez.event.source;
 
-import static java.util.concurrent.TimeUnit.*;
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
 import static org.junit.Assert.assertEquals;
 
 import javax.jms.QueueConnectionFactory;
@@ -9,11 +9,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.JmsEventHandler;
 import uk.co.acuminous.julez.marshalling.json.JsonEventTranslator;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
-import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.test.JmsTestUtils;
 import uk.co.acuminous.julez.test.TestEventRepository;
@@ -49,7 +49,7 @@ public class JmsEventSourceTest {
     
     @Test
     public void scenarioEventsAreRecreated() throws InterruptedException {
-        ScenarioEvent pass = new ScenarioEventFactory().pass();
+        Event pass = new ScenarioEventFactory().pass();
         
         jmsSender.onEvent(pass);
         

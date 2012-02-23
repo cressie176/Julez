@@ -49,7 +49,7 @@ public class JdbcEventRepositoryTest {
     @Test
     public void addsScenarioEventsToRepository() {
 
-        ScenarioEvent event = new ScenarioEvent("id", System.currentTimeMillis(), ScenarioEvent.FAIL);
+        Event event = new ScenarioEvent("id", System.currentTimeMillis(), ScenarioEvent.FAIL);
 
         JdbcEventRepository repository = new JdbcEventRepository(dataSource, columnMapper);        
         repository.onEvent(event);

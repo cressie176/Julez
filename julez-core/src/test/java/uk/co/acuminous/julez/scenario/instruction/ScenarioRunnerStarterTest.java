@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.scenario.instruction.StopScenarioRunnerScenario;
 
-public class StartScenarioRunnerScenarioTest {
+public class ScenarioRunnerStarterTest {
 
     @Test
     public void terminatesScenarioRunner() {

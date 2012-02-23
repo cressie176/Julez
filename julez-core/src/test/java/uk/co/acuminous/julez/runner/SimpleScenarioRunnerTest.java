@@ -2,6 +2,7 @@ package uk.co.acuminous.julez.runner;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static uk.co.acuminous.julez.util.JulezSugar.TIMES;
 
 import org.junit.Test;
@@ -51,7 +52,7 @@ public class SimpleScenarioRunnerTest {
         NoOpScenario scenario = new NoOpScenario();
         scenario.register(new EventDataFilter().filterEventsWhere(Event.TYPE).matches(ScenarioEvent.BEGIN).register(testRepository));
         
-        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).atMost(3, TIMES);
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).upTo(3, TIMES);
         new SimpleScenarioRunner().queue(scenarios).assign(new SynchronousScenarioExecutor()).start();
                 
         assertEquals(3, testRepository.count());        
@@ -62,7 +63,7 @@ public class SimpleScenarioRunnerTest {
         
         DummyScenarioExecutor executor = new DummyScenarioExecutor();                
         
-        ScenarioSource scenarios = new ScenarioRepeater().repeat(new NoOpScenario()).atMost(3, TIMES);
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(new NoOpScenario()).upTo(3, TIMES);
                 
         new SimpleScenarioRunner().queue(scenarios).assign(executor).start();
                
@@ -72,7 +73,7 @@ public class SimpleScenarioRunnerTest {
     @Test
     public void stopsDequeuingScenarios() {
 
-        final SimpleScenarioRunner runner = new SimpleScenarioRunner();
+        SimpleScenarioRunner runner = new SimpleScenarioRunner();
         
         ScenarioSource scenarios = new ScenarioHopper(new StopScenarioRunnerScenario(runner), new NoOpScenario());
         
@@ -81,6 +82,18 @@ public class SimpleScenarioRunnerTest {
                
         assertNotNull("Runner dequeued all scenarios instead of stopping", scenarios.next());                  
     }
+    
+    @Test
+    public void stopsExecutor() {
+
+        DummyScenarioExecutor executor = new DummyScenarioExecutor();                
+        
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(new NoOpScenario()).upTo(3, TIMES);
+                
+        new SimpleScenarioRunner().queue(scenarios).assign(executor).stop();
+               
+        assertTrue("Runner did not stop executor", executor.stopped);                  
+    }    
     
     public class DummyScenarioExecutor implements ScenarioExecutor {
 
@@ -94,8 +107,13 @@ public class SimpleScenarioRunnerTest {
         }
 
         @Override
-        public void stop() {
-            stopped = true;
+        public void awaitTermination() {
+            shutdown();
         }        
+                
+        @Override
+        public void shutdown() {
+            stopped = true;
+        }
     } 
 }

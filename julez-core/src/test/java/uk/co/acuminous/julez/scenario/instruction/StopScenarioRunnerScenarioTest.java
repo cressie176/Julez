@@ -4,7 +4,7 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.scenario.instruction.StartScenarioRunnerScenario;
+import uk.co.acuminous.julez.scenario.instruction.ScenarioRunnerStarter;
 
 public class StopScenarioRunnerScenarioTest {
 
@@ -12,7 +12,7 @@ public class StopScenarioRunnerScenarioTest {
     public void terminatesScenarioRunner() {
         DummyScenarioRunner runner = new DummyScenarioRunner();
         
-        new StartScenarioRunnerScenario(runner).run();
+        new ScenarioRunnerStarter(runner).run();
         
         assertTrue(runner.started);
     }

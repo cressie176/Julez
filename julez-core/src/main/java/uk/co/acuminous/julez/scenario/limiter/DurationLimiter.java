@@ -21,12 +21,12 @@ public class DurationLimiter implements ScenarioSource {
     public DurationLimiter() {
     }
     
-    public DurationLimiter provide(ScenarioSource scenarios) {
+    public DurationLimiter limit(ScenarioSource scenarios) {
         this.scenarios = scenarios;
         return this;
     }    
 
-    public DurationLimiter forNoMoreThan(int value, TimeUnit timeUnit) {
+    public DurationLimiter to(int value, TimeUnit timeUnit) {
         this.timeout = MILLISECONDS.convert(value, timeUnit);
         return this;
     }    

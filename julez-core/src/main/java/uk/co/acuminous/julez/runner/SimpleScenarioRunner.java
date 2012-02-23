@@ -16,24 +16,43 @@ public class SimpleScenarioRunner extends BaseScenarioRunner {
 
     @Override
     public void start() {
-        handler.onEvent(eventFactory.begin()); 
-        
+        executeScenarios();        
+        shutdownWhenDone();        
+    }
+
+    private void executeScenarios() {
+        handler.onEvent(eventFactory.begin());        
         Scenario scenario = getNextScenario();
         while (scenario != null) {
             executor.execute(scenario);
             scenario = getNextScenario();
         }
+    }    
         
-        handler.onEvent(eventFactory.end());
-    }
-    
     private Scenario getNextScenario() {
         return !stopping ? scenarios.next() :  null;
+    }    
+    
+    private void shutdownWhenDone() {
+        try {
+            executor.awaitTermination();
+        } catch (InterruptedException e) {
+            // Meh
+        } finally {
+            stop();    
+        }
     }
     
     @Override    
-    public void stop() {
-        stopping = true;
+    public synchronized void stop() {
+        if (!stopping) {
+            try {
+                stopping = true;
+                executor.shutdown();
+            } finally {
+                handler.onEvent(eventFactory.end());                
+            }
+        }
     } 
 
     public SimpleScenarioRunner queue(ScenarioSource scenarios) {
@@ -48,6 +67,11 @@ public class SimpleScenarioRunner extends BaseScenarioRunner {
     
     public SimpleScenarioRunner register(EventHandler handler) {
         super.register(handler);
+        return this;
+    }
+    
+    public SimpleScenarioRunner useEventFactory(ScenarioRunnerEventFactory eventFactory) {
+        this.eventFactory = eventFactory;
         return this;
     }    
 

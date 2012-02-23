@@ -10,7 +10,10 @@ public class SynchronousScenarioExecutor implements ScenarioExecutor {
     }
 
     @Override
-    public void stop() {        
+    public void awaitTermination() {
     }
-
+    
+    @Override
+    public void shutdown() {        
+    }
 }

@@ -1,6 +1,7 @@
 package examples.analysis;
 
 import static org.junit.Assert.assertEquals;
+import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 import static uk.co.acuminous.julez.util.JulezSugar.TIMES;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
@@ -22,15 +23,19 @@ import uk.co.acuminous.julez.event.handler.ScenarioThroughputMonitor;
 import uk.co.acuminous.julez.event.pipe.EventPipe;
 import uk.co.acuminous.julez.event.pipe.FanOutEventPipe;
 import uk.co.acuminous.julez.event.source.JdbcEventRepository;
+import uk.co.acuminous.julez.executor.ConcurrentScenarioExecutor;
+import uk.co.acuminous.julez.executor.ScenarioExecutor;
+import uk.co.acuminous.julez.executor.SynchronousScenarioExecutor;
 import uk.co.acuminous.julez.jdbc.DefaultEventSql;
 import uk.co.acuminous.julez.mapper.TransformingMapper;
-import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.runner.ScenarioRunner;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
+import uk.co.acuminous.julez.runner.SimpleScenarioRunner;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.instruction.NoOpScenario;
-import uk.co.acuminous.julez.scenario.instruction.StartScenarioRunnerScenario;
+import uk.co.acuminous.julez.scenario.instruction.ScenarioRunnerStarter;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.EnterpriseTest;
@@ -41,7 +46,7 @@ import uk.co.acuminous.julez.transformer.DefaultColumnNameTransformer;
 public class CorrelationTest extends EnterpriseTest {
     
     @Test
-    public void demonstrateRealtimeCorrelationOfTestResults() throws UnknownHostException {
+    public void demonstrateRealtimeCorrelationOfTestResultsGeneratedByMultipleScenarioRunners() throws UnknownHostException {
                 
         String testRun1 = "A";        
         String testClient1 = "192.168.1.1";        
@@ -61,13 +66,15 @@ public class CorrelationTest extends EnterpriseTest {
         FanOutEventPipe monitors = new FanOutEventPipe(unfilteredRepository, filterOnTestRun1);
                
         ScenarioSource concurrentScenarios = new ScenarioHopper(
-            new StartScenarioRunnerScenario(initScenarioRunner(testRun1, testClient1, monitors)),
-            new StartScenarioRunnerScenario(initScenarioRunner(testRun1, testClient2, monitors)),
-            new StartScenarioRunnerScenario(initScenarioRunner(testRun2, testClient1, monitors)),
-            new StartScenarioRunnerScenario(initScenarioRunner(testRun2, testClient2, monitors))                
+            new ScenarioRunnerStarter(initScenarioRunner(testRun1, testClient1, monitors)),
+            new ScenarioRunnerStarter(initScenarioRunner(testRun1, testClient2, monitors)),
+            new ScenarioRunnerStarter(initScenarioRunner(testRun2, testClient1, monitors)),
+            new ScenarioRunnerStarter(initScenarioRunner(testRun2, testClient2, monitors))                
         );
         
-        new ConcurrentScenarioRunner().queue(concurrentScenarios).start();
+        ScenarioExecutor executor = new SynchronousScenarioExecutor();
+        
+        new SimpleScenarioRunner().assign(executor).queue(concurrentScenarios).start();
         
         int uncorrelatedEvents = unfilteredRepository.count();
         int correlatedEvents = filteredRepository.count();
@@ -86,10 +93,12 @@ public class CorrelationTest extends EnterpriseTest {
 
         Scenario scenario = new NoOpScenario().register(realTimeEventHandlers);
         
-        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).atMost(100, TIMES);        
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).upTo(100, TIMES);        
 
-        new ConcurrentScenarioRunner().register(realTimeEventHandlers).allocate(10, THREADS).queue(scenarios).start();
-
+        ScenarioExecutor executor = new ConcurrentScenarioExecutor().allocate(10, THREADS);        
+        
+        new SimpleScenarioRunner().assign(executor).register(realTimeEventHandlers).queue(scenarios).start();        
+        
         ScenarioThroughputMonitor posthumousEventHandler = new ScenarioThroughputMonitor();
         jdbcEventRepository.register(posthumousEventHandler);
         jdbcEventRepository.raise();
@@ -141,11 +150,11 @@ public class CorrelationTest extends EnterpriseTest {
         }
     }
      
-    private ConcurrentScenarioRunner initTestRun(String testRun, EventHandler monitor) {
+    private ScenarioRunner initTestRun(String testRun, EventHandler monitor) {
         return initScenarioRunner(testRun, "", monitor);
     }
     
-    private ConcurrentScenarioRunner initScenarioRunner(String testRun, String testClient, EventHandler monitor) {
+    private ScenarioRunner initScenarioRunner(String testRun, String testClient, EventHandler monitor) {
         Map<String, String> correlationData = new HashMap<String, String>();
         correlationData.put("TEST_RUN", testRun);
         correlationData.put("TEST_CLIENT", testClient);
@@ -156,10 +165,13 @@ public class CorrelationTest extends EnterpriseTest {
         PassFailErrorScenario scenario = new PassFailErrorScenario();
         scenario.useEventFactory(scenarioEventFactory);
         scenario.register(monitor);        
-        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).atMost(100, TIMES);                                                                     
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).upTo(100, TIMES);                                                                     
 
-        return new ConcurrentScenarioRunner()
+        ScenarioExecutor executor = new SynchronousScenarioExecutor();
+        
+        return new SimpleScenarioRunner()
             .useEventFactory(scenarioRunnerEventFactory)
+            .assign(executor)
             .register(monitor)
             .queue(scenarios);
     }    

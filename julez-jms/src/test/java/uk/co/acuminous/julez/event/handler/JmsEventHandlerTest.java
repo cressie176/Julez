@@ -14,9 +14,7 @@ import org.junit.Test;
 
 import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.marshalling.json.JsonEventTranslator;
-import uk.co.acuminous.julez.runner.ScenarioRunnerEvent;
 import uk.co.acuminous.julez.runner.ScenarioRunnerEventFactory;
-import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioEventFactory;
 import uk.co.acuminous.julez.test.JmsTestUtils;
 import uk.co.acuminous.julez.util.JmsHelper;
@@ -41,7 +39,7 @@ public class JmsEventHandlerTest {
     @Test
     public void scenarioEventsAreWrittenToTheQueue() throws JMSException, InterruptedException {             
         JmsEventHandler jmsSender = new JmsEventHandler(connectionFactory, marshaller);        
-        ScenarioEvent expected = new ScenarioEventFactory().fail();
+        Event expected = new ScenarioEventFactory().fail();
         jmsSender.onEvent(expected);                
         assertEquals(expected, dequeue());
     }
@@ -49,7 +47,7 @@ public class JmsEventHandlerTest {
     @Test
     public void scenarioRunnerEventsAreWrittenToTheQueue() throws Exception { 
         JmsEventHandler jmsSender = new JmsEventHandler(connectionFactory, marshaller);        
-        ScenarioRunnerEvent expected = new ScenarioRunnerEventFactory().begin();
+        Event expected = new ScenarioRunnerEventFactory().begin();
         jmsSender.onEvent(expected);                
         assertEquals(expected, dequeue());     
     }

@@ -7,22 +7,20 @@ import java.net.URL;
 
 import org.junit.Test;
 
-import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveEmbedderScenario;
 import uk.co.acuminous.julez.scenario.JBehaveStoryRunnerScenario;
 import uk.co.acuminous.julez.scenario.instruction.NoOpScenario;
 import uk.co.acuminous.julez.scenario.instruction.SleepScenario;
 import examples.jbehave.CalculatorSteps;
-import static uk.co.acuminous.julez.util.JulezSugar.*;
 
 public class JulezBenchmarkTest extends BenchmarkTestCase {
 
+    private int fourThreads = 4;
     private int oneHundredThousandTimes = 100000;
     private int oneThousandTimes = 1000;
-    private ConcurrentScenarioRunner runner;
 
     @Test
-    public void benchmarkSingleThreadedConcurrentScenarioRunnerUsingNoOpScenario() {
+    public void benchmarkSingleThreadedScenarioRunnerUsingNoOpScenario() {
                 
         benchmark(new NoOpScenario(), oneHundredThousandTimes);
         
@@ -30,17 +28,15 @@ public class JulezBenchmarkTest extends BenchmarkTestCase {
     }
     
     @Test
-    public void benchmarkMultiThreadedConcurrentScenarioRunnerWith10ThreadsUsingNoOpScenario() {
+    public void benchmarkMultiThreadedScenarioRunnerWith10ThreadsUsingNoOpScenario() {
+                
+        benchmark(new NoOpScenario(), oneHundredThousandTimes, fourThreads);
         
-        runner = new ConcurrentScenarioRunner().allocate(10, THREADS);        
-        
-        benchmark(new NoOpScenario(), oneHundredThousandTimes);
-        
-        System.out.println(String.format("%d x Multi threaded(%d) NoOp Scenarios took %dms", oneHundredThousandTimes, 10, durationMonitor.getDuration()));
+        System.out.println(String.format("%d x Multi threaded(%d) NoOp Scenarios took %dms", oneHundredThousandTimes, fourThreads, durationMonitor.getDuration()));
     } 
     
     @Test
-    public void benchmarkSingleThreadedConcurrentScenarioRunnerSleepingNoOpScenario() {
+    public void benchmarkSingleThreadedScenarioRunnerSleepingNoOpScenario() {
                 
         benchmark(new SleepScenario().sleepFor(10, MILLISECONDS), oneThousandTimes);
         
@@ -48,13 +44,11 @@ public class JulezBenchmarkTest extends BenchmarkTestCase {
     }
     
     @Test
-    public void benchmarkMultiThreadedConcurrentScenarioRunnerWith10ThreadsSleepingNoOpScenario() {
+    public void benchmarkMultiThreadedScenarioRunnerWith10ThreadsSleepingNoOpScenario() {       
         
-        runner = new ConcurrentScenarioRunner().allocate(10, THREADS);        
+        benchmark(new SleepScenario().sleepFor(10, MILLISECONDS), oneThousandTimes, fourThreads);
         
-        benchmark(new SleepScenario().sleepFor(10, MILLISECONDS), oneThousandTimes);
-        
-        System.out.println(String.format("%d x Multi threaded(%d) Sleep Scenarios took %dms", oneThousandTimes, 10, durationMonitor.getDuration()));
+        System.out.println(String.format("%d x Multi threaded(%d) Sleep Scenarios took %dms", oneThousandTimes, fourThreads, durationMonitor.getDuration()));
     }
     
     @Test
@@ -78,9 +72,4 @@ public class JulezBenchmarkTest extends BenchmarkTestCase {
         
         System.out.println(String.format("%d x Single threaded JBehave Embedder Scenarios took %dms", oneThousandTimes, durationMonitor.getDuration()));        
     }    
-    
-    @Override
-    protected ConcurrentScenarioRunner getScenarioRunner() {
-        return runner == null ? super.getScenarioRunner() : runner;
-    }
 }

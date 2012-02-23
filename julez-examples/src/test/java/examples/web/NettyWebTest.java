@@ -25,11 +25,13 @@ import org.jboss.netty.handler.codec.http.HttpResponse;
 import org.jboss.netty.handler.codec.http.HttpVersion;
 import org.junit.Test;
 
+import uk.co.acuminous.julez.event.Event;
 import uk.co.acuminous.julez.event.handler.ScenarioThroughputMonitor;
-import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.executor.ConcurrentScenarioExecutor;
+import uk.co.acuminous.julez.executor.ScenarioExecutor;
+import uk.co.acuminous.julez.runner.SimpleScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
-import uk.co.acuminous.julez.scenario.ScenarioEvent;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.ScenarioRepeater;
 import uk.co.acuminous.julez.test.WebTestCase;
@@ -43,9 +45,12 @@ public class NettyWebTest extends WebTestCase {
         
         Scenario scenario = new NettyScenario().register(throughputMonitor);
         
-        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).atMost(100, TIMES);
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).upTo(100, TIMES);
 
-        new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).start();
+        ScenarioExecutor executor = new ConcurrentScenarioExecutor().allocate(4, THREADS);
+        
+        new SimpleScenarioRunner().assign(executor).register(throughputMonitor).queue(scenarios).start();
+        
 
         System.out.println("\nNetty Throughput\n----------------");
         System.out.println(throughputMonitor.getThroughput());
@@ -74,14 +79,14 @@ public class NettyWebTest extends WebTestCase {
         }
         
         public void fail(Integer status, String message) {
-            ScenarioEvent event = eventFactory.fail();
+            Event event = eventFactory.fail();
             event.getData().put("statusCode", String.valueOf(status));
             event.getData().put("message", message);
             handler.onEvent(event);
         }
         
         public void error(String message) {
-            ScenarioEvent event = eventFactory.error();
+            Event event = eventFactory.error();
             event.getData().put("message", message);
             handler.onEvent(event);       
         }        

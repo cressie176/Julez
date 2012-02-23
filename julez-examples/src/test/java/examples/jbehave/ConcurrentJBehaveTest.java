@@ -1,6 +1,7 @@
 package examples.jbehave;
 
 import static org.jbehave.core.io.CodeLocations.codeLocationFromClass;
+import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertPassMark;
 
@@ -14,13 +15,14 @@ import org.junit.Test;
 import uk.co.acuminous.julez.event.handler.ScenarioResultMonitor;
 import uk.co.acuminous.julez.event.handler.ScenarioThroughputMonitor;
 import uk.co.acuminous.julez.event.pipe.FanOutEventPipe;
-import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.executor.ConcurrentScenarioExecutor;
+import uk.co.acuminous.julez.executor.ScenarioExecutor;
+import uk.co.acuminous.julez.runner.SimpleScenarioRunner;
 import uk.co.acuminous.julez.scenario.JBehaveEmbedderScenario;
 import uk.co.acuminous.julez.scenario.JBehaveStoryRunnerScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
 import uk.co.acuminous.julez.scenario.source.ScenarioHopper;
-import static uk.co.acuminous.julez.util.JulezSugar.*;
 
 public class ConcurrentJBehaveTest {
 
@@ -47,8 +49,10 @@ public class ConcurrentJBehaveTest {
         
         ScenarioSource scenarios = new ScenarioHopper(list);  
         
-        new ConcurrentScenarioRunner().register(throughputMonitor).allocate(4, THREADS).queue(scenarios).start();
-
+        ScenarioExecutor executor = new ConcurrentScenarioExecutor().allocate(4, THREADS);
+        
+        new SimpleScenarioRunner().assign(executor).register(throughputMonitor).queue(scenarios).start();
+        
         assertMinimumThroughput(100, throughputMonitor.getThroughput());
         assertPassMark(100, resultMonitor.getPercentage());        
     }
@@ -69,7 +73,9 @@ public class ConcurrentJBehaveTest {
         
         ScenarioSource scenarios = new ScenarioHopper(list);
         
-        new ConcurrentScenarioRunner().register(throughputMonitor).allocate(4, THREADS).queue(scenarios).start();
+        ScenarioExecutor executor = new ConcurrentScenarioExecutor().allocate(4, THREADS);
+        
+        new SimpleScenarioRunner().assign(executor).register(throughputMonitor).queue(scenarios).start();
 
         assertMinimumThroughput(5, throughputMonitor.getThroughput());
         assertPassMark(100, resultMonitor.getPercentage());        

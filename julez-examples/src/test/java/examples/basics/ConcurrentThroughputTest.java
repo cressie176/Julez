@@ -1,5 +1,6 @@
 package examples.basics;
 
+import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 import static uk.co.acuminous.julez.util.JulezSugar.TIMES;
 import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughput;
@@ -7,7 +8,9 @@ import static uk.co.acuminous.julez.util.PerformanceAssert.assertMinimumThroughp
 import org.junit.Test;
 
 import uk.co.acuminous.julez.event.handler.ScenarioThroughputMonitor;
-import uk.co.acuminous.julez.runner.ConcurrentScenarioRunner;
+import uk.co.acuminous.julez.executor.ConcurrentScenarioExecutor;
+import uk.co.acuminous.julez.executor.ScenarioExecutor;
+import uk.co.acuminous.julez.runner.SimpleScenarioRunner;
 import uk.co.acuminous.julez.scenario.BaseScenario;
 import uk.co.acuminous.julez.scenario.Scenario;
 import uk.co.acuminous.julez.scenario.ScenarioSource;
@@ -22,10 +25,12 @@ public class ConcurrentThroughputTest {
         
         Scenario scenario = new HelloWorldScenario().register(throughputMonitor);                        
 
-        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).atMost(100, TIMES);        
+        ScenarioSource scenarios = new ScenarioRepeater().repeat(scenario).upTo(100, TIMES);        
         
-        new ConcurrentScenarioRunner().register(throughputMonitor).queue(scenarios).allocate(10, THREADS).start();
-
+        ScenarioExecutor executor = new ConcurrentScenarioExecutor().allocate(10, THREADS);
+        
+        new SimpleScenarioRunner().assign(executor).register(throughputMonitor).queue(scenarios).start();
+        
         assertMinimumThroughput(500, throughputMonitor.getThroughput());
     }
 

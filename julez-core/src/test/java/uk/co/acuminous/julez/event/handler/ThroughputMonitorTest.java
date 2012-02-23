@@ -119,7 +119,7 @@ public class ThroughputMonitorTest {
         
         DateTime now = new DateTime();
         
-        monitor.onEvent(new ScenarioEvent("id", now.getMillis(), ScenarioRunnerEvent.BEGIN));        
+        monitor.onEvent(new ScenarioRunnerEvent("id", now.getMillis(), ScenarioRunnerEvent.BEGIN));        
         monitor.onEvent(new ScenarioEvent("id", now.minusMillis(1).getMillis(), ScenarioEvent.END));
         
         assertEquals(0, monitor.getThroughput());

@@ -49,7 +49,7 @@ public class DurationLimiterTest {
     @Test
     public void testUsingFluidApi() {
         ScenarioSource scenarios = new ScenarioRepeater(new NoOpScenario());
-        DurationLimiter timedScenarioSource = new DurationLimiter().provide(scenarios).forNoMoreThan(100, MILLISECONDS);
+        DurationLimiter timedScenarioSource = new DurationLimiter().limit(scenarios).to(100, MILLISECONDS);
         
         ConcurrencyUtils.sleep(200, MILLISECONDS);
         
