@@ -3,6 +3,7 @@ package uk.co.acuminous.julez.event.filter;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.Before;
@@ -91,13 +92,20 @@ public class EventDataFilterTest {
         repository.put(wantedEvent);        
         repository.put(new Event("A/2"));        
         
-        List<Event> filteredEvents = filter.applyTo(repository);  
-        
+        List<Event> filteredEvents = slurp(filter.applyTo(repository)); 
         assertEquals(1, filteredEvents.size());        
         assertEquals(wantedEvent, filteredEvents.get(0));
     }
     
-    @Test
+    private List<Event> slurp(Iterable<Event> iterable) {
+    	List<Event> ret = new ArrayList<Event>();
+    	for (Event e : iterable) {
+    		ret.add(e);
+    	}
+		return ret;
+	}
+
+	@Test
     public void ignoresDuffKeys() {
         
         EventFilter filter = new EventDataFilter().filterEventsWhere("duff").matches("A/1").register(repository);
