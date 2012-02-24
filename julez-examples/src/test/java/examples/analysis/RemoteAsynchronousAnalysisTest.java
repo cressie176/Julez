@@ -1,7 +1,6 @@
 package examples.analysis;
 
 import static org.junit.Assert.assertEquals;
-import static uk.co.acuminous.julez.util.JulezSugar.SCENARIOS;
 import static uk.co.acuminous.julez.util.JulezSugar.THREADS;
 import static uk.co.acuminous.julez.util.JulezSugar.TIMES;
 

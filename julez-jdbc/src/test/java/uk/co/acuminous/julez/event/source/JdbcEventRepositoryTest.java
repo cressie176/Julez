@@ -97,7 +97,7 @@ public abstract class JdbcEventRepositoryTest {
     }    
     
     @Test
-    public void listsretriesEventsFromRepositoryInOrder() {
+    public void listsEventsFromRepositoryInOrder() {
         JdbcEventRepository repository = createRepository();               
         
         List<Event> expectedEvents = initTestData(repository);
