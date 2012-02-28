@@ -7,8 +7,9 @@ public abstract class BaseScenario extends BaseEventSource implements Scenario {
     
     protected ScenarioEventFactory eventFactory = new ScenarioEventFactory();   
     
-    public void useEventFactory(ScenarioEventFactory eventFactory) {
+    public BaseScenario useEventFactory(ScenarioEventFactory eventFactory) {
         this.eventFactory = eventFactory;
+        return this;
     }
     
     @Override
