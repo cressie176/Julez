@@ -17,10 +17,9 @@ public class InMemoryEventRepositoryTest {
     @Test    
     public void doesNotThrowConcurrentModificationException() throws InterruptedException {
 
-        InMemoryEventRepository repository  = new InMemoryEventRepository();
+        InMemoryEventRepository repository = new InMemoryEventRepository();
         RepositoryReader reader = new RepositoryReader(repository);
-        RepositoryWriter writer = new RepositoryWriter(repository);
-        
+        RepositoryWriter writer = new RepositoryWriter(repository);        
         
         ExecutorService service = Executors.newFixedThreadPool(2);        
         service.submit(reader);
@@ -31,12 +30,17 @@ public class InMemoryEventRepositoryTest {
         
         assertTrue(reader.ok);
         assertTrue(writer.ok);
+        
+        reader.keepRunning = false;
+        writer.keepRunning = false;
+        service.shutdownNow();
     }
     
     class RepositoryWriter implements Runnable {
         
         final EventRepository repository;
         boolean ok = true;
+        boolean keepRunning = true;
 
         RepositoryWriter(EventRepository repository) {
             this.repository = repository;            
@@ -45,7 +49,7 @@ public class InMemoryEventRepositoryTest {
         @Override
         public void run() {
             try {
-                while (true) {                    
+                while (keepRunning) {                    
                     repository.onEvent(new Event("foo"));
                 }
             } catch (Exception e) {
@@ -59,6 +63,7 @@ public class InMemoryEventRepositoryTest {
         
         final EventRepository repository;
         boolean ok = true;
+        boolean keepRunning = true;        
 
         RepositoryReader(EventRepository repository) {
             this.repository = repository;            
@@ -67,7 +72,7 @@ public class InMemoryEventRepositoryTest {
         @Override
         public void run() {
             try {
-                while (true) {                    
+                while (keepRunning) {                    
                     for (@SuppressWarnings("unused") Event event : repository) {
                         // Meh
                     }
